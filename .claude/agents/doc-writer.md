@@ -17,7 +17,6 @@ model: sonnet
 
 기술 문서 작성 형식 :
 - 바이브코딩에 최적화된 Markdown(md)파일형식에 Mermaid 다이어그램을 적극 활용한다.
-- 시각화 문서 요청시에만 바이브코딩에 활용하지 않는 비주얼화 된 문서는 HTML로 작성하고, Playwright의 Chromium 엔진으로 PDF로 변환한다.
-
+- 시각화 문서 요청시에만 바이브코딩에 활용하지 않는 비주얼화 된 문서는 HTML로 작성한다. doc-writer는 Bash 권한이 없으므로 HTML 작성까지만 담당하고, PDF 변환은 `pdf-maker/make-pdf.js`(Playwright Chromium 엔진, `node pdf-maker/make-pdf.js <입력.html> <출력.pdf>`)로 메인 세션이 실행하도록 안내한다.
 
 작업 끝에는 어떤 문서의 어느 부분을 왜 고쳤는지 두세 줄로 요약하라.
