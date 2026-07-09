@@ -69,6 +69,8 @@ flowchart TB
 
 라우터는 상태 코드를 결정하고, crud.py는 DB 작업만 하며 상태 코드를 모릅니다(03 문서 §1-2 계층 원칙을 그대로 계승).
 
+**CORS 미들웨어는 추가하지 않습니다.** `main.py`가 `GET /`으로 `static/index.html`을 같은 FastAPI 앱에서 직접 서빙하므로(§3), 화면과 API가 항상 같은 오리진(`127.0.0.1:8000`)에서 동작합니다. 화면을 다른 포트의 별도 서버로 띄우지 않는 한 `CORSMiddleware`는 불필요하며, 필요하지 않은 설정을 미리 추가하지 않는 것이 이번 과제의 단순함 원칙에도 맞습니다.
+
 ---
 
 ## 3. 프로젝트 파일 구조
@@ -143,8 +145,7 @@ erDiagram
 ```sql
 CREATE TABLE users (
     id              SERIAL PRIMARY KEY,
-    username        VARCHAR(20) NOT NULL UNIQUE
-                        CHECK (username ~ '^[a-z0-9]{4,20}$'),
+    username        VARCHAR(20) NOT NULL UNIQUE,
     password_hash   TEXT NOT NULL,
     created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -174,7 +175,8 @@ CREATE TABLE contacts (
 ```
 
 **설계 근거**
-- `users`, `categories`에는 `ON DELETE CASCADE`를 걸어, 계정 삭제 시 그 사용자의 세션·카테고리·연락처가 고아 데이터로 남지 않게 합니다. (회원 탈퇴 기능 자체는 04 문서 §2-2 N1에 따라 이번 범위 밖이지만, FK 정책은 미리 안전하게 정의해 둡니다.)
+- `username`에는 형식 검증용 `CHECK` 제약을 걸지 않습니다. 01 문서 §4-2의 "①형식 검증은 Pydantic, ②데이터 검증(중복 등)만 DB/코드가 담당"이라는 2계층 원칙을 DDL에서도 그대로 지키기 위함입니다 — 정규식 규칙이 Pydantic과 DB 두 곳에 흩어지면, 나중에 규칙을 바꿀 때 한쪽을 빠뜨리는 사고가 나기 쉽습니다.
+- `users`, `categories`에는 `ON DELETE CASCADE`를 걸어, 계정 삭제 시 그 사용자의 세션·카테고리·연락처가 고아 데이터로 남지 않게 합니다. (회원 탈퇴 기능은 01 문서 FR 목록과 04 문서 PR 목록 어디에도 없어 이번 구현 범위 밖이지만, FK 정책은 미리 안전하게 정의해 둡니다.)
 - `contacts.category_id`는 **`ON DELETE` 절을 지정하지 않습니다.** PostgreSQL 기본 동작(`NO ACTION`)이 "연락처가 남아있는 카테고리는 삭제할 수 없다"를 DB 레벨에서 보장하며, 이것이 01 문서 §3-3 FR-12(사용 중 카테고리 삭제 거부, 409)의 최종 안전망입니다. 실제 409 응답은 `crud.count_contacts_in_category()`로 애플리케이션 레벨에서 먼저 차단하고(03 문서 FN-010), DB 제약은 그 로직이 누락되었을 때의 마지막 방어선 역할을 합니다.
 
 ### 4-3. SQLAlchemy 2.0 모델 (models.py)
@@ -229,6 +231,42 @@ class Contact(Base):
 ```
 
 앱 시작 시 `Base.metadata.create_all(bind=engine)`으로 테이블을 자동 생성합니다(교육용 과제 범위이므로 Alembic 마이그레이션은 04 문서 §11 확장 대상에 포함하지 않습니다).
+
+### 4-4. DB 세션 관리·접속 설정 (database.py)
+
+03 문서 FN-001이 "접속 문자열은 `postgresql+psycopg://`로 시작 — 상세는 05 TRD"라고 위임한 부분을 여기서 확정합니다.
+
+```python
+import os
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
+
+DATABASE_URL = os.environ["DATABASE_URL"]
+# 형식: postgresql+psycopg://{user}:{password}@{host}:{port}/{db}
+# 예:   postgresql+psycopg://contact_app:{password}@localhost:5432/contact_app
+
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        db.close()
+```
+
+**연결 문자열**: `DATABASE_URL`은 `.env`에 두고 `os.environ`으로 읽습니다. 실제 비밀번호 값은 CLAUDE.md 규칙(.env 직접 수정 금지)에 따라 이 문서에도, 저장소 어디에도 평문으로 남기지 않습니다.
+
+**문자 인코딩(NFR-05, 한글이 깨지지 않을 것)**: PostgreSQL 16 공식 Docker 이미지는 기본 `ENCODING=UTF8`로 초기화되고, psycopg3는 별도 설정 없이 UTF-8을 기본으로 사용하므로 한글 데이터가 추가 설정 없이 안전하게 오갑니다. FastAPI의 JSON 응답도 기본 UTF-8이며, 02 문서 §8이 요구하는 `<meta charset="UTF-8">`은 `static/index.html`에서 그대로 지킵니다.
+
+**트랜잭션 롤백(01 문서 §6 "처리 도중 오류가 나면 롤백")**: `get_db()`가 예외를 잡으면 `rollback()` 후 다시 던지므로, 라우터가 `HTTPException`을 일으키기 전에 이미 실행된 `INSERT`/`UPDATE`가 있어도 커밋되지 않고 되돌아갑니다. 반쪽짜리 데이터가 남지 않습니다.
 
 ---
 
@@ -331,6 +369,56 @@ flowchart LR
 |---|---|---|
 | ① 형식 검증 | `schemas.py`의 Pydantic `Field(min_length=..., pattern=...)` | FastAPI가 자동으로 422 |
 | ② 데이터 검증 | `routers/*.py`에서 `crud.py` 반환값을 확인 후 `raise HTTPException(...)` | 404 / 409 |
+
+### 8-1. 형식 검증 — schemas.py
+
+01 문서 §4-1 규칙표를 Pydantic 필드로 그대로 옮깁니다.
+
+```python
+from pydantic import BaseModel, Field
+
+
+class SignupIn(BaseModel):
+    username: str = Field(min_length=4, max_length=20, pattern=r"^[a-z0-9]+$")
+    password: str = Field(min_length=4, max_length=20)
+
+
+class UserOut(BaseModel):
+    id: int
+    username: str
+    # password_hash는 절대 포함하지 않는다 (03 문서 FN-003)
+
+
+class ContactCreate(BaseModel):
+    name: str = Field(min_length=1, max_length=5)
+    phone: str = Field(pattern=r"^010\d{8}$")
+    addr: str = ""
+    category_id: int
+
+
+class ContactUpdate(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=5)
+    phone: str | None = Field(default=None, pattern=r"^010\d{8}$")
+    addr: str | None = None
+    category_id: int | None = None
+
+
+class ContactOut(BaseModel):
+    id: int
+    name: str
+    phone: str
+    addr: str
+    category_id: int
+    category_name: str
+
+
+class CategoryCreate(BaseModel):
+    name: str = Field(min_length=1, max_length=10)
+```
+
+`ContactUpdate`는 모든 필드가 `None` 기본값이라, 라우터에서 `data.model_dump(exclude_unset=True)`로 **보낸 항목만** 갱신할 수 있습니다(03 문서 FN-009 `update_contact`). 입력용(`*Create`/`*Update`)과 출력용(`*Out`) 스키마를 분리해, 사용자가 `id`를 임의로 지정하거나 응답에 `password_hash`가 노출되는 사고를 원천 차단합니다(03 문서 §4 FN-003).
+
+### 8-2. 데이터 검증 — 표현 계층
 
 ```python
 # routers/contacts.py 표준 패턴 (03 문서 FN-011)
@@ -444,7 +532,12 @@ def test_사용자간_데이터_격리(browser):
 | FR-05~08 | §6 API 설계, §7 모듈 설계 (`crud.create_contact` 등) |
 | FR-09~12 | §6 API 설계, §4-2 DDL의 `ON DELETE` 정책 (사용 중 카테고리 삭제 방어) |
 | FR-13 | §3 프로젝트 파일 구조 (`static/index.html`, `main.py`) |
-| NFR-01~06 | §8 예외·검증 구현 전략, §10 테스트 전략 |
+| NFR-01 (500 금지) | §8-2 데이터 검증 — 표현 계층 |
+| NFR-02 (계층별 파일 분리) | §2 전체 아키텍처, §3 프로젝트 파일 구조 |
+| NFR-03 (Argon2 해시) | §5-2 기술 결정 사항 |
+| NFR-04 (전부 로그인 필수 + user_id 격리) | §5-2 데이터 격리, §7 모듈 설계 |
+| NFR-05 (한글 UTF-8) | §4-4 DB 세션 관리·접속 설정 |
+| NFR-06 (`/docs` 자동 문서) | §9-2 Python 환경 (FastAPI 기본 동작, 별도 비활성화 없음) |
 
 ---
 
