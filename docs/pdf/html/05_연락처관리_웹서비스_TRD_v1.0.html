@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>연락처 관리 웹 서비스(2차 과제) TRD v1.0</title>
+<style>
+/*
+  연락처 관리 웹 서비스 — 보고서 CSS 템플릿
+  docs/planning 의 PDF 문서 세트(과제목적/구현요구사항/화면정의서/기능정의서/PRD) 스타일을 기준으로 만듦.
+  doc-writer는 시각화 문서(HTML) 작성 시 이 파일의 내용을 <style> 태그 안에 그대로 복사해 넣는다.
+  (pdf-maker가 file:// 로 HTML을 열기 때문에, 외부 링크보다 인라인이 경로 문제 없이 안전하다.)
+*/
+
+@page {
+    size: A4;
+    margin: 20mm 18mm;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    color: #1f2937;
+    line-height: 1.6;
+    font-size: 14px;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+}
+
+h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e3a8a;
+    border-bottom: 3px solid #1e3a8a;
+    padding-bottom: 10px;
+    margin-bottom: 16px;
+}
+
+h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e3a8a;
+    border-left: 5px solid #2563eb;
+    padding-left: 10px;
+    margin-top: 28px;
+    margin-bottom: 12px;
+    page-break-after: avoid;
+}
+
+h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e40af;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    page-break-after: avoid;
+}
+
+p {
+    margin: 8px 0;
+}
+
+/* 문서 상단 메타데이터 표 ("항목 | 내용" 형식) */
+table.meta {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 20px;
+    font-size: 13px;
+}
+
+table.meta th,
+table.meta td {
+    border: 1px solid #cbd5e1;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+table.meta th {
+    background: #eff6ff;
+    color: #1e3a8a;
+    width: 22%;
+    font-weight: 600;
+}
+
+/* 본문 일반 표 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 13px;
+    page-break-inside: avoid;
+}
+
+table th,
+table td {
+    border: 1px solid #cbd5e1;
+    padding: 8px 10px;
+    text-align: left;
+    vertical-align: top;
+}
+
+table th {
+    background: #eff6ff;
+    color: #1e3a8a;
+    font-weight: 600;
+}
+
+table tr:nth-child(even) td {
+    background: #f8fafc;
+}
+
+/* 강조 콜아웃 박스 (주의/설명) — PDF의 크림색 박스 계승 */
+.callout {
+    background: #fffbeb;
+    border-left: 4px solid #f59e0b;
+    padding: 12px 16px;
+    margin: 16px 0;
+    border-radius: 4px;
+    font-size: 13px;
+    page-break-inside: avoid;
+}
+
+/* 안내/정보 콜아웃 박스 (파란 계열) */
+.callout-info {
+    background: #eff6ff;
+    border-left: 4px solid #2563eb;
+    padding: 12px 16px;
+    margin: 16px 0;
+    border-radius: 4px;
+    font-size: 13px;
+    page-break-inside: avoid;
+}
+
+/* 코드/식별자 */
+code {
+    font-family: "SF Mono", "D2Coding", monospace;
+    background: #f3f4f6;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+pre {
+    background: #f3f4f6;
+    padding: 12px 14px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: 12px;
+    page-break-inside: avoid;
+}
+
+pre code {
+    background: none;
+    padding: 0;
+}
+
+/* 문서 하단 꼬리말 텍스트 (페이지 번호는 pdf-maker의 headerTemplate/footerTemplate 확장이 필요 — 현재 범위 아님) */
+.doc-footer {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 11px;
+    color: #94a3b8;
+}
+
+ul,
+ol {
+    margin: 8px 0;
+    padding-left: 22px;
+}
+
+li {
+    margin: 4px 0;
+}
+</style>
+</head>
+<body>
+
+<h1>연락처 관리 웹 서비스 — TRD (기술 요구사항 정의서) (2차 과제)</h1>
+
+<table class="meta">
+<tr><th>문서명</th><td>연락처 관리 웹 서비스(2차 과제) TRD</td></tr>
+<tr><th>문서 유형</th><td>Technical Requirements Document</td></tr>
+<tr><th>과제 구분</th><td>2차 과제 — FastAPI + DB 연락처 프로그램</td></tr>
+<tr><th>버전</th><td>v1.0</td></tr>
+<tr><th>상태</th><td>확정(Baseline)</td></tr>
+<tr><th>근거 문서</th><td>00 과제목적, 01 구현요구사항, 02 화면정의서, 03 기능정의서, 04 PRD</td></tr>
+</table>
+
+<div class="callout-info">
+<strong>이 문서의 역할(안내)</strong> TRD는 "어떻게 만드는가(How)"만 다룹니다. "무엇을 만드는가(What)"는 01(구현요구사항)·04(PRD)의 몫이고, 이 문서는 그 두 문서의 요구사항을 실제로 동작하는 시스템으로 옮기기 위한 <strong>기술 스택 확정, DB 설계(DDL), 인증 설계, 모듈 설계, 개발·테스트 환경</strong>을 정의합니다. 03(기능정의서)이 이미 파일·함수 단위 설계를 다뤘으므로, 본 문서는 그 설계를 실행 가능한 수준(실제 DDL, 실제 설정값)으로 구체화하는 데 집중합니다.
+</div>
+
+<h2>1. 기술 스택 확정</h2>
+
+<p>00 문서에서 실제 설치·검증을 마친 조합을 그대로 확정합니다. 버전을 임의로 올리거나 내리지 않습니다.</p>
+
+<table>
+<tr><th>구성요소</th><th>버전</th><th>역할</th></tr>
+<tr><td>Python</td><td>3.12+</td><td>실행 환경</td></tr>
+<tr><td>FastAPI</td><td>0.139.0</td><td>웹 프레임워크 (API 서버)</td></tr>
+<tr><td>Pydantic</td><td>2.13.4</td><td>입력 데이터 자동 검증</td></tr>
+<tr><td>SQLAlchemy</td><td>2.0.51</td><td>ORM</td></tr>
+<tr><td>psycopg</td><td>3.3.4</td><td>PostgreSQL 드라이버</td></tr>
+<tr><td>pwdlib[argon2]</td><td>0.3.0</td><td>비밀번호 해싱 (Argon2)</td></tr>
+<tr><td>Uvicorn</td><td>0.50.0</td><td>ASGI 웹 서버</td></tr>
+<tr><td>PostgreSQL</td><td>16 (Docker, 컨테이너명 <code>pg-lab</code>)</td><td>데이터베이스</td></tr>
+<tr><td>pytest-playwright</td><td>(본 프로젝트에 기설치)</td><td>E2E / API 테스트</td></tr>
+</table>
+
+<p>인증 방식은 00 문서의 결정대로 <strong>세션 쿠키</strong>로 확정합니다 (JWT는 비목표 — 04 문서 §11).</p>
+
+<h2>2. 전체 아키텍처</h2>
+
+<p>4계층으로 분리하며, 각 계층은 자신의 아래 계층만 호출합니다(계층을 건너뛴 호출 금지).</p>
+
+<pre class="mermaid">flowchart TB
+    subgraph 화면["화면 계층 (브라우저)"]
+        A["static/index.html + app.js"]
+    end
+    subgraph 표현["표현 계층 (routers/, schemas.py)"]
+        B["routers/auth.py"]
+        C["routers/contacts.py"]
+        D["routers/categories.py"]
+    end
+    subgraph 로직["로직 계층"]
+        E["crud.py"]
+        F["security.py"]
+    end
+    subgraph 데이터["데이터 계층"]
+        G["models.py + database.py"]
+        H[("PostgreSQL 16 (pg-lab)")]
+    end
+
+    A -->|"HTTP/JSON (fetch)"| B
+    A -->|"HTTP/JSON (fetch)"| C
+    A -->|"HTTP/JSON (fetch)"| D
+    B --> E
+    C --> E
+    D --> E
+    B --> F
+    E --> G
+    G --> H
+</pre>
+
+<p>라우터는 상태 코드를 결정하고, <code>crud.py</code>는 DB 작업만 하며 상태 코드를 모릅니다(03 문서 §1-2 계층 원칙을 그대로 계승).</p>
+
+<div class="callout">
+<strong>CORS 미들웨어는 추가하지 않습니다.</strong> <code>main.py</code>가 <code>GET /</code>으로 <code>static/index.html</code>을 같은 FastAPI 앱에서 직접 서빙하므로(§3), 화면과 API가 항상 같은 오리진(<code>127.0.0.1:8000</code>)에서 동작합니다. 화면을 다른 포트의 별도 서버로 띄우지 않는 한 <code>CORSMiddleware</code>는 불필요하며, 필요하지 않은 설정을 미리 추가하지 않는 것이 이번 과제의 단순함 원칙에도 맞습니다.
+</div>
+
+<h2>3. 프로젝트 파일 구조</h2>
+
+<p>03 문서(기능정의서)의 구조를 기술 실행 기준으로 확정합니다.</p>
+
+<pre><code>backend/
+├── main.py            # FastAPI 앱 생성, 라우터 등록, 정적 파일 마운트
+├── database.py         # engine, SessionLocal, Base, get_db()
+├── models.py            # User, LoginSession, Category, Contact
+├── schemas.py            # Pydantic 입출력 스키마
+├── security.py            # hash_password, verify_password
+├── crud.py                 # DB 작업 함수 (조회/생성/수정/삭제)
+├── routers/
+│   ├── auth.py               # signup, login, logout, me, get_current_user
+│   ├── contacts.py             # 연락처 CRUD 4개
+│   └── categories.py            # 카테고리 CRUD 4개
+├── static/
+│   ├── index.html                 # SCR-001~003
+│   └── app.js                      # fetch 호출 + DOM 갱신
+└── requirements.txt
+</code></pre>
+
+<p><code>backend/CLAUDE.md</code>에 명시된 "FastAPI 사용" 방침에 따라 백엔드 코드는 <code>backend/</code> 아래에 위치합니다.</p>
+
+<h2>4. DB 설계</h2>
+
+<h3>4-1. ER 다이어그램</h3>
+
+<p>01 문서 §1-1의 관계도를 그대로 반영합니다.</p>
+
+<pre class="mermaid">erDiagram
+    USERS ||--o{ SESSIONS : "로그인 세션"
+    USERS ||--o{ CATEGORIES : "소유"
+    USERS ||--o{ CONTACTS : "소유"
+    CATEGORIES ||--o{ CONTACTS : "분류"
+
+    USERS {
+        int id PK
+        string username UK "4~20자, ^[a-z0-9]+$"
+        string password_hash "Argon2 해시"
+        timestamp created_at
+    }
+    SESSIONS {
+        string session_id PK "64자, secrets.token_hex(32)"
+        int user_id FK
+        timestamp created_at
+    }
+    CATEGORIES {
+        int id PK
+        int user_id FK
+        string name "1~10자, UNIQUE(user_id,name)"
+    }
+    CONTACTS {
+        int id PK
+        int user_id FK
+        int category_id FK
+        string name "1~5자"
+        string phone "11자, UNIQUE(user_id,phone)"
+        string addr
+    }
+</pre>
+
+<h3>4-2. DDL</h3>
+
+<p>01 문서 §1-2의 표를 실제 실행 가능한 PostgreSQL 16 DDL로 확정합니다.</p>
+
+<pre><code>CREATE TABLE users (
+    id              SERIAL PRIMARY KEY,
+    username        VARCHAR(20) NOT NULL UNIQUE,
+    password_hash   TEXT NOT NULL,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE sessions (
+    session_id  CHAR(64) PRIMARY KEY,
+    user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE categories (
+    id       SERIAL PRIMARY KEY,
+    user_id  INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    name     VARCHAR(10) NOT NULL,
+    UNIQUE (user_id, name)
+);
+
+CREATE TABLE contacts (
+    id           SERIAL PRIMARY KEY,
+    user_id      INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    category_id  INTEGER NOT NULL REFERENCES categories(id), -- ON DELETE 지정 없음 = 기본 NO ACTION
+    name         VARCHAR(5) NOT NULL,
+    phone        CHAR(11) NOT NULL,
+    addr         VARCHAR(255) NOT NULL DEFAULT '',
+    UNIQUE (user_id, phone)
+);
+</code></pre>
+
+<div class="callout">
+<strong>설계 근거</strong>
+<ul>
+<li><code>username</code>에는 형식 검증용 <code>CHECK</code> 제약을 걸지 않습니다. 01 문서 §4-2의 "①형식 검증은 Pydantic, ②데이터 검증(중복 등)만 DB/코드가 담당"이라는 2계층 원칙을 DDL에서도 그대로 지키기 위함입니다 — 정규식 규칙이 Pydantic과 DB 두 곳에 흩어지면, 나중에 규칙을 바꿀 때 한쪽을 빠뜨리는 사고가 나기 쉽습니다.</li>
+<li><code>users</code>, <code>categories</code>에는 <code>ON DELETE CASCADE</code>를 걸어, 계정 삭제 시 그 사용자의 세션·카테고리·연락처가 고아 데이터로 남지 않게 합니다. (회원 탈퇴 기능은 01 문서 FR 목록과 04 문서 PR 목록 어디에도 없어 이번 구현 범위 밖이지만, FK 정책은 미리 안전하게 정의해 둡니다.)</li>
+<li><code>contacts.category_id</code>는 <strong><code>ON DELETE</code> 절을 지정하지 않습니다.</strong> PostgreSQL 기본 동작(<code>NO ACTION</code>)이 "연락처가 남아있는 카테고리는 삭제할 수 없다"를 DB 레벨에서 보장하며, 이것이 01 문서 §3-3 FR-12(사용 중 카테고리 삭제 거부, 409)의 최종 안전망입니다. 실제 409 응답은 <code>crud.count_contacts_in_category()</code>로 애플리케이션 레벨에서 먼저 차단하고(03 문서 FN-010), DB 제약은 그 로직이 누락되었을 때의 마지막 방어선 역할을 합니다.</li>
+</ul>
+</div>
+
+<h3>4-3. SQLAlchemy 2.0 모델 (models.py)</h3>
+
+<p>03 문서 §1-3의 명명 규칙(<code>LoginSession</code> — SQLAlchemy <code>Session</code>과의 이름 충돌 회피)을 그대로 따릅니다.</p>
+
+<pre><code>from datetime import datetime
+
+from sqlalchemy import ForeignKey, String, UniqueConstraint, func
+from sqlalchemy.orm import Mapped, mapped_column
+
+from database import Base
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)
+    password_hash: Mapped[str] = mapped_column(nullable=False)
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+
+
+class LoginSession(Base):
+    __tablename__ = "sessions"
+
+    session_id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+
+
+class Category(Base):
+    __tablename__ = "categories"
+    __table_args__ = (UniqueConstraint("user_id", "name"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    name: Mapped[str] = mapped_column(String(10), nullable=False)
+
+
+class Contact(Base):
+    __tablename__ = "contacts"
+    __table_args__ = (UniqueConstraint("user_id", "phone"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"), nullable=False)
+    name: Mapped[str] = mapped_column(String(5), nullable=False)
+    phone: Mapped[str] = mapped_column(String(11), nullable=False)
+    addr: Mapped[str] = mapped_column(String(255), nullable=False, default="")
+</code></pre>
+
+<p>앱 시작 시 <code>Base.metadata.create_all(bind=engine)</code>으로 테이블을 자동 생성합니다(교육용 과제 범위이므로 Alembic 마이그레이션은 04 문서 §11 확장 대상에 포함하지 않습니다).</p>
+
+<h3>4-4. DB 세션 관리·접속 설정 (database.py)</h3>
+
+<p>03 문서 FN-001이 "접속 문자열은 <code>postgresql+psycopg://</code>로 시작 — 상세는 05 TRD"라고 위임한 부분을 여기서 확정합니다.</p>
+
+<pre><code>import os
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
+
+DATABASE_URL = os.environ["DATABASE_URL"]
+# 형식: postgresql+psycopg://{user}:{password}@{host}:{port}/{db}
+# 예:   postgresql+psycopg://contact_app:{password}@localhost:5432/contact_app
+
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        db.close()
+</code></pre>
+
+<p><strong>연결 문자열</strong>: <code>DATABASE_URL</code>은 <code>.env</code>에 두고 <code>os.environ</code>으로 읽습니다. 실제 비밀번호 값은 CLAUDE.md 규칙(.env 직접 수정 금지)에 따라 이 문서에도, 저장소 어디에도 평문으로 남기지 않습니다.</p>
+
+<p><strong>문자 인코딩(NFR-05, 한글이 깨지지 않을 것)</strong>: PostgreSQL 16 공식 Docker 이미지는 기본 <code>ENCODING=UTF8</code>로 초기화되고, psycopg3는 별도 설정 없이 UTF-8을 기본으로 사용하므로 한글 데이터가 추가 설정 없이 안전하게 오갑니다. FastAPI의 JSON 응답도 기본 UTF-8이며, 02 문서 §8이 요구하는 <code>&lt;meta charset="UTF-8"&gt;</code>은 <code>static/index.html</code>에서 그대로 지킵니다.</p>
+
+<p><strong>트랜잭션 롤백(01 문서 §6 "처리 도중 오류가 나면 롤백")</strong>: <code>get_db()</code>가 예외를 잡으면 <code>rollback()</code> 후 다시 던지므로, 라우터가 <code>HTTPException</code>을 일으키기 전에 이미 실행된 <code>INSERT</code>/<code>UPDATE</code>가 있어도 커밋되지 않고 되돌아갑니다. 반쪽짜리 데이터가 남지 않습니다.</p>
+
+<h2>5. 인증 설계 (세션 쿠키)</h2>
+
+<h3>5-1. 로그인 → 보호 API 호출 흐름</h3>
+
+<pre class="mermaid">sequenceDiagram
+    participant Browser
+    participant Auth as routers/auth.py
+    participant CRUD as crud.py
+    participant DB as PostgreSQL
+
+    Browser->>Auth: POST /auth/login {username, password}
+    Auth->>CRUD: authenticate_user(db, username, password)
+    CRUD->>DB: SELECT * FROM users WHERE username=?
+    DB-->>CRUD: User 행
+    CRUD-->>Auth: User 또는 None
+    Auth->>CRUD: create_login_session(db, user.id)
+    CRUD->>DB: INSERT INTO sessions ...
+    Auth-->>Browser: 200 + Set-Cookie session_id=... (HttpOnly)
+
+    Browser->>Auth: GET /contacts (쿠키 자동 첨부)
+    Auth->>CRUD: get_current_user(session_id)
+    CRUD->>DB: SELECT * FROM sessions WHERE session_id=?
+    alt 세션 유효
+        DB-->>CRUD: session 행
+        CRUD-->>Auth: User
+        Auth-->>Browser: 200 + JSON
+    else 세션 없음/무효
+        Auth-->>Browser: 401
+    end
+</pre>
+
+<h3>5-2. 기술 결정 사항</h3>
+
+<table>
+<tr><th>항목</th><th>결정</th><th>근거</th></tr>
+<tr><td>세션 번호 생성</td><td><code>secrets.token_hex(32)</code> (표준 라이브러리)</td><td>00 문서 — 추가 라이브러리 0개</td></tr>
+<tr><td>쿠키 옵션</td><td><code>httponly=True</code></td><td>JavaScript가 <code>document.cookie</code>로 세션 값을 읽지 못하게 하여 XSS로 인한 세션 탈취 방지</td></tr>
+<tr><td>쿠키 옵션</td><td><code>samesite="lax"</code></td><td>로컬 개발(127.0.0.1) 환경에서 CSRF 기본 방어, 동일 출처 fetch에는 영향 없음</td></tr>
+<tr><td>비밀번호 저장</td><td><code>pwdlib[argon2]</code>의 <code>hash()</code> / <code>verify()</code></td><td>00 문서 — FastAPI 공식 문서 권장 해시</td></tr>
+<tr><td><code>get_current_user</code> 시그니처</td><td><code>session_id: str | None = Cookie(default=None), db: Session = Depends(get_db)</code></td><td>03 문서 FN-007 그대로</td></tr>
+<tr><td>로그인 실패 문구</td><td>아이디 불명/비밀번호 오류 구분 없이 동일 메시지</td><td>01 문서 §3-1 — 계정 존재 여부 노출 방지</td></tr>
+<tr><td>데이터 격리</td><td>모든 조회 함수의 WHERE 절에 <code>user_id</code> 필수 포함</td><td>남의 데이터는 403이 아니라 404 (01 문서 §5-2)</td></tr>
+</table>
+
+<h2>6. API 설계 요약</h2>
+
+<p>01 문서 §2의 FR 목록을 엔드포인트 계약으로 확정합니다. 상세 요청/응답 본문은 01 문서 §3을 단일 기준(source of truth)으로 따릅니다.</p>
+
+<table>
+<tr><th>그룹</th><th>메서드 · 경로</th><th>인증 필요</th><th>성공 코드</th><th>주요 실패 코드</th></tr>
+<tr><td>인증</td><td><code>POST /auth/signup</code></td><td>불필요</td><td>201</td><td>409, 422</td></tr>
+<tr><td>인증</td><td><code>POST /auth/login</code></td><td>불필요</td><td>200</td><td>401</td></tr>
+<tr><td>인증</td><td><code>POST /auth/logout</code></td><td>필요</td><td>200</td><td>-</td></tr>
+<tr><td>인증</td><td><code>GET /auth/me</code></td><td>필요</td><td>200</td><td>401</td></tr>
+<tr><td>연락처</td><td><code>POST /contacts</code></td><td>필요</td><td>201</td><td>401, 404, 409, 422</td></tr>
+<tr><td>연락처</td><td><code>GET /contacts</code></td><td>필요</td><td>200</td><td>401</td></tr>
+<tr><td>연락처</td><td><code>PATCH /contacts/{id}</code></td><td>필요</td><td>200</td><td>401, 404, 409, 422</td></tr>
+<tr><td>연락처</td><td><code>DELETE /contacts/{id}</code></td><td>필요</td><td>204</td><td>401, 404</td></tr>
+<tr><td>카테고리</td><td><code>GET /categories</code></td><td>필요</td><td>200</td><td>401</td></tr>
+<tr><td>카테고리</td><td><code>POST /categories</code></td><td>필요</td><td>201</td><td>401, 409, 422</td></tr>
+<tr><td>카테고리</td><td><code>PATCH /categories/{id}</code></td><td>필요</td><td>200</td><td>401, 404, 409, 422</td></tr>
+<tr><td>카테고리</td><td><code>DELETE /categories/{id}</code></td><td>필요</td><td>204</td><td>401, 404, 409</td></tr>
+<tr><td>화면</td><td><code>GET /</code></td><td>불필요</td><td>200</td><td>-</td></tr>
+</table>
+
+<p>모든 오류 응답은 <code>{"detail": "..."}</code> 단일 형태로 통일하며(01 문서 §5-2), 어떤 경로로도 <code>500</code>이 발생하지 않아야 합니다(NFR-01).</p>
+
+<h2>7. 모듈 설계 (의존성 흐름)</h2>
+
+<p>03 문서 §3의 함수 호출 관계를 <code>Depends</code> 의존성 주입 관점에서 재정리합니다. "연락처 추가"를 대표 예로 듭니다.</p>
+
+<pre class="mermaid">flowchart LR
+    J["app.js: fetch POST /contacts"] --> R["routers/contacts.py: add_contact()"]
+    GD["Depends(get_db)"] -.자동 주입.-> R
+    GU["Depends(get_current_user)"] -.자동 주입.-> R
+    SC["schemas.ContactCreate"] -.본문 자동 검증 422.-> R
+    R --> CR1["crud.get_my_category (내 카테고리인지 404)"]
+    R --> CR2["crud.list_contacts (전화번호 중복 409)"]
+    R --> CR3["crud.create_contact (INSERT + commit)"]
+    CR3 --> M["models.Contact"]
+    M --> DB[("PostgreSQL")]
+</pre>
+
+<p>핵심 원칙: <strong>라우터는 접수·인증확인·데이터검증 실패를 상태 코드로 변환만 하고, 실제 DB 작업은 전부 <code>crud.py</code>가 수행합니다.</strong> <code>crud.py</code>는 FastAPI를 import하지 않으며 <code>HTTPException</code>을 던지지 않습니다 — 이렇게 해야 나중에 화면을 CLI나 다른 프레임워크로 바꿔도 <code>crud.py</code>를 재사용할 수 있습니다(03 문서 §1-2 계층 분리 원칙).</p>
+
+<h2>8. 예외·검증 구현 전략</h2>
+
+<p>01 문서 §4-2의 2계층 검증을 코드 레벨로 확정합니다.</p>
+
+<table>
+<tr><th>계층</th><th>구현 위치</th><th>실패 시</th></tr>
+<tr><td>① 형식 검증</td><td><code>schemas.py</code>의 Pydantic <code>Field(min_length=..., pattern=...)</code></td><td>FastAPI가 자동으로 422</td></tr>
+<tr><td>② 데이터 검증</td><td><code>routers/*.py</code>에서 <code>crud.py</code> 반환값을 확인 후 <code>raise HTTPException(...)</code></td><td>404 / 409</td></tr>
+</table>
+
+<h3>8-1. 형식 검증 — schemas.py</h3>
+
+<p>01 문서 §4-1 규칙표를 Pydantic 필드로 그대로 옮깁니다.</p>
+
+<pre><code>from pydantic import BaseModel, Field
+
+
+class SignupIn(BaseModel):
+    username: str = Field(min_length=4, max_length=20, pattern=r"^[a-z0-9]+$")
+    password: str = Field(min_length=4, max_length=20)
+
+
+class UserOut(BaseModel):
+    id: int
+    username: str
+    # password_hash는 절대 포함하지 않는다 (03 문서 FN-003)
+
+
+class ContactCreate(BaseModel):
+    name: str = Field(min_length=1, max_length=5)
+    phone: str = Field(pattern=r"^010\d{8}$")
+    addr: str = ""
+    category_id: int
+
+
+class ContactUpdate(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=5)
+    phone: str | None = Field(default=None, pattern=r"^010\d{8}$")
+    addr: str | None = None
+    category_id: int | None = None
+
+
+class ContactOut(BaseModel):
+    id: int
+    name: str
+    phone: str
+    addr: str
+    category_id: int
+    category_name: str
+
+
+class CategoryCreate(BaseModel):
+    name: str = Field(min_length=1, max_length=10)
+</code></pre>
+
+<p><code>ContactUpdate</code>는 모든 필드가 <code>None</code> 기본값이라, 라우터에서 <code>data.model_dump(exclude_unset=True)</code>로 <strong>보낸 항목만</strong> 갱신할 수 있습니다(03 문서 FN-009 <code>update_contact</code>). 입력용(<code>*Create</code>/<code>*Update</code>)과 출력용(<code>*Out</code>) 스키마를 분리해, 사용자가 <code>id</code>를 임의로 지정하거나 응답에 <code>password_hash</code>가 노출되는 사고를 원천 차단합니다(03 문서 §4 FN-003).</p>
+
+<h3>8-2. 데이터 검증 — 표현 계층</h3>
+
+<pre><code># routers/contacts.py 표준 패턴 (03 문서 FN-011)
+@router.post("", response_model=schemas.ContactOut, status_code=201)
+def add_contact(
+    data: schemas.ContactCreate,
+    user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if not crud.get_my_category(db, user.id, data.category_id):
+        raise HTTPException(404, "해당 카테고리가 없습니다")
+    if crud.find_contact_by_phone(db, user.id, data.phone):
+        raise HTTPException(409, "이미 등록된 전화번호입니다")
+    return crud.create_contact(db, user.id, data)
+</code></pre>
+
+<p>이 패턴을 12개 엔드포인트 전부에 동일하게 적용하며, <code>crud.py</code> 함수가 <code>None</code>을 반환하면 라우터가 404로, 중복이 감지되면 409로 변환합니다(01 문서 §5-1 상태 코드 매트릭스와 1:1 대응).</p>
+
+<h2>9. 개발·실행 환경</h2>
+
+<h3>9-1. PostgreSQL (Docker)</h3>
+
+<pre><code># docker-compose.yml (backend/ 기준)
+services:
+  pg-lab:
+    image: postgres:16
+    container_name: pg-lab
+    environment:
+      POSTGRES_USER: contact_app
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: contact_app
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_lab_data:/var/lib/postgresql/data
+
+volumes:
+  pg_lab_data:
+</code></pre>
+
+<p>비밀번호 등 민감정보는 <code>.env</code>에 두고 <code>docker-compose.yml</code>은 <code>${POSTGRES_PASSWORD}</code>로만 참조합니다. <code>.env</code>는 CLAUDE.md 규칙에 따라 이 TRD 작성 범위에서 직접 생성·수정하지 않으며, 실제 구현 단계에서 개발자가 로컬에 만듭니다.</p>
+
+<h3>9-2. Python 환경</h3>
+
+<pre><code>cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn main:app --reload
+</code></pre>
+
+<pre><code># requirements.txt (예정 구성)
+fastapi==0.139.0
+pydantic==2.13.4
+sqlalchemy==2.0.51
+psycopg[binary]==3.3.4
+pwdlib[argon2]==0.3.0
+uvicorn[standard]==0.50.0
+</code></pre>
+
+<p>서버 기동 후 <code>http://127.0.0.1:8000/docs</code>가 열리면 FN-001~002(DB 연결·테이블 생성)까지 정상입니다(03 문서 §5 1단계 완료 기준).</p>
+
+<h2>10. 테스트 전략</h2>
+
+<p>프로젝트에 이미 세팅된 <code>pytest-playwright</code> 환경(<code>tests/</code> 디렉터리, 프로젝트 루트 <code>.venv</code>)을 그대로 활용합니다. 01 문서의 FR·04 문서의 AC를 테스트 케이스로 직접 변환하는 것을 목표로 합니다(Karpathy 행동지침 — Goal-Driven Execution).</p>
+
+<h3>10-1. 테스트 파일 구성 (제안)</h3>
+
+<pre><code>tests/
+├── test_auth.py          # FR-01~04 → AC-01~04, AC-15
+├── test_contacts.py       # FR-05~08 → AC-05~09, AC-13, AC-14
+├── test_categories.py      # FR-09~12 → AC-10~12
+└── test_persistence.py      # FR 전체 → AC-16 (서버 재시작 후 데이터 유지)
+</code></pre>
+
+<h3>10-2. 두 계층의 테스트 도구</h3>
+
+<table>
+<tr><th>대상</th><th>도구</th><th>이유</th></tr>
+<tr><td>API 계약 (FR-01~13)</td><td><code>playwright</code>의 <code>APIRequestContext</code> (<code>page.request</code> 또는 <code>pytest-playwright</code>의 <code>request</code> 픽스처)</td><td>화면 없이 상태 코드·JSON 본문을 직접 검증 — 01 문서의 401/404/409/422 매트릭스 검증에 적합</td></tr>
+<tr><td>화면 흐름 (SCR-001~003)</td><td><code>pytest-playwright</code>의 <code>page</code> 픽스처</td><td>02 문서의 화면 전이(로그인→관리 화면)를 실제 브라우저로 검증</td></tr>
+</table>
+
+<h3>10-3. 데이터 격리 테스트의 핵심 패턴 (AC-13, AC-14)</h3>
+
+<p>계정 2개(A, B)를 만들어야 검증되는 요구사항이므로, 브라우저 컨텍스트를 2개 분리해 각자 로그인시킵니다.</p>
+
+<pre><code>def test_사용자간_데이터_격리(browser):
+    ctx_a = browser.new_context()
+    ctx_b = browser.new_context()
+    # ctx_a로 A 가입/로그인 + 연락처 등록
+    # ctx_b로 B 가입/로그인
+    # ctx_b의 request로 A의 연락처 id에 GET/DELETE 시도 → 404 확인
+</code></pre>
+
+<h2>11. 요구사항 추적표 (01 문서 §10 TRD 대응 확정)</h2>
+
+<table>
+<tr><th>요구 ID</th><th>본 문서 대응 섹션</th></tr>
+<tr><td>FR-01~04</td><td>§5 인증 설계, §7 모듈 설계 (<code>routers/auth.py</code>, <code>get_current_user</code>)</td></tr>
+<tr><td>FR-05~08</td><td>§6 API 설계, §7 모듈 설계 (<code>crud.create_contact</code> 등)</td></tr>
+<tr><td>FR-09~12</td><td>§6 API 설계, §4-2 DDL의 <code>ON DELETE</code> 정책 (사용 중 카테고리 삭제 방어)</td></tr>
+<tr><td>FR-13</td><td>§3 프로젝트 파일 구조 (<code>static/index.html</code>, <code>main.py</code>)</td></tr>
+<tr><td>NFR-01 (500 금지)</td><td>§8-2 데이터 검증 — 표현 계층</td></tr>
+<tr><td>NFR-02 (계층별 파일 분리)</td><td>§2 전체 아키텍처, §3 프로젝트 파일 구조</td></tr>
+<tr><td>NFR-03 (Argon2 해시)</td><td>§5-2 기술 결정 사항</td></tr>
+<tr><td>NFR-04 (전부 로그인 필수 + user_id 격리)</td><td>§5-2 데이터 격리, §7 모듈 설계</td></tr>
+<tr><td>NFR-05 (한글 UTF-8)</td><td>§4-4 DB 세션 관리·접속 설정</td></tr>
+<tr><td>NFR-06 (<code>/docs</code> 자동 문서)</td><td>§9-2 Python 환경 (FastAPI 기본 동작, 별도 비활성화 없음)</td></tr>
+</table>
+
+<h2>12. 이번 TRD에서 다루지 않는 것</h2>
+
+<p>04 문서 §2-2(비목표)와 동일하게, 다음은 이번 기술 설계 범위에서 제외합니다.</p>
+
+<ul>
+<li>Alembic 등 DB 마이그레이션 도구 (테이블은 <code>create_all</code>로 1회 생성)</li>
+<li>HTTPS·실서버 배포 설정 (로컬 개발 환경 127.0.0.1 한정)</li>
+<li>JWT 인증 (세션 쿠키로 확정 — §5)</li>
+<li>CI/CD 파이프라인 구성</li>
+</ul>
+
+<div class="doc-footer">연락처 관리 웹 서비스(2차 과제) TRD · v1.0</div>
+
+</body>
+</html>
