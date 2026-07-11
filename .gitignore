@@ -3,3 +3,4 @@ __pycache__/
 .pytest_cache/
 pdf-maker/node_modules/
 pdf-maker/결과.pdf
+.claude/settings.local.json
