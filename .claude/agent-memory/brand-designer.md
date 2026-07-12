@@ -1,30 +1,6 @@
 # brand-designer 메모리
 
-이 파일은 brand-designer가 작업 시작 시 읽고, 작업 종료 시 기록을 남기는 메모리/로그입니다.
-
-## 브랜드 결정사항 (색상/톤/가이드)
-
-**상태: 확정 — Concept B "Warm Ledger" (design-pl 경유 사용자 확정 완료, Brand Guide 정식화 완료)**
-
-3개 시안(Deskline/Warm Ledger/Gridline) 중 사용자가 **Concept B "Warm Ledger"**를 최종 확정했다. "Brand Guide" 페이지(fileKey `zgGlMBwFglaDlaeyP4CkgR`, pageId `52:2`, 루트 프레임 `52:3`)로 정식화 완료.
-
-| 항목 | 값 |
-|---|---|
-| 포지셔닝 | 화려한 CRM형 툴/차가운 주소록 유틸리티 대비, "내가 관리하는 사람들과의 관계"라는 정서적 온기로 차별화. 로그인 사용자별 데이터 격리(핵심 신뢰 요소)를 시각적 경계로도 드러냄 |
-| 퍼스낼리티 | "다정하지만 칠칠맞지 않은 친구" — 사람과의 관계는 다정하게, 굵은 잉크 아웃라인으로 "내 목록 vs 남의 목록" 데이터 경계를 또렷하게 표현 |
-| 주조색 Primary | `#17A398` (틸) — 신뢰+안정, 딥블루 대신 그린 계열로 차갑지 않게 |
-| 보조색 Secondary | `#FF5A76` (코랄) — 따뜻함+친밀감, 배지·태그·강조 텍스트에 제한 사용 |
-| 강조색 Accent | `#FFCB47` (앰버) — 주의 환기, "지금 봐야 할 지점"에만 신호로 사용 |
-| 사용 비율 | 주조 60% (배경·헤더·주요 버튼) : 보조 30% (배지·태그·강조 텍스트) : 강조 10% (알림·선택 상태·CTA) |
-| 서체 | Baloo 2(라틴 Display/워드마크, ExtraBold) + Noto Sans KR Black(KR Display) + Noto Sans KR Regular/Medium(Body/Caption) — 최소 3단계 위계(Display Latin/Display KR/Body/Caption) |
-| 로고/워드마크 | 원형 배지 심볼 + 워드마크. 파비콘(16px)은 심볼만, 24px 이상부터 워드마크 텍스트 동반. 굵은 잉크 아웃라인은 24px 이상에서만 적용(작은 크기에서 뭉개짐 방지) |
-| 일러스트레이션 방향(참고) | 라인+플랫 하이브리드 — 굵은 잉크 아웃라인(3px 내외) + 브랜드색 1~2개 평면 채색, 3D/아이소메트릭 배제(포지셔닝과 상충). 빈 상태 그래픽은 마스코트 대신 로고 심볼 확대 재사용. 실제 에셋은 미제작(design-systems/ui-designer 몫) |
-
-**워드마크 네이밍 미확정 — 중요**: Brand Guide의 "yourbook."은 서체·톤 표현(굵은 잉크 아웃라인, 축소/확대 검토)용 placeholder이며 최종 서비스명이 아니다. Brand Guide 내 "⚠ 제품명 미정" 콜아웃에 명시함. 실제 서비스명 확정 시 design-pl 경유 별도 논의 필요 — 임의로 확정하지 않는다.
-
-**미채택 처리**: "브랜드 컨셉 Concepts" 페이지(`34:2`)의 Concept A(Deskline, `34:3`+`44:2`)와 Concept C(Gridline, `34:5`+`46:2`)는 삭제하지 않고 이름 앞에 `❌ 미채택 — `을 붙여 그대로 보존(의사결정 히스토리). 확정된 Concept B 원본(`34:4`, `45:2`)은 라벨 변경 없이 그대로 둠 — 정식 자산은 별도로 "Brand Guide" 페이지로 이관됨.
-
-**다음 단계(이 에이전트 범위 아님)**: design-systems가 위 컬러/서체를 정식 디자인 토큰·컴포넌트·아이콘 세트로 생성 → ui-designer가 SCREENS 구역에 실제 화면 제작 → design-qa 감사.
+이 파일은 brand-designer의 최근 작업 로그(휘발성, 5개 캡)만 남깁니다. **브랜드 결정사항 자체(현재 확정 상태)는 여기 없습니다 — `docs/design/brand-guide.md`가 그 소스 오브 트루스입니다.** 작업 시작 시 이 로그가 아니라 그 문서를 먼저 읽으세요.
 
 ## 작업 로그
 
@@ -41,3 +17,10 @@
 - 이를 연락처 관리 앱(멀티유저 로그인+데이터 격리 최중요 평가기준, PC 브라우저) 성격에 맞게 3가지 뚜렷한 축으로 재해석: Concept A(Deskline, 레트로 OS형) / Concept B(Warm Ledger, 네오팝 배지형) / Concept C(Gridline, 그리드 유틸리티형).
 - "브랜드 컨셉 Concepts" 페이지(34:2)의 기존 프레임 34:3/34:4/34:5를 새 시안으로 덮어씀(❌ 미채택 표시 없이 완전 교체 — 이전 산출물이 레퍼런스 미확인 상태에서 나온 오작이었기 때문).
 - 결정 안 함: 3안 중 채택 여부는 design-pl → 사용자 확정 필요. 다음 단계(design-systems 토큰화, Brand Guide 완성)는 진행하지 않음.
+
+### 2026-07-12 — Brand Guide "만들다 만" 상태 보완: Layout Convention(B-2) 섹션 신설
+- 사용자가 Brand Guide를 미완성 상태로 지적 → SCREENS 파일럿(로그인/Contacts)이 확정된 2차 레이아웃 B-2(`62:6`)의 실제 관례를 못 이어받고 컬러·느낌만 재해석해버린 원인 중 하나로 지목됨.
+- 기존 메모리 요약을 베끼지 않고 `34:4`(Concept B 톤 프레임)와 `62:6`(B-2)을 `get_screenshot`+`get_design_context`로 다시 직접 관찰. 컬러/폰트값은 기존 확정과 100% 동일 확인(조정 없음).
+- 관찰해 새로 기록한 디테일: 보더 두께 위계(3px 화면 프레임 › 2.5px 그룹 컨테이너 › 1.5px 개별 입력·버튼 › 1px 소형 액션 버튼 › 1px 헤어라인 `#E0E0E0`은 잉크가 아닌 예외), 라운드 스케일(16/10/8/5/999), 4px 기반 간격 리듬(사이드바 gap16·본문 gap14·행 padding 12×9 등), 정보 밀도 타이포 크기 5단계, UI 색상 사용 로직(teal=주요액션+데이터강조, coral=파괴적액션+검색, amber=선택상태+CTA), 장식 모티프(로고 원형 배지+pill 카운트 배지뿐, 그림자 전혀 없음).
+- Figma "Brand Guide" 루트 프레임(`52:3`)에 새 섹션 "레이아웃 관례 (Layout Convention — B-2)"(`125:2`)를 기존 섹션 뒤에 추가만 함 — Header/Positioning/Personality/Color Palette/Typography/Logo/Illustration 기존 7개 섹션은 내용 무변경. Color Palette 스와치는 이미 2~3px 잉크 보더 + radius 16으로 되어 있어 정합적임을 확인만 하고 손대지 않음.
+- `docs/design/brand-guide.md`를 이 관찰 내용으로 덮어써서 갱신(새 "레이아웃 관례" 섹션 추가, 상태 헤드라인에 "B-2 확정" 반영). Concepts 페이지의 Concept A/C 미채택 프레임은 건드리지 않음. 확정 게이트 재요청이나 시안 재생성 없이 기존 산출물 보완만 진행.

@@ -17,7 +17,7 @@ Figma 파일의 페이지 구조와 시안(Concept) 워크플로우는 `@docs/de
 
 할 일 :
 - `use_figma` 호출 전 `figma-use` 스킬을 로드한다.
-- `.claude/agent-memory/brand-designer.md`의 브랜드 톤·컬러를 참고해서 마케팅 콘텐츠를 만든다.
+- `docs/design/brand-guide.md`의 브랜드 톤·컬러를 참고해서 마케팅 콘텐츠를 만든다.
 - `docs/planning`에 마케팅/홍보 요구사항이 없으면 억지로 만들지 않고 "이번 프로젝트엔 해당 없음"이라고 명확히 보고한다.
 - 새로운 캠페인/콘텐츠 컨셉을 처음 정하는 요청이면 시안 3개를 만들고 확정을 기다린다.
 

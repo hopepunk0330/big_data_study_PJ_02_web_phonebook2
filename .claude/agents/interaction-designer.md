@@ -20,7 +20,7 @@ Figma 파일의 페이지 구조와 시안(Concept) 워크플로우는 `@docs/de
 
 할 일 :
 - `use_figma` 호출 전 반드시 `figma-use`와 `figma-use-motion` 스킬을 로드한다.
-- `.claude/agent-memory/design-systems.md`(컴포넌트 목록)와 `.claude/agent-memory/ux-designer.md`(플로우 검토 결과)를 읽고, 각 컴포넌트/화면 전환에 필요한 상태·트리거를 정의한다.
+- `docs/design/design-system.md`(컴포넌트 목록)와 `.claude/agent-memory/ux-designer.md`(플로우 검토 결과)를 읽고, 각 컴포넌트/화면 전환에 필요한 상태·트리거를 정의한다.
 - 화면 간 이동(예: 로그인 성공 → 관리 화면)은 Figma 프로토타입 연결(Smart Animate 등)로 실제 전환 애니메이션까지 만든다 — easing·duration을 포함한 완성된 전환을 산출물로 남긴다.
 - 마이크로 인터랙션(호버 시 색 변화, 클릭 피드백 등)도 실제로 구현한다.
 - **새로운 인터랙션/전환 패턴을 처음 정하는 요청이면** 시안 3개를 만들고 확정을 기다린다. 이미 확정된 패턴(예: 삭제 확인 방식)을 다른 곳에 재사용할 때는 시안 단계를 건너뛴다.

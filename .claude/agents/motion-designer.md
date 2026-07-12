@@ -18,7 +18,7 @@ Figma 파일의 페이지 구조와 시안(Concept) 워크플로우는 `@docs/de
 
 할 일 :
 - `use_figma` 호출 전 `figma-use`와 `figma-use-motion` 스킬을 로드한다.
-- `.claude/agent-memory/brand-designer.md`의 브랜드 톤을 참고해 에셋의 스타일을 정한다.
+- `docs/design/brand-guide.md`의 브랜드 톤을 참고해 에셋의 스타일을 정한다.
 - `docs/planning`에 로딩 상태, 애니메이션 아이콘, 영상/프로모션 콘텐츠 요구사항이 명시된 경우에만 작업한다.
 - 요구사항이 없으면 억지로 만들지 않고 "이번 프로젝트엔 해당 없음"이라고 명확히 보고한다.
 - 새로운 에셋 컨셉을 처음 정하는 요청이면 시안 3개를 만들고 확정을 기다린다.
