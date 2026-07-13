@@ -7,34 +7,28 @@
 
 ## 작업 로그
 
-### 2026-07-12 Layout A/B/C 프레임 라벨링 — 2차 시안 네이밍 규칙 소급 적용 (7차)
-- 배경: `figma-file-organization.md` 2-1-B번에 2차 시안 네이밍 규칙(1차 확정 라벨 + `-1/-2/-3` 접미사, A/B/C 재사용 금지) 신설. 6차에서 만든 "Layout A/B/C"(62:2/62:6/62:10, 34:2 페이지)는 이 규칙 이전 산물이라 이름이 규칙과 안 맞는다고 사용자 지적. 메인 세션이 "[메인 세션] 라벨링 전용 작업 지시"로 재요청.
-- 판단: 순수 이름표 변경(재작업/재디자인 아님, 확정 게이트 아님)이라 확정 게이트 절차 없이 바로 진행. design-prompter(브리프) → ui-designer(단독 호출) 순서만 지킴.
-- 결과: `62:2` "Layout A" → "B-1", `62:6` "Layout B" → "B-2", `62:10` "Layout C" → "B-3" (내부 라벨도 동일 규칙 반영). 34:3/34:4/34:5·44:2/46:2 이름·자식 수 변동 없음 확인.
-- 상태: 라벨링 완료. 이 프레임들은 여전히 "2차 시안 확정 게이트" 대기 상태였음(당시엔 미확정).
+### 2026-07-12 Brand Guide 완성 + B-2 확정 스펙 문서화 + SCREENS 파일럿 재작업 (10차)
+- 배경: 사용자가 직접 결함 2건 확인(확정 게이트 아닌 재작업/보완): (1) Brand Guide 페이지(52:2/52:3)가 미완성. (2) 8차 SCREENS 파일럿(108:2/109:2/111:2)이 확정 2차 시안 B-2(62:6)를 재해석했음. 하네스 정책 변경(2-3번/3-B번/2번 5항)을 적용.
+- brand-designer가 34:4/62:6 재관찰해 Brand Guide 완성 → design-prompter가 `docs/design/confirmed/b-2-contacts-layout.md` 작성 → ui-designer가 기존 파일럿에 `❌ 폐기 —` 라벨만 붙이고 신규 파일럿 3개(128:16/131:147/133:51) 제작(confirmed 문서 최우선 근거).
+- 상태: 완료 후 메인 세션 보고, 사용자 승인 전까지 후속 단계 대기.
 
-### 2026-07-12 B-2 확정 후 표준 파이프라인 — 아이콘→토큰/컴포넌트→SCREENS 파일럿 3개 (8차)
-- 배경: 메인 세션이 "[메인 세션 확인]" 형식으로 B-2(62:6, 좌측 사이드바+테이블형 리스트) 최종 확정을 전달. Brand Guide(52:2) 정식화는 기존 완료 상태. `figma-file-organization.md` 2번 4항 표준 파이프라인의 나머지 단계(아이콘 필요 여부 판단 → design-systems 토큰/컴포넌트 → ui-designer SCREENS 파일럿)를 순서대로 진행하라는 지시.
-- 아이콘 필요 여부 판단: B-2가 "정보 밀도 높음" 테이블형이라 행 액션을 텍스트 버튼 대신 아이콘 버튼으로 압축하는 것이 합리적이라 판단 → 필요로 결론, graphic-designer 투입.
-- 순서(매 단계 design-prompter로 워커별 브리프 작성 후 단독 호출, 병렬 호출 없음):
-  1. **graphic-designer**: 기능 아이콘 8종(Search/Add/Edit/Delete/Category/Logout/Alert/User) 24px 단일 기본형 제작. "Graphic Assets" 페이지(90:2, Brand Guide 다음) 신설. Brand Guide 실물(52:3) 재확인해 컬러/아웃라인(#1C1F21, 3px) 그대로 적용. variant/마스코트/빈상태그래픽/애니메이션 레이어는 범위 밖으로 명시 배제(빈 상태는 로고 심볼 재사용이라 별도 제작 불필요).
-  2. **design-systems** (첫 투입): Primitive→Semantic→Component 토큰(Colors 95:2/Typography 95:3/Spacing 95:4) + Icons 페이지(96:7, graphic-designer 원화 8종 정식 등록, 새로 안 그림) + 파일럿 3화면에 실제 쓰이는 컴포넌트 8종만 제작(Button 97:8/Input 100:2/Select 101:3/Badge 102:3/Table Row 103:3/Sidebar Nav Item 103:92/Alert 104:2/Avatar 104:127). WCAG AA 검증(success/error 색상은 대비 부족해 본문 텍스트 금지, 아이콘·보더·배경 전용으로 한정하는 규칙 채택). 과잉 컴포넌트(모달/토스트 등) 생성 안 함.
-  3. **ui-designer**: SCREENS 구역에 파일럿 3개 신설 — Login(108:2), Contacts — With Data(109:2), Contacts — Empty(111:2). 1440px, docs/planning 요소(placeholder 문구 원문, 동명이인 1쌍, 카테고리 관리, SCR-900 성공/오류 각 1건씩 배분) 실제 반영, design-systems 컴포넌트/토큰만 사용(하드코딩 없음), 빈 상태는 Brand Guide 로고 심볼(54:24) clone 재사용.
-- 갭 발견(ui-designer 보고): Heading/Label 텍스트 스타일 토큰 부재(임시로 직접 굵기 지정, 색상만 토큰 바인딩), Table Header 컴포넌트 부재(일반 텍스트 행으로 대체) — 다음 라운드에서 design-systems 보완 필요할 수 있음.
-- 상태: 파일럿 3개 완성, 3-B번 피드백 루프 단계 진입 — design-qa 투입하지 않고 메인 세션에 보고 후 멈춤.
+### 2026-07-12 SCREENS 3차본 결함 수정 — raw→컴포넌트, 터치 타겟 44×44, 빈 상태 그래픽/레이어명/문서 모호성 (11차)
+- design-qa 3차 파일럿(153:19/153:373/153:547) 감사 결과 HIGH 2/MEDIUM 2/LOW 1 → design-systems(컴포넌트 7개 재작성, 토큰 9개 신설)→design-prompter(confirmed 문서 모호성 해소)→ui-designer(인스턴스 전환)→중간 조정(사이드바=teal/본문=amber 확정)→design-systems 2차 후속→ui-designer 2차 후속→design-qa 최종 재감사 전 항목 PASS.
+- 상태: 결함 5건+연쇄 발견 4건 전부 해소·재검증 완료. 메인 세션 보고 후 대기.
 
-### 2026-07-12 파일럿 피드백 수정 1차 — Elevation 토큰 신설 + Alert 바인딩 + Button WCAG 대비 교정 (9차)
-- 배경: 8차에서 만든 파일럿 3개(Login 108:2/Contacts—With Data 109:2/Contacts—Empty 111:2)에 대해 사용자가 스크린샷으로 결함 2건 지적(메인 세션이 "[메인 세션] 파일럿 화면 피드백"으로 전달, 3-B 피드백 루프 단계라 확정 게이트 아님 → 승인 절차 없이 바로 진행): (1) Alert(104:2)에 elevation(그림자) 토큰 자체가 없어 좌측 컬러 보더만 있고 배경과 경계 없이 붕 떠 보임. (2) 로그인 버튼(Button 97:8 primary variant) 텍스트가 주조색(#17A398) 배경과 저대비라 WCAG AA 위반(명백한 버그로 규정, 판단 사안 아님).
-- 순서(매 단계 design-prompter 브리프 → 워커 단독 호출):
-  1. **design-systems**: 사전 진단에서 State Ledger 기록("브랜드색 배경엔 ink 텍스트 고정")과 실물이 어긋나 있음을 확인(97:8의 Primary+Default 2 variant Label이 실제로는 `component/button-text-disabled`(gray/400, 대비 1.22:1)에 잘못 바인딩)하고 실측 기반으로 수정. 작업 내용: (a) Elevation 토큰 신설(Primitive 7개[FLOAT 5+COLOR 2, ink 기반 저투명도] → Semantic Effect Style 2개 `Elevation/Raised`/`Elevation/Overlay`, Alert/토스트/드롭다운/모달=적용 대상·버튼/인풋/카드=미적용 대상으로 매핑 문서화, FOUNDATIONS "Elevation" 페이지 116:5 신설). (b) Alert(104:2, Success/Error 2 variant)에 `Elevation/Raised` 바인딩. (c) Button(97:8) 8 variant 전수 WCAG 재점검 — Primary+Default(Text/IconText) 2개만 실제 FAIL(1.22:1)이라 기존 `color/text-primary`로 재바인딩(신규 토큰 없이 재사용, 5.31:1 PASS). Secondary는 원래 정상(16.57:1). Disabled 4종은 전부 1.93:1 FAIL이지만 이번 요청 범위 밖이라 손대지 않고 별도 보고만.
-  2. **ui-designer**: 파일럿 3화면에서 Alert/Button 인스턴스가 컴포넌트 레벨 수정을 오버라이드 없이 정상 상속했는지 진단(재조립은 오버라이드로 상속이 끊긴 경우에만 수행하는 조건부 작업으로 브리핑). 진단 결과 3화면 전부 오버라이드 없음 → 자동 상속 확인, 실제 수정 작업은 발생하지 않음(Contacts — Empty 111:2엔 애초 Alert 인스턴스가 없었다는 점도 확인). 읽기 전용 스크립트만 실행해 레이아웃/구조 변경 0건.
-- 범위 외로 남겨둔 기지 이슈: Button Disabled variant 4종 전부 WCAG FAIL(1.93:1) — 이번 요청(활성 상태 버그)과 무관해 손대지 않음, 다음 라운드 후보로 기록.
-- 상태: 수정 완료, 메인 세션에 보고 후 멈춤. design-qa나 전체 화면 확장으로 넘어가지 않음 — 사용자가 이 수정 결과를 확인하기 전까지 후속 단계 진행 안 함.
+### 2026-07-13 "등록된 아이콘 실사용" 규칙 첫 실행 — Row Action Button/Input/헤더 로그아웃 아이콘 바인딩 (12차)
+- Icons 8종 중 7종이 파일럿에서 텍스트 버튼으로 대체돼 있던 문제. design-systems(Row Action Button Danger variant 버그 수정+Input 검색 아이콘 프로퍼티 신설)→ui-designer(인스턴스 교체, edit-action 아이콘 오버라이드 버그 추가 발견·수정)→design-qa(신규+회귀 전부 PASS, 문서 동기화 누락 MEDIUM 3건은 다음 라운드 후보로 남김).
+- 상태: Figma 실제 결함 전부 해소. 메인 세션 보고 후 멈춤.
 
-### 2026-07-12 Brand Guide 완성 + B-2 확정 스펙 문서화 + SCREENS 파일럿 재작업 (10차, 최신)
-- 배경: 사용자가 직접 결함 2건 확인(메인 세션이 "[메인 세션] 사용자 지시로 재작업 진행"으로 전달, 확정 게이트 아닌 재작업/보완): (1) Brand Guide 페이지(52:2/52:3)가 "만들다 만" 상태로 미완성. (2) 8차에서 만든 SCREENS 파일럿(108:2/109:2/111:2)이 확정된 2차 시안 B-2(62:6, 좌측 사이드바+테이블형 리스트, 고밀도)를 이어받아 발전시킨 게 아니라 포인트 컬러/느낌만 참고해 사실상 재해석한 결과물이었음. 하네스 정책 변경(2-3번: 확정 시 프레임 직접 재관찰 의무화, 3-B번: 파일럿=발전이지 재해석 아님, 스타일 소스 오브 트루스가 `docs/design/*.md` 3파일로 명문화, 2번 5항: 결함 재작업도 삭제 금지·라벨만 변경 예외 없음)을 그대로 적용해 진행.
-- 순서(매 단계 design-prompter 브리프 → 워커 단독 호출, 병렬 없음):
-  1. **brand-designer**: 기존 요약을 베끼지 않고 `34:4`(Concept B 톤 프레임)와 `62:6`(B-2)을 `get_screenshot`/`get_design_context`로 직접 재관찰. hex/폰트명 외에 보더 위계(그림자 없음, 잉크 #1A1A1A 두께 3/2.5/1.5/1px + 헤어라인 1px #E0E0E0 예외), 라운드 스케일(16/10/8/5/999), 4px 그리드 간격 리듬, 정보 밀도 타이포 스케일, 색상 로직, 장식 모티프(로고 배지+pill 배지뿐)까지 기록. Brand Guide 페이지(52:3)에 신규 "레이아웃 관례(Layout Convention — B-2)" 섹션(125:2) 추가로 완성(기존 7개 섹션은 삭제·수정 없이 보강만). `docs/design/brand-guide.md` 덮어씀.
-  2. **design-prompter**: brand-designer 관찰 내용 + brand-guide.md 대조해 `docs/design/confirmed/b-2-contacts-layout.md` 신규 작성(디렉토리 신설). 적용 범위 절(사이드바+테이블 구조=Contacts 전용, 보더/라운드/간격/타이포/색상=파일럿 공통)로 이전 재해석 원인을 구조적으로 방지. 보더/라운드/간격/타이포/색상 전부 수치표로 재현 가능하게 정리.
-  3. **ui-designer**: (1단계) 기존 파일럿 3개(108:2/109:2/111:2) 이름 앞에 `❌ 폐기 — B-2 레이아웃 미반영(재해석됨) — ` 라벨만 부착(시각 내용 무수정, 삭제 없음). (2단계) 같은 3개 페이지에 신규 파일럿 생성 — Login(128:16)/Contacts — With Data(131:147)/Contacts — Empty(133:51), 1440px. `b-2-contacts-layout.md`를 최우선 근거로 B-2(62:6)를 재확인하며 사이드바 212px 고정폭+블록 순서(로고→카테고리 내비→카테고리 관리→새 카테고리 폼, "전체" 필터 nav 아이템 복원)와 테이블 관례(앰버틴트 헤더, 1px 헤어라인 구분선, 카테고리 인라인 텍스트) 그대로 이어받아 발전. 기존 design-system.md 컴포넌트(Button/Sidebar Nav Item/Alert/Table Row)가 confirmed 문서 값과 충돌하는 4곳은 raw 프레임으로 재구현(토큰 우선순위 규칙대로 confirmed 문서 우선), 충돌 없는 Icon 8종·Avatar는 기존 컴포넌트 인스턴스 재사용.
-- 상태: Brand Guide 완성 + 확정 스펙 문서화 + 새 파일럿 3개 제작 완료. design-systems 재추출·design-qa로 넘어가지 않고 메인 세션에 보고 후 멈춤 — 사용자가 새 파일럿을 확인·승인하기 전까지 후속 단계 진행 안 함.
+### 2026-07-13 파일럿 스크린샷 재피드백 4건 — 인스턴스 한정 수정, design-systems 완전 배제 (13차)
+- 사용자 스크린샷 4장 지적(행 액션 아이콘 전용화 후퇴/검색 아이콘 비율/사이드바 추가 버튼 색/Select 화살표 이질감). design-systems 미투입 원칙(파일럿 미승인 상태) 준수, ui-designer 단독으로 3화면 인스턴스만 detach/오버라이드로 수정. 결함1(사이드바)은 브리프 문면과 다르게 판단(teal-on-teal 가독성 문제로 ink 텍스트 유지, 배경색 박스로 구분)해 근거와 함께 보고. 결함2는 실측 결과 이미 정상이라 미수정.
+- 상태: 4건 전부 처리 완료, design-qa 미투입(사용자 직접 확인 예정). 메인 세션 보고 후 멈춤.
+
+### 2026-07-13 화이트 텍스트 토큰 신설 + 파일럿 3페이지→1페이지 통합 (14차, 최신)
+- 배경: 메인 세션이 "이전 라운드가 세션 한도로 중간에 끊겼다"며 재개 — 1번(아이콘 2트랙 분리, graphic-designer 완료분)은 이미 `docs/design/graphic-assets.md`에 반영돼 있어 확인만 하고 재작업 없이 넘어감. 남은 2번/3번 진행, 확정 게이트 아니라 승인 절차 없이 바로 진행.
+- **2번 (design-systems, 사용자 직접 요청한 시스템 레벨 작업이라 파일럿 미승인 상태 예외 허용)**: `color/text-inverse`(→기존 `color/gray/0` alias, 신규 primitive 없음) semantic 토큰 신설. WCAG 상대휘도로 브랜드 3색×흰 텍스트 정밀 계산(design-pl/design-prompter 사전 계산과 소수점까지 일치): teal 3.1200:1(큰 텍스트 PASS)/coral 3.0111:1(큰 텍스트 간신히 PASS)/amber 1.5122:1(**큰 텍스트 기준조차 FAIL**). 최종 범위: Display/제목급 텍스트+teal·coral 배경에만 허용, amber는 흰 텍스트 사용 전면 금지로 명확히 구분 문서화, Body/Caption은 기존 ink 고정 규칙 불변. `docs/design/design-system.md` 갱신, Figma 변수 `VariableID:219:2` 생성.
+  - **원 지시("브랜드 3색 전부 큰 텍스트는 통과")가 정확하지 않았음을 사전 검증에서 미리 잡아 브리프에 반영** — amber만 예외적으로 큰 텍스트도 실패한다는 사실을 design-systems가 안이하게 넘기지 않도록 명시했고, 실제로 그대로 확인됨.
+- **3번 (ui-designer)**: Login(106:2)/Contacts—With Data(106:3)/Contacts—Empty(106:4) 3개 페이지 프레임 전부(총 12개, 예상보다 많음)를 새 "파일럿" 페이지(`222:524`)로 통합 이동, 좌→우 macro 순서(Login→With Data→Empty)×세대별 세로 스택(최신 위/폐기본 아래) 배치, 기존 3페이지 삭제, `insertChild(17, ...)`로 위치 고정, `docs/design/design-system.md` 페이지 순서표 갱신. 내용·라벨 전수 대조로 무수정 확인.
+  - **예상 밖 발견 1 (design-pl이 사용자에게 반드시 전달할 것)**: `106:3`(Contacts—With Data)에 브리프 기대치(파일럿 3세대)보다 많은 프레임이 있었음 — "확정 디자인 - 절대 원본 건들지 말것"(`214:349`)과 "Document"(`215:2775`/`214:852`) 3개가 파일럿과 무관한 별도 보호 콘텐츠로 섞여 있었다. ui-designer가 삭제하지 않고 판단 범위를 넘어선다고 보아 파일럿 페이지 내 비교 그리드와 분리된 하단 영역(y=5000)으로만 이동(내용 무수정). **이 콘텐츠가 원래 왜 거기 있었는지, 어디로 옮겨야 맞는지는 design-pl/사용자 확인이 필요** — 방치하지 말 것.
+  - **예상 밖 발견 2**: `design-system.md`의 페이지 순서표 자체가 이번 작업 이전부터 실제 파일과 어긋나 있었음(idx1이 실제로는 "Brand Guide"가 아니라 "브랜드 컨셉 Concepts", 표에 없는 페이지 2개 "컨셉, 디자인시안"/"UI-design "가 이미 존재). 이번 범위(idx17 교체) 밖이라 손대지 않고 이슈로만 기록 — 다음 라운드에서 design-scanner나 design-systems로 전체 페이지 순서표 재정합 필요.
+- 상태: 2번/3번 모두 완료. design-qa 미투입(구조 이동·토큰 신설 라운드라 화면 변경 없음, 확정 게이트도 아님). 메인 세션에 위 2건의 예상 밖 발견을 반드시 포함해 보고 후 멈춤 — 후속 워커 호출 없음.

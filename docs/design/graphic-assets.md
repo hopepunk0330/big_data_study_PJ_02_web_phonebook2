@@ -2,24 +2,65 @@
 
 이 문서는 graphic-designer가 그린 아이콘/오브제의 **현재 확정된** 목록이다. Figma "Graphic Assets" 페이지(비주얼 원본)의 텍스트 미러이며, design-systems(등록)·ui-designer(조립)·motion-designer(애니메이션화)가 참조하는 소스 오브 트루스다. graphic-designer가 새로 그리거나 수정할 때마다 이 파일을 **덮어써서** 최신 상태로 유지한다(로그가 아니다).
 
-## 상태: "Graphic Assets" 페이지에 기능 아이콘 8종 완성 (variant 없음, 단일 기본형)
+## 상태: 기능 아이콘 8종 — "기본(Basic)" / "비주얼(Visual)" 두 트랙으로 분리 완료
 
 fileKey `zgGlMBwFglaDlaeyP4CkgR`, "Graphic Assets" 페이지 id `90:2` (Brand Guide `52:2` 바로 다음, Foundations 앞).
 
-8개 아이콘 전부 24x24px 프레임, 이름 규칙 `"{기능명 영문} — Icon"`:
+로그아웃처럼 반복되는 유틸리티 액션이 브랜드 퍼스낼리티용 비주얼 아이콘과 동일하게 무거워 보인다는 지적에 따라, 8종 아이콘을 두 트랙으로 분리했다:
 
-| 기능 | frameId | 구성 |
-|---|---|---|
-| Search | `91:4` | 렌즈(ellipse) + 회전된 손잡이(subFrame, rotation 45) |
-| Add | `91:6` | 둥근 사각 배지 + +기호(bar 2개) |
-| Edit | `91:8` | 연필(vector path 5-point, rotation -45) |
-| Delete | `91:10` | 뚜껑+손잡이+몸통(rectangle 3개) |
-| Category | `91:12` | 폴더 몸통 + 탭(rectangle 2개, 탭은 위쪽 코너만 radius) |
-| Logout | `91:14` | 문(rectangle) + 화살표(shaft rectangle + vector triangle head) |
-| Alert | `91:16` | 원(ellipse, Accent 앰버 fill) + 느낌표(bar+dot, ink) |
-| User | `91:18` | 머리(ellipse) + 어깨(큰 ellipse, 프레임 clipsContent로 하단 크롭) |
+- **기본(Basic) 트랙**: strokeWeight **1.5px**, strokeAlign CENTER — 반복되는 유틸리티 액션, 낮은 위험도, 중립적 존재감.
+- **비주얼(Visual) 트랙**: strokeWeight **3px**, strokeAlign CENTER — 브랜드 퍼스낼리티 전달용, 낮은 반복 빈도 또는 높은 위험도/중요도, 존재감 필요.
 
-**스타일 규칙** (8개 전체 동일 적용): 잉크 아웃라인 strokeWeight 3, strokeAlign CENTER, 색 `#1C1F21`(Brand Guide 본문 텍스트 잉크색과 동일) / 주 평면 채색 Primary 틸 `#17A398` / Alert만 예외로 Accent 앰버 `#FFCB47` 사용(Brand Guide "강조색 사용비율 10% — 알림" 근거) / 디테일 마크(플러스바, 연필심 경계, 화살표, 느낌표)는 잉크 flat fill(스트로크 없음).
+두 트랙 모두 색상(`#1C1F21` 잉크 / Primary 틸 `#17A398` / Alert만 Accent 앰버 `#FFCB47`)과 조형(디테일 마크·구성)은 기존과 완전히 동일하다 — **바뀐 것은 strokeWeight뿐이다.**
+
+### 트랙 구분표 (8종 전체, 근거 포함)
+
+| 기능 | frameId | 트랙 | strokeWeight | 재분류 여부 | 근거 |
+|---|---|---|---|---|---|
+| Search | `91:4` | 기본 | 1.5px | **변경** (비주얼→기본) | 반복 빈도 높음(검색이 있는 모든 리스트 화면에 등장) · 위험도 매우 낮음(파괴적이지 않고 되돌리기 개념 자체 없음) · 단독 사용(입력창 내 아이콘만)이지만 돋보기는 세계적으로 통용되는 심볼이라 얇아도 인지성 유지됨 |
+| Add | `91:6` | 비주얼 | 3px | 유지 | 반복 빈도 낮음(화면당 1~2회, 연락처/카테고리 추가 폼 CTA) · 새 데이터 생성이라는 의도적 액션으로 브랜드 CTA 프레즌스 필요 · 보통 "추가" 라벨과 함께 쓰여 단독 인지성 이슈 없음 |
+| Edit | `91:8` | 기본 | 1.5px | **변경** (비주얼→기본) | 반복 빈도 높음(테이블 각 행마다 등장) · 위험도 낮음(수정은 되돌리기 쉬운 가역적 액션) · 브랜드 가이드 색상 로직에서 이미 "중립(수정) = 보조 액션"으로 분류되어 있어 얇은 트랙과 방향이 일치 |
+| Delete | `91:10` | 비주얼 | 3px | 유지 | 반복 빈도는 Edit과 동일하게 높지만, 되돌리기 어려운 파괴적 액션이라 존재감 필요 · 행 내 소형 버튼처럼 라벨 없이 아이콘만 쓰이는 자리에서 얇으면 오인 위험(삭제를 실수로 인지 못 함) |
+| Category | `91:12` | 비주얼 | 3px | **손대지 않음**(재작업 금지 대상) | 이미 3px 굵은 스타일이 잘 맞는다는 판단이 내려져 있음(브리프 명시) |
+| Logout | `91:14` | 기본 | 1.5px | **변경** (비주얼→기본) | 반복 빈도 높음(모든 화면 상단바에 고정 등장하는 내비게이션성 유틸리티) · 위험도 낮음(세션 종료일 뿐 데이터 파괴 없음, 재로그인으로 되돌리기 쉬움) · 굵은 스타일은 브랜드 퍼스낼리티용 비주얼 아이콘과 시각적으로 구분이 안 돼 과체중이었음 |
+| Alert | `91:16` | 비주얼 | 3px | **손대지 않음**(재작업 금지 대상) | 이미 3px 굵은 스타일이 잘 맞는다는 판단이 내려져 있음(브리프 명시) |
+| User | `91:18` | 비주얼 | 3px | 유지 | 반복 빈도 낮음(헤더에 1회만 등장) · 액션이 아니라 사용자 정체성 표시(상태 뱃지 성격)라 브랜드 퍼스낼리티 유지가 유틸리티 중립성보다 우선 |
+
+### 실제 벡터가 바뀐 아이콘 (design-systems 재바인딩 판단용)
+
+design-systems가 "Icons" 페이지(`96:7`)의 기존 컴포넌트를 재바인딩해야 하는지 판단하는 근거로, frameId별 벡터 변경 여부를 빠짐없이 기록한다.
+
+| frameId | 이름 | 벡터 바뀜? | 바뀐 노드 / 내용 |
+|---|---|---|---|
+| `91:4` | Search — Icon | **바뀜** | 자식 `91:20`(Ellipse) strokeWeight 3→1.5. 그 외(위치/반경/색/handle) 불변 |
+| `91:6` | Add — Icon | 안 바뀜 | — |
+| `91:8` | Edit — Icon | **바뀜** | 자식 `91:38`(Pencil Silhouette vector) strokeWeight 3→1.5. 그 외(패스/위치/색) 불변 |
+| `91:10` | Delete — Icon | 안 바뀜 | — |
+| `91:12` | Category — Icon | 안 바뀜 | 재작업 금지 대상, 손대지 않음 |
+| `91:14` | Logout — Icon (기존 컴포넌트 `96:36` 대응) | **바뀜** | 자식 `92:4`(door Rectangle) strokeWeight 3→1.5. 화살표(`92:5` shaft, `92:6` head)는 원래 스트로크 없는 flat fill이라 변경 없음 |
+| `91:16` | Alert — Icon | 안 바뀜 | — |
+| `91:18` | User — Icon | 안 바뀜 | — |
+
+**즉 Icons 페이지에서 재바인딩(또는 벡터 갱신)이 필요한 것은 `Icon/Search`, `Icon/Edit`, `Icon/Logout`(`96:36`) 3개뿐이다.** 나머지 5개(Add/Delete/Category/Alert/User)는 기존 컴포넌트를 그대로 둬도 무방하다.
+
+### 실험용 대안
+
+이번 작업은 방향이 갈리는 대안을 여러 개 실험하지 않았다 — 브리프의 판단 축(반복 빈도/위험도/단독 사용 여부)에 따라 트랙을 바로 확정하고 실제로 다시 그렸다. 별도로 남길 미채택 대안 없음.
+
+**구성 상세(변경 없음, 참고용)**:
+
+| 기능 | 구성 |
+|---|---|
+| Search | 렌즈(ellipse) + 회전된 손잡이(subFrame, rotation 45) |
+| Add | 둥근 사각 배지 + +기호(bar 2개) |
+| Edit | 연필(vector path 5-point, rotation -45) |
+| Delete | 뚜껑+손잡이+몸통(rectangle 3개) |
+| Category | 폴더 몸통 + 탭(rectangle 2개, 탭은 위쪽 코너만 radius) |
+| Logout | 문(rectangle) + 화살표(shaft rectangle + vector triangle head) |
+| Alert | 원(ellipse, Accent 앰버 fill) + 느낌표(bar+dot, ink) |
+| User | 머리(ellipse) + 어깨(큰 ellipse, 프레임 clipsContent로 하단 크롭) |
+
+**색상 규칙** (변경 없음, 8개 전체 동일 적용): 색 `#1C1F21`(잉크) / 주 평면 채색 Primary 틸 `#17A398` / Alert만 예외로 Accent 앰버 `#FFCB47` 사용 / 디테일 마크(플러스바, 연필심 경계, 화살표, 느낌표)는 잉크 flat fill(스트로크 없음, 트랙과 무관하게 항상 얇거나 두께 개념 없음).
 
 **값 출처**: `docs/design/brand-guide.md`(색상 hex, Illustration Direction) — 임의 근사치 없음.
 

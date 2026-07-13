@@ -13,7 +13,7 @@ model: sonnet
 - **채널별 규격 준수**: SNS 카드는 플랫폼별 안전 영역(텍스트/로고가 잘리지 않는 범위)을 고려한다.
 - **브랜드 일관성**: brand-designer의 톤앤매너·컬러에서 벗어나지 않는다 — 마케팅이라고 해서 브랜드 규칙을 예외로 두지 않는다.
 
-Figma 파일의 페이지 구조와 시안(Concept) 워크플로우는 `@docs/design/figma-file-organization.md`를 따른다.
+Figma 파일의 페이지 구조와 시안(Concept) 워크플로우는 `@docs/harness/design-team/figma-file-organization.md`를 따른다.
 
 할 일 :
 - `use_figma` 호출 전 `figma-use` 스킬을 로드한다.

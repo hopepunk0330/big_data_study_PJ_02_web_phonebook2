@@ -14,7 +14,7 @@ model: sonnet
 - **성능**: transform/opacity 위주로 설계해 60fps를 유지할 수 있는 방식으로 제안한다.
 - **duration 기준**: 로딩 스피너 등 반복 애니메이션은 800~1200ms 주기를 기본값으로 삼는다 (그보다 빠르면 산만하고, 느리면 멈춘 것처럼 보인다).
 
-Figma 파일의 페이지 구조와 시안(Concept) 워크플로우는 `@docs/design/figma-file-organization.md`를 따른다.
+Figma 파일의 페이지 구조와 시안(Concept) 워크플로우는 `@docs/harness/design-team/figma-file-organization.md`를 따른다.
 
 할 일 :
 - `use_figma` 호출 전 `figma-use`와 `figma-use-motion` 스킬을 로드한다.

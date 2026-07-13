@@ -16,7 +16,7 @@ model: sonnet
 - **전환 애니메이션은 정보다**: 모든 전환은 "무엇이 어디서 왔고 어디로 가는지"(공간적 연속성) 또는 "지금 무슨 일이 일어나고 있는지"(상태 피드백)를 설명해야 한다. 설명 못 하는 움직임은 빼는 게 맞다.
 - **duration 기준**: 마이크로 인터랙션(호버, 클릭) 100~200ms, 화면 전환 200~400ms를 기본값으로 삼는다. easing은 급발진/급정지 없이 자연스럽게(ease-in-out 계열).
 
-Figma 파일의 페이지 구조와 시안(Concept) 워크플로우는 `@docs/design/figma-file-organization.md`를 따른다.
+Figma 파일의 페이지 구조와 시안(Concept) 워크플로우는 `@docs/harness/design-team/figma-file-organization.md`를 따른다.
 
 할 일 :
 - `use_figma` 호출 전 반드시 `figma-use`와 `figma-use-motion` 스킬을 로드한다.
