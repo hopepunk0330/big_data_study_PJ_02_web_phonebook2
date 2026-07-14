@@ -17,6 +17,7 @@
 - `docs/harness/**` — claude-harness.md, design-team/figma-file-organization.md, 이 리셋 체크리스트
 - `docs/karpathy_skills.md`
 - `pdf-maker/make-pdf.js`, `pdf-maker/package.json` — md→PDF 변환 유틸리티(절차/도구), 생성물은 B그룹
+- `.gitignore` — 항목 전부가 이 프로젝트 데이터가 아니라 Python 범용 관례(`.venv/`, `__pycache__/`, `.pytest_cache/`)나 A그룹 도구/인프라에 종속된 무시 규칙(`pdf-maker/node_modules/`, `pdf-maker/결과.pdf`, `.claude/settings.local.json`, `.claude/hooks/.slack-webhook-url`)이다. 새 프로젝트에서 일부 경로(예: pdf-maker를 안 쓰는 프로젝트)가 안 맞아도 그냥 매칭 안 될 뿐 해롭지 않으므로 그대로 유지한다
 
 ## B. 삭제/초기화 (이 프로젝트 데이터 — 포터블 아님)
 
@@ -33,7 +34,7 @@
 
 1. **`.claude/settings.local.json`**: `permissions.allow` 안의 Bash 허용 목록 다수가 이 프로젝트의 **절대경로**(`/Users/aydana/dev/big21/project/02_web_phonebook/...`)를 하드코딩하고 있다(실측: 7곳). 다만 이 파일은 `.gitignore` 대상이라 git 기반 하네스 공유(레포 복사 등)로는 애초에 전파되지 않고, Claude Code 자체도 프로젝트 절대경로를 키로 권한을 관리하므로(`~/.claude.json`의 `projects` 항목도 경로별로 분리) **새 프로젝트 폴더를 열면 자동으로 빈 상태로 시작된다 — 별도 리셋 작업이 필요 없다.** 유일하게 신경 쓸 경우는 `.claude/` 폴더를 git을 거치지 않고 파일째로(cp 등) 새 프로젝트에 복사할 때뿐이며, 이때도 옛 경로 항목은 그냥 안 쓰이는 죽은 줄로 남을 뿐 실질적 위험은 없다 — 지저분함이 싫으면 지우는 정도.
 2. **`.claude/hooks/.slack-webhook-url`**: `.gitignore` 처리돼 있어 git에는 안 남지만 디스크에는 실제로 남아있다. 이건 프로젝트가 아니라 **사람(작업자)에 연결된 자격증명**이라 오히려 재사용 가능하다 — 지우지 않고 그대로 둬도 된다. 워크스페이스/Slack 채널이 바뀔 때만 재설정.
-3. **예시 문장에 프로젝트명이 하드코딩된 곳** — 기능적 로직에는 영향 없지만 새 프로젝트에 그대로 복사하면 예시가 어색해진다. 복사 시점에 프로젝트명만 치환 권장(삭제 대상 아님):
+3. **예시 문장에 프로젝트명·Figma 노드 ID가 하드코딩된 곳**: 프로젝트명(예: "연락처 관리 웹 서비스")보다 **Figma 노드 ID**(예: `259:609`)가 더 조심해야 할 대상이다 — 프로젝트명은 새 프로젝트에서 읽었을 때 "예시구나" 하고 넘어갈 수 있지만, 노드 ID는 새 프로젝트의 Figma 파일에서 완전히 무관한(또는 존재하지 않는) 요소를 가리키므로 그대로 읽으면 혼란을 준다. `.claude/agents/*.md`·`docs/harness/**`(포터블 문서)에 컴포넌트 예시를 들 때는 **노드 ID 없이 이름만** 적는다 — 구체적 ID가 필요하면 `docs/design/design-system.md`(프로젝트 데이터, 매번 새로 채워짐)를 참고하라고 안내한다. — 기능적 로직에는 영향 없지만 새 프로젝트에 그대로 복사하면 예시가 어색해진다. 복사 시점에 프로젝트명만 치환 권장(삭제 대상 아님):
    - `.claude/agents/brand-designer.md` 21번째 줄 — "이 프로젝트(연락처 관리 웹 서비스)에 맞게"
    - `.claude/agents/planning-writer.md` 17번째 줄, `.claude/agents/qa-planner.md` 23번째 줄 — `06_연락처관리_웹서비스_테스트계획서_v1.0.md` 예시 파일명
    - `docs/harness/design-team/figma-file-organization.md` 42번째 줄 — "연락처" 예시 언급
