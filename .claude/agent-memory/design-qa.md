@@ -4,40 +4,46 @@
 
 ## 작업 로그
 
-### 2026-07-12 — SCREENS 3차본(Login `153:19` / Contacts-With Data `153:373` / Contacts-Empty `153:547`) 감사
-
-- **PASS**: 사이드바 teal(`#17A398`) 풀블리드 — 자식 요소 흰 fill로 가려지는 이전 결함 재발 없음(두 Contacts 화면 모두 확인).
-- **PASS**: 워드마크(Baloo 2 Bold 26px, 자간 0%, `#0F7A6E`, 심볼 24×24 간격 14px) — 9-2절 표와 정확히 일치.
-- **HIGH(신규)**: Button/Input/Select/Badge(Pill)/Table Row/Sidebar Nav Item/Alert(Message Banner) 전부 실제 컴포넌트 인스턴스가 아니라 하드코딩 프레임(get_metadata상 `<frame>`, `<instance>` 아님) — fill/stroke/spacing이 리터럴 값으로 박혀 있어 "No token = no component" 위반. Size=Large/Default 분리 적용도 실제 variant 스위치가 아니라 수치 눈대중 흉내(Contacts Input 10×7/Button 12×7은 design-system.md의 Default 스펙과도 불일치, 옛 원본 수치와만 일치).
-- **HIGH(신규)**: Row Actions SmallBtn(수정/삭제) 터치 타겟 37×21px — WCAG 44×44px 미달(테이블 행 6곳 + 사이드바 카테고리 관리 4곳, 두 Contacts 화면 공통).
-- **MEDIUM(신규)**: Contacts—Empty 빈 상태 그래픽이 로고 심볼(코랄+잉크 스트로크) 재사용이 아니라 앰버 단색 원으로 대체됨(1-3절 위반).
-- **MEDIUM(신규)**: 로고 심볼 노드명이 Figma 기본값 "Ellipse"로 방치(다른 레이어는 전부 의미있는 이름).
-- **LOW**: b-2-contacts-layout.md 6절 색상표에서 teal·amber 행 모두 "추가 버튼"을 언급해 실제 화면에서 메인 추가(teal)/카테고리 추가(amber) 색이 문서상 모호함(화면 자체는 내부 일관, 문서만 모호).
-- **기존 트래킹**: Button Disabled 4종 WCAG 미달(1.93:1) — 이번 화면엔 미노출, 재확인 대상 아님.
-- 다음 감사 시 확인할 것: 위 HIGH 2건(컴포넌트 미바인딩, 터치 타겟)이 실제 인스턴스 교체로 수정됐는지 최우선 재확인.
-
-### 2026-07-12 (재감사) — 같은 3화면, design-systems(2회)+ui-designer(2회) 수정 후 재확인
-
-fileKey `zgGlMBwFglaDlaeyP4CkgR`. `get_metadata`+`get_design_context`+`get_screenshot`로 세 화면(Login `153:19`/Contacts-With Data `153:373`/Contacts-Empty `153:547`) 직접 재확인, `docs/design/design-system.md`·`docs/design/confirmed/b-2-contacts-layout.md` 최신본과 대조.
-
-- **PASS(해소 확인)**: Button/Input/Select/Table Row/Sidebar Nav Item/Alert/Row Action Button 전부 실제 `<instance>`로 교체됨(get_metadata), get_design_context 코드에서도 `bg-[var(--component-...)]`/`border-[var(--color-border-ink,...)]`/`px-[var(--spacing-...)]` 등 전 속성이 CSS 변수 바인딩. 하드코딩 리터럴 없음. Input(size="Large"), Table Row 등에서 실제 variant prop 확인. Default padding도 confirmed와 정확히 일치(Input 10×7=spacing-2-5/1-75, Button 12×7=spacing-3/1-75, Table Row 12×9=spacing-3/2-25) — "No token = no component" 위반 해소.
-- **PASS(해소 확인)**: Row Action Button(수정/삭제) 터치 타겟 44×44px로 확정(component `166:421`의 Style=Neutral/Danger 둘 다 44×44, 테이블 행 내부 edit-action/delete-action div `size-[44px]`, 사이드바 카테고리 관리 8개 인스턴스 전부 width/height=44 — get_metadata로 개별 확인). WCAG 44×44 충족.
-- **PASS(해소 확인)**: Contacts—Empty 빈 상태 그래픽이 코랄 채움+잉크 스트로크 원(로고 심볼) 재사용으로 교체됨 — 스크린샷으로 색상 직접 확인(앰버 단색 아님).
-- **PASS(해소 확인)**: 로고 심볼 노드명이 두 Contacts 화면 모두 "Logo Symbol"로 정정됨("Ellipse" 잔존 없음). Login 화면은 사이드바 구조 자체가 적용 안 되는 화면(confirmed 스펙상 "적용 안 함")이라 로고 노드가 원래 없음 — 검사 대상 아님, 결함 아님.
-- **PASS(해소 확인)**: 색상 배정 완전히 정정됨 — 사이드바 "새 카테고리 추가" 버튼=teal Primary(`component-button-bg-primary`, 스크린샷 확인), 본문 "연락처 추가" 버튼=amber(`component-button-bg-amber`, 스크린샷 확인). confirmed 6절(카테고리 추가=teal / 연락처 추가=amber)과 정확히 일치. 문서 자체도 현재는 "카테고리 추가 버튼"/"연락처 추가 버튼"으로 명시돼 모호함 해소됨(이전 LOW 지적 반영 확인).
-- **회귀 없음 확인**: Sidebar Nav Item Default(투명, bg 클래스 없음)/Active(amber `component-navitem-bg-active`) 정상. Alert 내부 content 서브프레임 흰 박스 없음(bg 클래스 없이 투명, 민트 틴트 배경 그대로 노출). Table Row divider `border-[var(--component-table-row-border,#e0e0e0)]` — confirmed `#E0E0E0`과 정확히 일치. Button Style=Amber variant 정상 동작.
-- **기존 트래킹 재확인**: Button Disabled 4종 WCAG 미달 — 이번 3화면에도 Disabled 버튼 인스턴스 자체가 노출되지 않음(로그인/Contacts 모두 Default 상태만 사용), 발생 여부 재확인 결과 미노출 유지. `docs/design/design-system.md` "알려진 갭"에 여전히 트래킹 중(별도 라운드 필요, 이번 감사 범위 밖).
-- **종합**: 지난 라운드 HIGH 2건 + MEDIUM 2건 + LOW 1건 전부 PASS(해소 확인). 신규 발견 없음.
-
 ### 2026-07-13 (3라운드 최종 재감사) — 컴포넌트 레벨 수정(design-systems) + 파일럿 3화면 반영(ui-designer) 검증
 
-fileKey `zgGlMBwFglaDlaeyP4CkgR`. Row Action Button(`166:421`) edit/delete 아이콘 배선, Input(`100:46`) 검색 아이콘, Button(`97:8`) 헤더 로그아웃 패턴, Table Row(`103:7`) 14개 인스턴스, Sidebar Nav Item(`103:106`) 구조를 개별 조회.
+- **PASS**: edit/delete 아이콘 오배선 재발 없음(14곳 전수 확인). 검색 Input 아이콘/높이 정상. 헤더 로그아웃 IconText 정상.
+- **MEDIUM(문서화 누락, design-systems 담당)**: Icon/Add·Icon/Category 미사용 근거는 실측상 타당하나 design-system.md "알려진 갭"에 미기록. 버튼 색 스왑 "미해결" 문구가 실제로는 이미 해소됐는데 문서 갱신 안 됨.
+- **종합**: HIGH 신규 없음. MEDIUM 3건(전부 문서 갱신 이슈, 화면 자체 결함 아님).
 
-- **PASS**: edit/delete 아이콘 오배선 재발 없음 — Table Row 6행(With Data) + 사이드바 카테고리 관리 4행×2화면=8행, 총 14곳 전부 `get_design_context`로 개별 확인: edit-action은 흰 bg+연필 아이콘(Icon/Edit 비주얼), delete-action은 coral bg(`#ff5a76`)+IconDelete 컴포넌트로 서로 다르게 렌더링. 스크린샷 교차 확인도 일치. 이전 "Danger variant가 Icon/Edit를 잘못 참조" 버그 재발 없음.
-- **PASS**: 검색 Input(`177:499`) — Icon/Search 실제 노출 확인(스크린샷), 높이 38px(metadata: width 1072 height 38, Default 31px 대비 확장 반영), Search Row(`153:443`) 내 버튼과 시각적 정렬 정상(items-center로 검색/전체 버튼과 수직 중심 정렬).
-- **PASS**: 헤더 로그아웃(`177:497`/`177:702`) — Content=IconText, Label="로그아웃" 확인. 스크린샷상 teal 배경 위에 아이콘+라벨 정상 렌더링(양쪽 화면 동일). **도구 한계 발견**: `get_design_context`의 코드 출력에서는 icon 슬롯이 빈 `<div>`로만 나와(인스턴스 스왑 오버라이드가 코드 생성에 반영 안 됨) 실제로는 문제없는데도 버그처럼 보일 수 있음 — 이번처럼 코드 출력과 스크린샷을 반드시 병행 확인해야 함(design-system.md의 "알려진 도구 이슈"에 이미 있는 유사 패턴, 이번엔 반대 방향 사례로 추가 참고할 것).
-- **PASS(알려진 갭이나 문서화 FAIL)**: Icon/Add — Add Contact Row 필드 5개 실측(140+150+588+180+50, gap 12×4, padding 16×2) 합이 정확히 1188px로 컨테이너 폭과 일치, 여유 0 확인 → IconText 전환 시 오버플로우 근거는 실측으로 타당. 그러나 `docs/design/design-system.md` "알려진 갭/이슈" 섹션 전체를 검색해도 Icon/Add 관련 항목이 전혀 없음 — **문서화 누락(FAIL)**.
-- **PASS(알려진 갭이나 문서화 FAIL)**: Icon/Category — Sidebar Nav Item 컴포넌트(`103:106`) 구조를 직접 열람한 결과 Label(TEXT)+Badge(Count) 두 슬롯뿐, 아이콘 인스턴스 슬롯 자체가 없음 → "구조 변경 필요" 근거 타당. 이 역시 design-system.md "알려진 갭/이슈"에 기록되어 있지 않음 — **문서화 누락(FAIL)**.
-- **문서 정합성 이슈(신규, MEDIUM)**: design-system.md "알려진 갭/이슈"에 "화면상 버튼 색 스왑 미해결... 여전히 ui-designer 후속 작업 대기"라는 줄이 그대로 남아있음. 그러나 이 항목은 지난 재감사(위 2026-07-12 재감사 항목)에서 이미 PASS(해소 확인)로 검증됐고 이번 라운드에서도 스크린샷으로 재확인(teal/amber 정상). 실제 상태와 문서가 어긋남 — design-systems가 [해소됨]으로 갱신 필요.
-- **11차 PASS 회귀 재확인 — 전부 PASS, 회귀 없음**: (1) raw 프레임→실제 인스턴스 전환 유지, (2) Row Action Button 44×44 터치 타겟 유지(아이콘 스왑 후에도 outer div size-44 + inner visual px-8/py-4/radius-5/border-1 구조 불변, 테이블 행 내부·사이드바 8곳 전부 재확인), (3) 빈 상태 그래픽(코랄 채움+잉크 스트로크, 확대 스크린샷으로 스트로크 링 직접 확인) 유지, (4) 로고 심볼 노드명 "Logo Symbol" 일관 유지, (5) confirmed 문서 표기(카테고리 추가=teal/연락처 추가=amber) 유지.
-- **종합**: HIGH 신규 없음. MEDIUM 3건(Icon/Add·Icon/Category 문서화 누락 2건 + 버튼 색 스왑 해소 문구 미갱신 1건) — 전부 design-systems 담당(문서 갱신), Figma 화면 자체의 결함 아님. 11차 PASS 전항목 회귀 없음.
+### 2026-07-13 — 사용자 확정 8개 프레임 기반 토큰/컴포넌트 1차 추출 감사
+
+fileKey `zgGlMBwFglaDlaeyP4CkgR`. B-2 파일럿을 완전히 대체한 사용자 확정 8개 프레임(부모 `248:11689`)과 design-systems가 그로부터 추출한 design-system.md 1~7절(신규) 대조.
+
+- **HIGH 6건**: 사이드바 비활성 nav 텍스트 대비 미달(≈2.5:1), "CATEGORY"/"카테고리 관리" 라벨 대비 미달(≈2.9:1), Table Row Action teal/coral 텍스트 대비 미달(≈3.0~3.1:1), TypeSelector 등록값이 원본과 불일치(보더/텍스트 색), Table Row Action 텍스트 크기 13px(원본 10px), 터치 타겟 44×44 미달 다수(문서화 누락).
+- **MEDIUM 1건**: Row Action Button Neutral 보더가 `#1c1f21`이 아니라 ink-900(#1a1a1a)에 흡수됨.
+- **PASS**: 사이드바 teal 풀블리드/로고 스펙, CatBadge 4종 토큰 바인딩, 알림 오버레이 배치, 뮤트 텍스트 3종 계산 재확인.
+- **후속**: 위 HIGH 6건 + MEDIUM 1건은 이후 라운드(0-1절 design-systems 정정)에서 전부 hex 단위 재확인·해소됨(design-system.md 0-1절 참고). 터치 타겟 4건은 사용자가 "이번 프로젝트 범위에서 개선하지 않음"으로 명시적 확정(design-system.md 7-1절 RESOLVED) — 더 이상 열린 이슈 아님.
+
+### 2026-07-14 — 신규 산출물 3종 감사: Pixel/Eye 아이콘, 인터랙션 상태(Hover/Press/Focus/Disabled/Loading), 라벨링
+
+fileKey 동일. (1) Icons 페이지 신규 `Pixel/Eye`(`281:405`)와 `Pixel/Star`(`255:11`) description 정정, (2) interaction-designer가 NeoBtn/Button/Icon Button/Row Action Button/Table Row Action(`259:126`/`259:609`/`259:613`/`260:95`/`260:100`)에 추가한 State축과 Sidebar Nav Item/TypeSelector/NeoInput/CornerInput(`258:29`/`257:28`/`288:12`/`288:27`)에 추가한 Focus축, (3) 파일럿 3개(`153:19`/`153:373`/`153:547`)·old-사용하지말것 7개(`242:2330`)·확정 8개(`248:11689`)·legacy 5개(`100:46`/`101:64`/`102:65`/`103:7`/`104:108`) 라벨링을 감사.
+
+- **HIGH(신규)**: `Sidebar Nav Item`(`258:29`)의 `State=Inactive, Focus=Yes`(`287:17`) — Focus 링 효과가 레이어에는 있으나 실제 렌더 시 `drop-shadow(0px 0px 0px #1a1a1a)`(오프셋·블러·스프레드 전부 0, 완전히 비가시)로 나타남. 스크린샷 바운딩박스로 교차검증: Focus=No(`258:23`) 173×40, Focus=Yes(`287:17`) 173×40 — **성장 0, 링 없음**. 반면 같은 컴포넌트의 `State=Active,Focus=Yes`(`287:14`)는 175×42→179×46로 성장, TypeSelector/NeoInput/CornerInput/NeoBtn/Button/Icon Button/Row Action Button/Table Row Action의 Focus 변형은 전부 +6px(각 변 +3px) 성장 확인(각 컴포넌트 Default↔Focus 스크린샷 페어 비교, 8쌍 전수 확인) — Sidebar Nav Item Inactive만 예외적으로 링이 렌더링되지 않음. 카테고리 nav 항목 중 보통 3~4개가 Inactive 상태이므로, 키보드 탭 포커스 시 대부분의 사이드바 항목에서 포커스 인디케이터가 완전히 보이지 않는 WCAG 2.4.7 위반. design-system.md 9-1절 "모든 컴포넌트·모든 색상이 동일한 ink 링을 공유" 원칙과도 배치.
+- **HIGH(신규)**: Disabled 상태 `opacity=0.45`(컴포넌트 전체, bg+텍스트 동일 비율로 배경에 블렌딩)가 WCAG 대비를 심각하게 훼손함 — 직접 계산: NeoBtn Style=Teal Disabled를 흰 페이지 배경 위에 렌더링 시 텍스트(ink #1a1a1a→약 rgb(152,152,152))와 배경(teal #17a398→약 rgb(151,214,209)) 대비 **≈1.76:1**(AA 4.5:1 대비 크게 미달). 가장 유리한 경우인 Neutral 스타일(흰 배경+ink 텍스트, 배경이 페이지와 동색이라 배경 자체는 안 흐려짐)도 텍스트만 흐려져 **≈2.89:1**로 여전히 미달(큰 텍스트 3:1 기준도 근소 미달). NeoBtn/Button/Icon Button/Row Action Button/Table Row Action 5개 컴포넌트 전부 동일 규칙(9-1절)이라 구조적으로 전체 Disabled variant(38개)에 재현됨. 원본 8개 확정 프레임에는 애초에 Disabled 상태가 없어 사용자의 7-1절 RESOLVED 결정(원본에 내재된 대비 미달 5건) 대상이 아닌 **이번 라운드에 새로 도입된, 아직 아무도 검토하지 않은 결함**이다. design-system.md 9절/9-4절 "알려진 갭"에 전혀 언급 없음 — 문서화도 누락.
+- **PASS(확인)**: `Pixel/Eye`(`281:405`) — 원본 login 프레임의 `PixelEye`(`247:6814`)와 정확히 동일한 14×10 크기, 문서상 비파괴적 clone 방식(createComponentFromNode, 원본 무수정)이라 형태·색상도 구조적으로 동일. description도 정확("비밀번호 표시/숨김 토글 마이크로 아이콘(14x10px)"). `Pixel/Star`(`255:11`) description이 "잉크 #1a1a1a"로 정확히 정정됨 확인.
+- **PASS(확인)**: 라벨링 — 파일럿 3개(`153:19`/`153:373`/`153:547`) 전부 "❌ 미채택 — " 정확히 부착. 사용자 확정 8개 프레임 중 5개가 원본 라벨 그대로 무수정 보존. Legacy 5개 전부 "[Legacy B-2] " 접두사 정확히 유지.
+- **종합**: HIGH 2건(신규, Focus 링 미렌더링·Disabled 대비 붕괴 — 둘 다 interaction-designer 담당, 원본 8프레임 무관한 신규 설계 결함) + LOW 1건(감사 커버리지 갭, 재현 필요) + PASS 다수. 다음 감사 시 HIGH 2건의 수정 여부 최우선 확인.
+
+### 2026-07-14 — "old-사용하지말것" 7개 프레임 라벨 재검증(직전 라운드 LOW 커버리지 갭 해소)
+
+fileKey 동일. 직전 라운드에서 토큰 한계로 검증 못 한 `242:2330` 하위 7개 프레임(`242:2331`/`242:2814`/`242:3089`/`242:3294`/`242:3380`/`242:3691`/`242:4002`)을 개별 nodeId로 `get_metadata` 호출(페이지 전체 조회 대신 노드 단위 조회로 토큰 문제 회피)해 `name` 속성을 문자열 단위로 확인.
+
+- **PASS(확인, LOW 재현 해소)**: 7개 전부 `❌ 미채택 — Document`로 정확히 일치(이모지+공백+em dash+공백 접두사, 원래 이름 Document 보존). 오타·누락 없음.
+- **PASS(확인)**: 사용자 확정 8개 프레임(부모 `248:11689`)이 이 7개 프레임 하위 트리에 혼입되어 있지 않음.
+- **종합**: 직전 라운드 LOW 1건(라벨링 검증 미완료) 완전 해소. 신규 결함 없음. 직전 라운드 HIGH 2건(Sidebar Nav Item Inactive Focus 링 미렌더링, Disabled opacity 대비 붕괴)은 이번 세션 범위 밖 — 다음 감사에서 우선 확인 필요.
+
+### 2026-07-14 (4차) — Legacy 컴포넌트 해제 7건 + CornerInput 브래킷 제거 + 문서 동기화 감사
+
+fileKey 동일. 이번 라운드 3가지 변경사항 감사: (1) Legacy 컴포넌트 7개 COMPONENT/COMPONENT_SET→FRAME 전환(`314:843`/`314:319`/`314:876`/`314:879`/`314:893`/`314:897`/`314:902`) + Table Row(`103:7`) 해제 보류 상태, (2) CornerInput(`261:12`/`288:13`) 브래킷 제거, (3) `docs/design/graphic-assets.md`·`docs/design/design-system.md`와 Figma 실제 상태(`90:2` 삭제, `96:7` 아이콘 18종) 동기화. 직전 라운드 HIGH 2건(Focus 링 미렌더링/Disabled 대비)은 이번 라운드 감사 지시 범위 밖이라 재검증하지 않음 — 다음 감사에서 확인 필요.
+
+- **PASS**: 7개 전환 전부 확인 — 신규 FRAME 루트가 `<frame>` 태그이고 자식도 전부 `<frame>`/`<text>`/`<instance>`(COMPONENT_SET이라면 variant 자식이 `<symbol>` 태그로 나와야 함 — 대조군으로 확인 중인 CatBadge `256:17`은 실제로 자식이 `<symbol>`로 나옴, 전환된 7개는 그렇지 않음). 스크린샷 대조 결과 시각 내용 손실 없음(Button 32종 그리드, Row Action Button 2종, Sidebar Nav Item 2종, Input 4종, Select 3종, Badge 4종, Alert 2종 전부 정상 렌더링). 기존 COMPONENT_SET ID(`97:47`/`100:46` 직접 조회) "not found" 확인 — 완전 삭제, 고아 노드 없음.
+- **PASS**: Table Row(`103:7`) — COMPONENT_SET이 아니라 단일 COMPONENT(variant 없음, `<symbol>` 태그)로 미해제 상태 그대로 유지 확인. 인스턴스 7개(`103:77`/`110:220`/`110:234`/`110:248`/`110:262`/`110:276`/`110:290`) 전수 조회 — 전부 정상 인스턴스로 존재, 깨짐/고아 참조 없음.
+- **PASS**: CornerInput(`261:12`/`288:13`) — CornerBracket 노드 완전 제거 확인(자식은 placeholder 텍스트뿐), 순수 2px ink 사각 보더+radius 0, 스크린샷상 확정 프레임(`247:6801` 등)과 동일한 형태. 폭 392px 유지 확인. 부모 ComponentSet(`288:27`) description에 리사이즈 방침("로그인/가입은 인스턴스 리사이즈로 대응") 명시 확인.
+- **MEDIUM(신규)**: CornerInput 개별 variant 노드(`261:12` "Focus=No", `288:13` "Focus=Yes") description이 갱신되지 않고 구 스펙("네 모서리 8x8 ㄱ자 브래킷(2px ink)... NeoInput과 혼용 금지")을 그대로 유지 — 실제 시각 상태(브래킷 없음) 및 부모 ComponentSet(`288:27`)의 정정된 description("모서리 브래킷 장식 없음 — 확정 프레임 실측 결과 없는 걸 확인해 제거함")과 모순. `get_design_context`로 컴포넌트를 소비하는 에이전트/개발자가 개별 variant description을 읽으면 브래킷을 다시 추가해야 한다고 오인할 위험이 있음. 개별 variant description도 부모와 동일하게 갱신 필요(design-systems 담당).
+- **PASS**: 문서-Figma 동기화 — Graphic Assets 페이지(`90:2`) 직접 nodeId 조회 결과 "not found" 확인(목록 누락이 아니라 실제 삭제 확인, house rule 0번 절차 준수). Icons 페이지(`96:7`) 실측 결과 Icon/* 8종(`96:12`/`96:17`/`96:22`/`96:27`/`96:31`/`96:36`/`96:41`/`96:45`)+Pixel/* 10종(`255:11`/`255:26`/`255:30`/`255:43`/`255:62`/`255:104`/`255:107`/`255:120`/`255:149`/`281:405`) 총 18개, `docs/design/graphic-assets.md`·`docs/design/design-system.md` 4절 기재 내용과 nodeId 단위로 정확히 일치.
+- **종합**: HIGH 0건. MEDIUM 1건(CornerInput 개별 variant description 미갱신 — 시각적 결함 아님, 문서/description 일관성 이슈). Legacy 해제 작업과 문서 동기화는 전부 정확했음.

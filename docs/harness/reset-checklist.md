@@ -1,0 +1,59 @@
+# 하네스 리셋 체크리스트
+
+## 목적
+
+이 프로젝트(연락처 관리 웹 서비스)에서 만든 하네스(에이전트/스킬/절차)를 **다른 프로젝트에서 재사용**하거나, 이 프로젝트를 **"파일럿 종료 → 정식 시작"으로 초기화**할 때, 무엇을 남기고 무엇을 지울지 정리한 문서다.
+
+원칙은 하나다: **절차(procedure, 프로젝트 고유 값이 하드코딩되지 않은 것)는 남기고, 데이터(이 프로젝트가 실제로 만든 산출물)는 지운다.** 이 구분은 `docs/harness/claude-harness.md`에 이미 있는 원칙이고, 이 문서는 그 원칙을 실제 파일 목록에 적용해 체크리스트로 구체화한 것이다.
+
+**이 문서 자체도 A그룹(하네스)이다** — 프로젝트 고유 값 없이 다른 프로젝트에 그대로 복사해서 쓸 수 있어야 한다. 리셋할 때마다 아래 목록에 없는 새 파일이 생겼을 수 있으니, 실행 전 "검증 방법" 섹션으로 한 번 더 확인한다.
+
+## A. 그대로 유지 (하네스 — 포터블)
+
+- `.claude/agents/*.md` — 전체 19개(디자인팀 12 + 기획팀 5 + code-reviewer, doc-writer)
+- `.claude/skills/*/SKILL.md` — design-concept-round, report-pdf, review, summary
+- `.claude/commands/*.md` — summary.md
+- `.claude/hooks/stop-failure-notify.sh` — 스크립트 로직 자체는 포터블(단, 아래 C-2 웹훅 파일은 별도 취급)
+- `docs/harness/**` — claude-harness.md, design-team/figma-file-organization.md, 이 리셋 체크리스트
+- `docs/karpathy_skills.md`
+- `pdf-maker/make-pdf.js`, `pdf-maker/package.json` — md→PDF 변환 유틸리티(절차/도구), 생성물은 B그룹
+
+## B. 삭제/초기화 (이 프로젝트 데이터 — 포터블 아님)
+
+- `docs/design/*.md` — brand-guide.md, design-system.md, graphic-assets.md, missing-screens.md, report-format-guide.md
+- `docs/design/confirmed/*.md` — 사용자가 확정한 이 프로젝트 디자인 기록
+- `docs/planning/**` — 00~06 번호 문서(md·PDF 전부), `old/`, `service-concept.md`, `tech-architecture.md` 전부
+- `docs/pdf/**` — 생성된 PDF/HTML 산출물
+- `.claude/logs/stop-failures.log`
+- `backend/`, `frontend/`, `tests/`, `pdf-maker/문서.html`, `pdf-maker/결과.pdf` — 실제 애플리케이션 코드/생성물
+- 루트 `CLAUDE.md` — 이 프로젝트 고유 규칙(들여쓰기, 검증 명령 등). 새 프로젝트는 새로 작성하되, 이 파일의 "행동 지침"·"기본 도구" 절만 템플릿으로 참고 가능
+- `.claude/agent-memory/*.md`의 "작업 로그" 섹션 내용 — 파일 자체는 남겨도 되지만 내용은 비우거나 "신설" 상태로 리셋(에이전트가 다음 실행 시 알아서 새로 채움)
+
+## C. 케이스별 검토 필요 (자동 처리 금지 — 리셋 시점에 사람이 직접 확인)
+
+1. **`.claude/settings.local.json`**: `permissions.allow` 안의 Bash 허용 목록 다수가 이 프로젝트의 **절대경로**(`/Users/aydana/dev/big21/project/02_web_phonebook/...`)를 하드코딩하고 있다(실측: 7곳). 다만 이 파일은 `.gitignore` 대상이라 git 기반 하네스 공유(레포 복사 등)로는 애초에 전파되지 않고, Claude Code 자체도 프로젝트 절대경로를 키로 권한을 관리하므로(`~/.claude.json`의 `projects` 항목도 경로별로 분리) **새 프로젝트 폴더를 열면 자동으로 빈 상태로 시작된다 — 별도 리셋 작업이 필요 없다.** 유일하게 신경 쓸 경우는 `.claude/` 폴더를 git을 거치지 않고 파일째로(cp 등) 새 프로젝트에 복사할 때뿐이며, 이때도 옛 경로 항목은 그냥 안 쓰이는 죽은 줄로 남을 뿐 실질적 위험은 없다 — 지저분함이 싫으면 지우는 정도.
+2. **`.claude/hooks/.slack-webhook-url`**: `.gitignore` 처리돼 있어 git에는 안 남지만 디스크에는 실제로 남아있다. 이건 프로젝트가 아니라 **사람(작업자)에 연결된 자격증명**이라 오히려 재사용 가능하다 — 지우지 않고 그대로 둬도 된다. 워크스페이스/Slack 채널이 바뀔 때만 재설정.
+3. **예시 문장에 프로젝트명이 하드코딩된 곳** — 기능적 로직에는 영향 없지만 새 프로젝트에 그대로 복사하면 예시가 어색해진다. 복사 시점에 프로젝트명만 치환 권장(삭제 대상 아님):
+   - `.claude/agents/brand-designer.md` 21번째 줄 — "이 프로젝트(연락처 관리 웹 서비스)에 맞게"
+   - `.claude/agents/planning-writer.md` 17번째 줄, `.claude/agents/qa-planner.md` 23번째 줄 — `06_연락처관리_웹서비스_테스트계획서_v1.0.md` 예시 파일명
+   - `docs/harness/design-team/figma-file-organization.md` 42번째 줄 — "연락처" 예시 언급
+4. **`~/.claude/agents/*.md` (전역)**: 디자인팀 12개만 이미 복사돼 있다. 기획팀 5개(planning-pl, service-planner, tech-architect, qa-planner, planning-writer)는 아직 프로젝트 로컬에만 있다 — 다른 프로젝트에서도 기획팀을 쓰려면 이때 전역으로 복사할지 결정한다(리셋과 별개로, 아직 결정 안 된 사항).
+
+## 검증 방법 (리셋 실행 전 필수)
+
+1. **커밋 먼저**: 이 문서를 작성한 시점 기준으로 `docs/planning/`, `.claude/agents/planning-*.md`를 포함한 다수 파일이 아직 **git에 커밋되지 않은 상태(untracked)**였다. B그룹을 삭제하면 git 히스토리 백업이 없어 복구 불가능하니, 리셋 실행 직전 반드시 `git status`로 미커밋 상태를 확인하고 커밋(또는 최소한 별도 백업)한 뒤 진행한다.
+2. **A그룹에 데이터 흔적이 없는지 grep으로 재확인**(리셋 때마다, 이 체크리스트가 최신인지 검증):
+   ```bash
+   grep -rl "연락처\|phonebook\|<이 프로젝트의 Figma 파일키>" .claude/agents .claude/skills .claude/commands docs/harness docs/karpathy_skills.md
+   ```
+   결과가 이 문서의 C-3 목록과 다르면(새 파일이 나오면) 새로 생긴 하드코딩이니 이 체크리스트를 갱신한다.
+3. **B그룹 삭제 후 A그룹이 정상 동작하는지 확인**: 리셋 후 아무 기획/디자인 요청이나 하나 던져서 planning-pl 또는 design-pl이 정상 기동하고, `docs/planning/service-concept.md` 등 canonical 문서를 스스로 새로 만드는지 확인한다.
+
+## 실행 순서 (요약)
+
+1. `git status`로 미커밋 변경사항 확인 → 커밋
+2. B그룹 파일/디렉토리 삭제
+3. C그룹 항목 하나씩 사람이 직접 검토·처리
+4. 검증 방법의 grep 재확인
+5. 새 프로젝트 성격에 맞는 새 루트 `CLAUDE.md` 작성
+6. 정상 동작 확인(위 3번 검증)

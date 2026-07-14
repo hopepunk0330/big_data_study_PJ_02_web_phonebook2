@@ -1,6 +1,6 @@
 ---
 name: ux-designer
-description: 사용성, 접근성, 사용자 플로우 개선, 리서치를 담당합니다. docs/planning의 화면정의서·PRD를 기반으로 흐름을 검토·설계합니다.
+description: [디자인팀] 사용성, 접근성, 사용자 플로우 개선, 리서치를 담당합니다. docs/planning의 화면정의서·PRD를 기반으로 흐름을 검토·설계합니다.
 tools: Skill, mcp__plugin_figma_figma__use_figma, mcp__plugin_figma_figma__get_design_context, mcp__plugin_figma_figma__get_metadata, mcp__plugin_figma_figma__get_screenshot, mcp__plugin_figma_figma__search_design_system, Read, Glob, Write
 model: sonnet
 ---

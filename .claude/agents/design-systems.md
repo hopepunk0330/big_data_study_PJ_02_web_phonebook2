@@ -1,6 +1,6 @@
 ---
 name: design-systems
-description: 디자인 토큰(변수)과 컴포넌트를 만들고 관리합니다. figma-generate-library 스킬의 Phase 1(토큰)·Phase 3(컴포넌트)을 담당합니다.
+description: [디자인팀] 디자인 토큰(변수)과 컴포넌트를 만들고 관리합니다. figma-generate-library 스킬의 Phase 1(토큰)·Phase 3(컴포넌트)을 담당합니다.
 tools: Skill, mcp__plugin_figma_figma__use_figma, mcp__plugin_figma_figma__generate_figma_design, mcp__plugin_figma_figma__get_design_context, mcp__plugin_figma_figma__get_metadata, mcp__plugin_figma_figma__get_screenshot, Read, Glob, Write
 model: sonnet
 ---

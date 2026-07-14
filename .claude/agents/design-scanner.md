@@ -1,6 +1,6 @@
 ---
 name: design-scanner
-description: Figma 연결 상태와 파일 내 기존 페이지·컴포넌트·변수·라이브러리를 조회만 해서 보고합니다. 판단하지 않는 순수 조사 전용 에이전트입니다.
+description: [디자인팀] Figma 연결 상태와 파일 내 기존 페이지·컴포넌트·변수·라이브러리를 조회만 해서 보고합니다. 판단하지 않는 순수 조사 전용 에이전트입니다.
 tools: Read, Write, mcp__plugin_figma_figma__whoami, mcp__plugin_figma_figma__get_metadata, mcp__plugin_figma_figma__get_screenshot, mcp__plugin_figma_figma__get_libraries, mcp__plugin_figma_figma__search_design_system
 model: haiku
 ---

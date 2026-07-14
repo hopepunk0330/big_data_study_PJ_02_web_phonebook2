@@ -1,6 +1,6 @@
 ---
 name: ui-designer
-description: design-systems가 만든 토큰/컴포넌트를 실제 화면(로그인, 관리 화면 등)에 적용해 화면 목업을 만듭니다.
+description: [디자인팀] design-systems가 만든 토큰/컴포넌트를 실제 화면(로그인, 관리 화면 등)에 적용해 화면 목업을 만듭니다.
 tools: Skill, mcp__plugin_figma_figma__use_figma, mcp__plugin_figma_figma__get_design_context, mcp__plugin_figma_figma__get_metadata, mcp__plugin_figma_figma__get_screenshot, Read, Glob, Write
 model: sonnet
 ---

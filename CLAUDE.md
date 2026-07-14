@@ -19,8 +19,11 @@
 ## 행동 지침
 - 안드레 카파시 행동지침에 아래 문서를 따른다. @docs/karpathy_skills.md
 
-## 라이브러리 
-- 테스트 : playwrignt lib
+## 기본 도구
+- 테스트: playwright를 기본으로 사용한다.
+- 라이브러리/API 문서 조회: context7 MCP를 기본으로 사용한다(설치 안 돼 있으면 `claude mcp add context7 -s user -- npx -y @upstash/context7-mcp`로 전역 설치).
+
+- 이 두 가지는 프로젝트별 CLAUDE.md에 별도 명시가 없어도 모든 프로젝트에서 기본으로 적용한다.
 
 
 

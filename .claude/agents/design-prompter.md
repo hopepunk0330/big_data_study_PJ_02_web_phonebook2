@@ -1,6 +1,6 @@
 ---
 name: design-prompter
-description: design-pl이 이미 배정한 워커에게 줄 브리프를 전문가 수준으로 발전시킵니다. 어떤 에이전트가 작업할지(라우팅)는 정하지 않습니다 — 그건 design-pl의 몫입니다. design-pl이 워커를 호출하기 직전에 호출합니다.
+description: [디자인팀] design-pl이 이미 배정한 워커에게 줄 브리프를 전문가 수준으로 발전시킵니다. 어떤 에이전트가 작업할지(라우팅)는 정하지 않습니다 — 그건 design-pl의 몫입니다. design-pl이 워커를 호출하기 직전에 호출합니다.
 tools: Read, Glob, Write
 model: sonnet
 ---

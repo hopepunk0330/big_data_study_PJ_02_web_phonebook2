@@ -29,4 +29,11 @@
   5. `docs/design/design-system.md` 3개 절(변수 컬렉션/핵심 접근성 결정/알려진 갭) 갱신 지시, Figma Semantic Colors 컬렉션에도 실제 변수 생성.
 - **범위 제한**: 화면 실제 적용(어느 컴포넌트/화면에 쓸지)은 이번 브리프 밖 — 토큰 신설·문서화까지만, 화면 적용은 별도 라운드(ui-designer). Button Disabled WCAG 등 기존 알려진 갭은 건드리지 않음.
 - **보고 요구사항**: design-pl에게 (a) 3색 각각 정확한 계산 결과, (b) 최종 허용/금지 배경 구분, (c) 사전 계산과 실제 결과 일치 여부를 반드시 포함해 보고하도록 명시.
+
+### 2026-07-13 — 확정 스펙 문서 작성: 사용자 직접 확정 디자인 8개 프레임 (`docs/design/confirmed/user-confirmed-final-design.md`)
+- **원본 요청**: 사용자가 Figma에 직접 만든 8개 프레임(main/main-수정/main-삭제/main-검색없음/Join/login/login-알림창/main-알림창, fileKey `zgGlMBwFglaDlaeyP4CkgR`)을 "확정 디자인 - 절대 원본 건들지 말것-"으로 최종 확정 — 기존 AI 파일럿(B-2 기반)을 대체. brand-designer가 이 8개를 직접 관찰해 `docs/design/brand-guide.md`를 전면 갱신한 뒤, design-prompter가 2-3번 규칙에 따라 확정 스펙 문서를 작성하는 작업(브리프 발전이 아니라 문서화 작업).
+- **작업 성격**: 통상적인 워커 브리프가 아니라 2-3번 "확정 스펙 문서" 작성 — 여러 전문 분야(design-systems/ui-designer/graphic-designer/interaction-designer/ux-designer)가 동시에 참고하는 공유 악보이므로 brand-guide.md보다 더 촘촘하게, 8개 화면 각각에 스펙이 어떻게 적용되는지까지 재구조화.
+- **핵심 판단**: (1) brand-guide.md는 토큰 카테고리별(컬러/타이포/보더 등)로 정리되어 있어 "화면별로 어떻게 조합되는지"가 빠져 있음 — 이 문서의 핵심 부가가치는 8개 화면 각각의 레이아웃 구조·상태를 새로 서술한 10절("화면별 상세 스펙")임. (2) brand-guide.md가 명시한 두 가지 "그대로 전달해야 할 참고사항"을 임의로 축약하지 않고 원문 취지 그대로 문서에 포함: ① 편집 모달 TypeSelector 칩 색상이 CatBadge 팔레트와 다른 불일치(design-systems가 정리 판단할 대상, design-prompter가 임의로 통일하지 않음) ② 하드 스티커 그림자와 소프트 블러 그림자를 별개 effect 토큰으로 분리해야 한다는 점. (3) 이전 b-2-contacts-layout.md와 이번 문서가 로고 워드마크 웨이트(Bold vs ExtraBold)·색상(고정 딥틸 vs 배경별 반전)에서 서로 다른 값을 기록하고 있음을 명시적으로 대조해 혼동 방지 — 최신 소스(이번 문서)가 우선임을 표기.
+- **문서 구성**: 체크리스트(로고/퍼스낼리티/구조 3대 영역) → 확정 배경 → 8개 프레임 표 → 브랜드 트라이앵글 → 컬러(팔레트/CatBadge/불일치/상태색) → 타이포 → 보더·radius → 그림자(하드/소프트 분리) → 간격 리듬 → 로고 정확 스펙(배경별 반전 규칙 포함) → 장식 모티프(화면별 위치) → 아이콘 계층 → 화면별 상세 스펙 8절 → 알림 오버레이 의도 명시 → 텍스트 대비 → 워드마크 네이밍 미확정 → design-systems/ui-designer 안내(4개 핵심 포인트).
+- **건드리지 않음**: 기존 `docs/design/confirmed/b-2-contacts-layout.md`는 삭제/수정하지 않고 그대로 유지(새 파일로 이번 라운드만 별도 기록).
 </content>

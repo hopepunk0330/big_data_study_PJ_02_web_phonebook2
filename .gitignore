@@ -4,3 +4,4 @@ __pycache__/
 pdf-maker/node_modules/
 pdf-maker/결과.pdf
 .claude/settings.local.json
+.claude/hooks/.slack-webhook-url

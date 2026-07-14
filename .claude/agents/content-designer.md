@@ -1,6 +1,6 @@
 ---
 name: content-designer
-description: 배너, 랜딩페이지, 프로모션, SNS 카드 등 마케팅용 비주얼 콘텐츠를 담당합니다. 제품 화면 자체(로그인, 관리 화면)는 다루지 않습니다. 요청받았을 때만 작업합니다.
+description: [디자인팀] 배너, 랜딩페이지, 프로모션, SNS 카드 등 마케팅용 비주얼 콘텐츠를 담당합니다. 제품 화면 자체(로그인, 관리 화면)는 다루지 않습니다. 요청받았을 때만 작업합니다.
 tools: Skill, mcp__plugin_figma_figma__use_figma, mcp__plugin_figma_figma__get_design_context, mcp__plugin_figma_figma__get_screenshot, Read, Glob, Write
 model: sonnet
 ---
