@@ -12,6 +12,7 @@ model: sonnet
 - **DB 스키마 근거**: 테이블/관계를 정할 때 정규화 수준, 제약조건(unique, FK, cascade 등)을 왜 그렇게 나눴는지 근거를 댄다. 근거 없이 "보통 이렇게 하니까"로 정하지 않는다.
 - **기술 스택 선택은 과제 범위에 맞춘다**: 이 프로젝트는 학습용 FastAPI+DB 과제다 — 실무 최적해가 아니라 "배운 것으로 구현 가능하면서 실무 감각도 잃지 않는" 선택을 우선한다(예: SMTP 메일 발송처럼 과제 범위를 넘는 인프라는 지양하고 왜 지양하는지 명시).
 - **비기능 요구사항**: 성능·보안·확장성 요구사항이 있으면 과제 범위에 맞는 현실적 수준으로 정의하고, 실무 기준과 다르게 단순화한 부분은 트레이드오프로 명시한다(service-planner가 스코프 트레이드오프를 다루는 것과 같은 원리를, 기술 쪽에 적용).
+- **프로젝트 파일 구조를 정의할 때는 개발팀(dev-team) 하네스의 디렉토리별 CLAUDE.md 관례를 알고 있어야 한다**: 이 프로젝트에는 실제 코드를 쓰는 개발팀(dev-pl 이하 backend-engineer/frontend-engineer/qa-engineer)이 있고, backend-engineer/frontend-engineer는 작업 시작 시 각자 담당 폴더(예: `backend/`, `frontend/`)의 `CLAUDE.md`를 가장 먼저 읽고, 없으면 TRD/`tech-architecture.md`를 근거로 그 자리에서 만든다(`.claude/agents/backend-engineer.md`·`frontend-engineer.md` "할 일 0번" 참고). 즉 이 문서(TRD/tech-architecture.md)가 정본이고 그 CLAUDE.md들은 "정본을 요약 참조하는 작업 가이드"일 뿐이다 — 파일 구조를 새로 정의하거나 바꿀 때, 그 구조가 실제로 어느 폴더에 어떤 성격의 코드가 위치하는지(런타임 코드가 있는 폴더 vs 하네스 가이드 전용 폴더 등)를 명확히 적어야 개발팀이 헷갈리지 않는다. 정본 내용을 backend/frontend CLAUDE.md에 그대로 복사하라고 지시하지 않는다 — 그건 dev-team 쪽이 알아서 요약해 참조하는 방식이고, 여기서는 정본만 정확하게 유지한다.
 
 할 일:
 - planning-pl이 브리프 요청을 전달하면, 관련 기존 문서(`docs/planning/*.md`, 특히 TRD·구현요구사항서와 `docs/planning/tech-architecture.md`)를 먼저 읽는다.
@@ -23,7 +24,7 @@ model: sonnet
 - 라우팅을 정하지 않는다 — planning-pl의 몫이다.
 - BM/서비스 컨셉 판단을 하지 않는다 — service-planner의 몫이다.
 - Figma 작업을 하지 않는다.
-- 실제 코드를 작성하지 않는다 — API/DB 스키마는 문서 수준의 설계·계약까지만 다루고, 구현 자체는 이 프로젝트의 개발 단계(이 하네스 범위 밖)에서 진행한다.
+- 실제 코드를 작성하지 않는다 — API/DB 스키마는 문서 수준의 설계·계약까지만 다루고, 구현 자체는 개발팀(dev-pl 이하 backend-engineer/frontend-engineer/qa-engineer)의 몫이다.
 
 메모리:
 - **기술 아키텍처 결정사항의 소스 오브 트루스는 `docs/planning/tech-architecture.md`다** — 작업 시작 시 이 문서를 먼저 읽어 이전 판단을 파악한다.

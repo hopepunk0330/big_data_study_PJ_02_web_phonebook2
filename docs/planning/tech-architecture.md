@@ -23,6 +23,25 @@
 
 **이번 라운드에 재확인된 원칙**: 새 API를 추가할 때도 위 스택 범위를 벗어나지 않는 선에서 설계한다(예: 비밀번호 찾기 기능에 이메일 발송을 쓰지 않고 기존 인증 스택만으로 구현 — §4 참조).
 
+## 1-1. 프로젝트 파일 구조 (canonical)
+
+프로젝트 루트에는 `backend/`(Python 백엔드 코드)·`static/`(실제로 서빙되는 화면 코드)·`frontend/`(프론트엔드 작업 하네스 전용, 런타임 코드 없음)가 형제 폴더로 나란히 위치한다.
+
+```
+(프로젝트 루트)
+├── backend/            # FastAPI 앱, DB 로직 — main.py, database.py, models.py, schemas.py, security.py, crud.py, routers/, requirements.txt
+├── static/              # 실제 서빙되는 화면 코드 — index.html, app.js
+├── frontend/             # frontend-engineer 작업 가이드(CLAUDE.md)만 존재, 런타임 코드 없음
+└── docker-compose.yml    # PostgreSQL(pg-lab) 컨테이너 정의 — backend 전용이 아닌 프로젝트 공유 인프라이므로 루트에 위치
+```
+
+**설계 근거**
+- `static/`을 `backend/` 하위가 아니라 프로젝트 루트의 독립 폴더로 둔 이유: "같은 오리진 유지 → CORS 미들웨어 불필요"라는 결론 자체는 맞지만, 그 결론이 "물리적으로 backend/ 안에 있어야 한다"는 뜻은 아니다. FastAPI `StaticFiles(directory=...)`는 파일시스템 경로와 무관하게 앱이 바인딩된 포트로 그대로 서빙하므로(`app.mount("/static", StaticFiles(directory="../static"))`), `static/`이 `backend/` 밖에 있어도 오리진은 여전히 `127.0.0.1:8000` 하나다. 오리진 판정 기준은 "요청에 응답하는 프로세스의 프로토콜·호스트·포트"이지 "서빙되는 파일의 디스크 경로"가 아니다.
+- `frontend/`는 실제 화면 코드가 아니라 frontend-engineer가 `static/`을 편집할 때 참고하는 하네스 가이드(`frontend/CLAUDE.md`)의 자리다. 이 폴더 안의 파일이 런타임에 실행되거나 서빙되는 일은 없다.
+- `docker-compose.yml`(PostgreSQL 컨테이너 정의)은 `backend/` 전용 설정이 아니라 프로젝트 전체가 공유하는 인프라이므로, `backend/`·`static/`·`frontend/`와 형제 레벨인 프로젝트 루트에 둔다. DB는 어느 한 코드 폴더에 종속된 리소스가 아니다.
+
+**참고(해소, 2026-07-15)**: 이전 라운드까지 `03_연락처관리_웹서비스_기능정의서` §1-1은 `contact_app/`을 프로젝트 루트로 삼아 `main.py`·`routers/`·`static/`을 `backend/` 래퍼 없이 평평하게 배치하는 별도 트리를 갖고 있었다(이름 체계 차이, `contact_app/` vs `backend/`). 사용자 승인 하에 이번 라운드에서 03 §1-1 트리를 본 절 및 05 TRD §3과 동일한 `backend/`·`static/`·`frontend/` 형제 구조로 교체하도록 브리프를 전달했다 — 이름 체계만 통일하고 03의 함수 스펙(FN-001~015)은 변경하지 않는 범위. 03 문서 실제 갱신은 planning-writer 몫이며, 판단 근거는 세션 스크래치패드 `03-structure-brief.md`에 기록되어 있다.
+
 ## 2. API 설계 컨벤션 (canonical)
 
 01 문서(v1.0)에 이미 확립된 관례이며, 신규 API도 반드시 이 관례를 따른다.
@@ -73,3 +92,5 @@
 ## 5. 결정 이력
 
 - **2026-07-14 — 문서 최초 생성 + 비밀번호 찾기 API 2종(FR-14/FR-15) 계약 확정**: planning-pl의 브리프 요청(SCR-004를 01/03 문서에 정식 반영)을 계기로 신규 생성. §1~3(기술 스택·API 컨벤션·DB 스키마)은 `01_연락처관리_웹서비스_구현요구사항서_v1.0.pdf`·`03_연락처관리_웹서비스_기능정의서_v1.0.pdf`에 이미 확정되어 있던 내용을 canonical 문서로 옮겨 담은 것이며, 이 라운드에서 새로 판단한 것은 §4(FR-14/FR-15 API 계약, 특히 "비밀번호 재설정 시 세션 전체 무효화" 결정)뿐이다.
+- **2026-07-15 — static/ 물리적 위치 정정(backend/ 중첩 → 프로젝트 루트 독립 폴더) + §1-1 프로젝트 파일 구조 신설**: TRD v1.0 §2/§3이 "같은 오리진 유지 → CORS 미들웨어 불필요"의 근거로 `static/`을 `backend/` 아래 물리적으로 중첩시켰던 것을 정정. 근거(같은 오리진 → CORS 불필요) 자체는 맞으나, "같은 오리진 유지 = 물리적 중첩 필수"라는 전제가 틀렸다 — FastAPI `StaticFiles(directory=...)` 마운트는 파일시스템 경로와 무관하게 앱이 바인딩된 포트로 그대로 서빙되므로, `static/`이 `backend/` 밖(프로젝트 루트)에 있어도 오리진은 여전히 하나(`127.0.0.1:8000`)다. 사용자 확정 승인 하에 신설한 §1-1에 `backend/`·`static/`·`frontend/` 형제 구조를 canonical화했다. `frontend/`는 이번에 처음 "하네스 전용, 런타임 코드 없음"으로 명문화됨. `docker-compose.yml`도 backend 전용이 아닌 프로젝트 공유 인프라로 판단해 프로젝트 루트 배치로 정리. TRD(05 문서) v1.0 → v1.1 반영은 planning-writer의 몫이며, 이 판단은 브리프(세션 스크래치패드 `trd-structure-brief.md`)로 전달했다.
+- **2026-07-15 — 03_기능정의서 §1-1 이름 체계 통일 브리프(`contact_app/` → `backend/`·`static/`·`frontend/`)**: 사용자가 이번 라운드에서 이름 체계 통일을 명시적으로 승인. 03 §1-1의 옛 `contact_app/` 단일 루트 트리를 본 절(§1-1)·05 TRD §3과 동일한 프로젝트 루트 + `backend/`·`static/`·`frontend/` 형제 구조로 교체하는 브리프를 작성. 03은 "함수/파일 단위 기능정의" 문서이므로 05의 상세 주석으로 대체하지 않고, 03 원본의 파일별 설명 주석(예: `database.py # DB 연결: 엔진, DB세션 공장, get_db`)을 그대로 보존해 `backend/` 하위로 옮기는 방향으로 판단(Surgical Changes — 이번 작업은 이름 체계 통일이지 설명 스타일 교체가 아님). `frontend/`·`requirements.txt`는 03 원본에 대응하는 주석이 없던 신규 항목이라 05 TRD §3의 기존 문구를 그대로 채택(각주 포함). `docker-compose.yml`은 05 TRD §3 트리에도 포함되어 있지 않으므로(별도 §9-1에서만 다룸) 03 트리에도 포함하지 않았다. 03 md 자체는 갱신하지 않음(planning-writer 몫) — 브리프는 세션 스크래치패드 `03-structure-brief.md`로 전달했다.

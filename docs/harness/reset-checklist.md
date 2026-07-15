@@ -10,7 +10,7 @@
 
 ## A. 그대로 유지 (하네스 — 포터블)
 
-- `.claude/agents/*.md` — 전체 19개(디자인팀 12 + 기획팀 5 + code-reviewer, doc-writer)
+- `.claude/agents/*.md` — 전체 23개(디자인팀 12 + 기획팀 5 + 개발+QA팀 4[dev-pl, backend-engineer, frontend-engineer, qa-engineer] + code-reviewer, doc-writer)
 - `.claude/skills/*/SKILL.md` — design-concept-round, report-pdf, review, summary
 - `.claude/commands/*.md` — summary.md
 - `.claude/hooks/stop-failure-notify.sh` — 스크립트 로직 자체는 포터블(단, 아래 C-2 웹훅 파일은 별도 취급)
@@ -26,7 +26,7 @@
 - `docs/planning/**` — 00~06 번호 문서(md·PDF 전부), `old/`, `service-concept.md`, `tech-architecture.md` 전부
 - `docs/pdf/**` — 생성된 PDF/HTML 산출물
 - `.claude/logs/stop-failures.log`
-- `backend/`, `frontend/`, `tests/`, `pdf-maker/문서.html`, `pdf-maker/결과.pdf` — 실제 애플리케이션 코드/생성물
+- `backend/`, `frontend/`, `tests/`, `pdf-maker/문서.html`, `pdf-maker/결과.pdf` — 실제 애플리케이션 코드/생성물. **`backend/CLAUDE.md`/`frontend/CLAUDE.md`(이 프로젝트의 확정 스택·파일구조 요약)도 포함** — 삭제해도 문제없다, backend-engineer/frontend-engineer가 새 프로젝트에서 작업을 시작하면 그 프로젝트의 `docs/planning`·`docs/design`을 읽어 그 자리에서 다시 만들어내도록 하네스 규칙(`.claude/agents/backend-engineer.md`·`frontend-engineer.md` "할 일 0번")에 이미 명문화돼 있다 — 수동으로 남겨둘 필요 없음.
 - 루트 `CLAUDE.md` — 이 프로젝트 고유 규칙(들여쓰기, 검증 명령 등). 새 프로젝트는 새로 작성하되, 이 파일의 "행동 지침"·"기본 도구" 절만 템플릿으로 참고 가능
 - `.claude/agent-memory/*.md`의 "작업 로그" 섹션 내용 — 파일 자체는 남겨도 되지만 내용은 비우거나 "신설" 상태로 리셋(에이전트가 다음 실행 시 알아서 새로 채움)
 
@@ -38,7 +38,7 @@
    - `.claude/agents/brand-designer.md` 21번째 줄 — "이 프로젝트(연락처 관리 웹 서비스)에 맞게"
    - `.claude/agents/planning-writer.md` 17번째 줄, `.claude/agents/qa-planner.md` 23번째 줄 — `06_연락처관리_웹서비스_테스트계획서_v1.0.md` 예시 파일명
    - `docs/harness/design-team/figma-file-organization.md` 42번째 줄 — "연락처" 예시 언급
-4. **`~/.claude/agents/*.md` (전역)**: 디자인팀 12개만 이미 복사돼 있다. 기획팀 5개(planning-pl, service-planner, tech-architect, qa-planner, planning-writer)는 아직 프로젝트 로컬에만 있다 — 다른 프로젝트에서도 기획팀을 쓰려면 이때 전역으로 복사할지 결정한다(리셋과 별개로, 아직 결정 안 된 사항).
+4. **`~/.claude/agents/*.md` (전역)**: 디자인팀 12개 + 개발+QA팀 4개(dev-pl, backend-engineer, frontend-engineer, qa-engineer)는 이미 복사돼 있다. 기획팀 5개(planning-pl, service-planner, tech-architect, qa-planner, planning-writer)는 아직 프로젝트 로컬에만 있다 — 다른 프로젝트에서도 기획팀을 쓰려면 이때 전역으로 복사할지 결정한다(리셋과 별개로, 아직 결정 안 된 사항).
 
 ## 검증 방법 (리셋 실행 전 필수)
 

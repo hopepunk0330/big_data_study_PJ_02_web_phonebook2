@@ -22,8 +22,6 @@
 ## 기본 도구
 - 테스트: playwright를 기본으로 사용한다.
 - 라이브러리/API 문서 조회: context7 MCP를 기본으로 사용한다(설치 안 돼 있으면 `claude mcp add context7 -s user -- npx -y @upstash/context7-mcp`로 전역 설치).
+- playwright로 테스트할때 캡쳐를 해줘. 나중에 메뉴얼을 만들때 사용할거야. 폴더 저장 위치는 docs/screenshot에 화면위치를 스텝순서를 번호를 부여해서 파일명으로 저장해줘.
 
-- 이 두 가지는 프로젝트별 CLAUDE.md에 별도 명시가 없어도 모든 프로젝트에서 기본으로 적용한다.
-
-
-
+이 항목들은 전역 `~/.claude/CLAUDE.md`에도 반영돼 있어, 프로젝트별 CLAUDE.md에 별도 명시가 없어도 모든 프로젝트에서 기본으로 적용된다.
