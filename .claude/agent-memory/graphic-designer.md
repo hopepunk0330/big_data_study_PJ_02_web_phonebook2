@@ -24,3 +24,11 @@
 - Icon/* 8종의 strokeWeight를 use_figma로 직접 재실측 → 전부 3px 균일. 즉 이전에 문서에 기록돼 있던 "Basic(1.5px)/Visual(3px) 두 트랙 분리" 작업은 등록 컴포넌트에는 한 번도 반영되지 않은 채(design-systems "재바인딩 권고" 대기 상태) 원화(`90:2`)만 삭제되어 사라짐 — 복원하지 않고 그 기록을 문서에서 전부 제거, 대신 현재 실존하는 8종(균일 3px)의 구성/색상표로 대체.
 - `docs/design/graphic-assets.md` 전면 재작성(Pixel 10종 섹션·갭 감사 섹션은 실제와 일치해 내용 유지, 표현만 트랙 분리 언급 제거), `docs/design/design-system.md`는 4절에 재확인 한 줄 추가 + 8절 레거시 페이지 순서 표에서 `90:2` 행 제거·삭제 사실 각주 추가(그 외 불변).
 - 전달 대상: design-systems — 기존에 남아 있던 "Icon/Search·Edit·Logout 재바인딩 필요" 권고는 근거 원화가 사라졌으므로 진행하지 않음(신규 작업 없음, 후속 트랙 분리가 필요하면 design-pl이 새 라운드로 재요청해야 함).
+
+### 2026-07-14 — Pixel/EyeOff 신규 원화 (Pixel/Eye 짝 아이콘, raw)
+- design-prompter 브리프: `Pixel/Eye`(`281:405`, 원본 `247:6814`)는 "표시" 상태만 있고 "숨김" 상태 짝이 없음(2-2번 규칙의 원문 예시) — 그 짝을 그리는 작업.
+- 시작 전 `use_figma`로 Pixel/Eye의 실제 벡터 6블록 좌표를 직접 실측(문서 요약 대신 재관찰): 중앙 가로 바(x0,y4,w14,h2) + 상단 코너 3블록(x2/6/10,y2) + 하단 코너 2블록(x2/10,y6).
+- 형태는 (b)안(코너 블록 제거 → 평평한 눈꺼풀) 채택, (a)안(슬래시 추가)은 14×10 초소형 캔버스에서 스텝형 대각선이 뭉개져 보일 위험 때문에 기각. 상단 피크 3블록만 제거하고 바+하단 2블록은 Pixel/Eye와 동일 좌표로 유지(6블록→3블록) — 하단까지 다 지우면 단순 "-" 기호로 오독될 위험이 있어 유지.
+- `PixelEyeOff`(raw FRAME, `414:2`)를 Icons 페이지(`96:7`)의 `x=1241,y=403`(Pixel/Eye 옆, 기존 120px 간격 규칙 그대로 연장)에 배치. 자식 3개 RECTANGLE(`414:3~5`, name="Vector"), 잉크 `#1a1a1a` 동일 hex. 근거 메모 텍스트 노드(`414:6`)를 아이콘 아래에 온캔버스로도 남김.
+- `get_screenshot`(scale 10)으로 Pixel/Eye와 나란히 비교해 형태 차이(피크 있음 vs 납작함)가 색상 없이도 구분됨을 확인. Pixel/Eye(`281:405`)와 원본(`247:6814`)은 metadata 재조회로 무수정 확인.
+- **아직 Component 아님** — design-systems가 `createComponentFromNode(414:2)`로 `Pixel/EyeOff` 정식 등록해야 함(이름 최종 확정 포함). `docs/design/graphic-assets.md`에 상세 절 추가.

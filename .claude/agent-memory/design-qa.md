@@ -4,53 +4,51 @@
 
 ## 작업 로그
 
-### 2026-07-14 (6차) — design-scanner 오탐 검증: NeoBtn 텍스트 라벨 표시 여부
+### 2026-07-14 (11차) — TypeSelector Selected 상태 색상 CatBadge 재바인딩(0-9절) 감사
 
-- **결론: PASS(design-scanner 오탐 확인, 실제 결함 아님)**. NeoBtn ComponentSet(`259:126`) 전 variant에 TEXT 자식 존재 확인(대표 4종+Loading/Disabled), 원본 main(`214:349`) 실사용처도 전부 텍스트 보유. **오탐 원인**: top-level get_metadata만 호출하면 자식(텍스트)이 `<symbol>` 태그에 가려 안 보이는 도구 한계 — drill down/스크린샷 교차검증 없이 판단하면 오판하기 쉽다.
-- **종합**: 신규 결함 없음.
+design-systems가 CatBadge(`256:17`) 기준으로 TypeSelector(`257:28`)의 Selected 4개 카테고리(Family/Company/Other, Friend는 변경 없음) 색상을 재바인딩했다고 보고한 것을 감사. 체크리스트 6개 항목 전부 확인.
 
-### 2026-07-14 (7차) — Link 신규 등록 + Component Specs 페이지 신설 스팟체크
+- **PASS(1, 색상 일치)**: `get_design_context` 코드 레벨 비교 — Family(`257:19`/`287:921`)·Company(`257:25`/`287:927`)·Other(`257:22`/`287:924`) 전부 `var(--color-category-{family|company|other}-{bg|border|text}, ...)` 로 바인딩되어 CatBadge와 hex 단위(#FFE4E8/#FF5A76/#A8003B, #D8FFF5/#17A398/#0A4F49, #EDE0FF/#9B72CF/#4B0D9C) 정확히 일치.
+- **MEDIUM(신규, design-systems 결함 아님, 추적 필요)**: 보호된 확정 프레임 `main-수정`(`248:9835`/`248:9851`)의 "회사" Selected 칩은 여전히 하드코딩된 주황 계열인데, TypeSelector 마스터의 Company Selected는 이제 민트/틸 계열이라 두 소스가 실제 화면 색상 기준으로 서로 다름 — design-pl을 통해 "확정 프레임 자체도 갱신할지" 후속 확인 권고.
+- **종합**: 체크리스트 6개 항목 전부 PASS. MEDIUM 1건.
 
-fileKey 동일. (1) login `247:6666`의 "비밀번호 찾기"(`247:6827`) 실측 기반 `Link` 컴포넌트(`341:3`, 페이지 `341:2`) + 토큰 `color/text-link`(teal/500) + 텍스트 스타일 `Body/Link` 신규 등록, (2) `Component Specs` 페이지(`342:2`) 신설, 10개 스펙 시트.
+### 2026-07-14 (12차) — Input Error variant + Select Open variant 추가(0-10절) 스팟체크
 
-- **PASS**: Link 실측 검증 — 원본(`247:6827`)과 신규 컴포넌트(`341:3`) 코드 완전 일치(#17a398, Bold 12px, underline, 69×18), 변수 바인딩 확인. WCAG 재계산 3.12:1 문서와 일치.
-- **PASS**: Component Specs 10개 스펙 시트 전수 확인 — variant 인스턴스 개수(116개) 보고값과 정확히 일치, 스크린샷 정밀 확인.
-- **PASS**: 문서 동기화 — design-system.md 여러 절 전부 Figma 실제 상태와 노드ID 단위로 일치.
-- **PASS**: 원본 미수정 확인.
-- **LOW(신규, 문서화 누락)**: Link(`341:3`, 69×18) 44×44px 터치 타겟 기준 미달이 7-1/7-2절 어디에도 기록 안 됨 — 문서 완전성 차원 권고.
-- **종합**: HIGH/MEDIUM/FAIL 0건. LOW 1건(Link 터치 타겟 미달 문서화 누락)만 신규.
+- **PASS(1, WCAG 재계산)**: `#FF5A76` on 흰 배경 = **3.01:1**(비텍스트 3:1 PASS, 근소), `#A8003B` on 흰 배경 = **7.70:1**(본문 4.5:1 PASS).
+- **PASS(2~7)**: Error/Open variant 시각·구조 검증, 레거시 미복제(Select 쪽) 확인, 확정 프레임 무수정, 스펙 시트·문서 정합성 전부 확인.
+- **MEDIUM(신규, 원인 불명)**: 레거시 참고 노드 다수(`314:879`/`314:881`/`314:843`/`314:897` 등) 조회 불가 — Input에 국한되지 않는 광범위 사전 드리프트로 추정, 8절 문서-Figma 불일치 추적 필요.
+- **종합**: 7/8 PASS. HIGH 0건, MEDIUM 1건, LOW 1건(border-error 3.01:1 임계값 근접).
 
-### 2026-07-14 (8차) — Contact Row 조립 + Legacy Table Row 위험성 검증 + Link 문서 정리 4건 스팟체크
+### 2026-07-15 (13차) — NeoSelect hover 인셋 + Pixel/EyeOff 아이콘 + Input/Select Placeholder 토큰 실측 스팟체크
 
-fileKey 동일. design-systems가 design-pl 실행 브리프로 완료한 4개 작업 감사: (1) Contact Row(`351:299`) 신규 조립, (2) Legacy Table Row(`103:7`) 해제 위험성 격리 테스트 검증(전환 보류 유지), (3) Link 44×44 터치 타겟 미달 문서화(7-2절), (4) Link WCAG 3.12:1 TODO→RESOLVED(7-1절 §6) 이동.
+- **PASS(체크1)**: NeoSelect Open(`387:12`/`401:869`) hover 배경 인셋 없이 정상.
+- **PASS(체크2)**: Pixel/EyeOff(`415:892`) 조형 일관성 확인. **LOW**: 컴포넌트화 여부 후속 확인 필요했음(이후 0-12절에서 완료 갱신됨, 14차에서 재확인).
+- **HIGH(발견, 이후 수정됨)**: NeoInput placeholder 텍스트가 확정 main-수정 검색창(`248:8500`) 실측 `#BBBBBB`와 불일치(당시 `#CCCCCC` 공유 중). → design-systems가 0-12절에서 `color/text-placeholder-input`(#BBBBBB) 신규 토큰으로 수정 완료.
+- **종합**: HIGH 1건(수정 완료 확인은 14차), LOW 1건, 나머지 PASS.
 
-- **PASS**: Contact Row(`351:299`) 실측 — `get_design_context` 코드 비교 결과 원본 main 첫 행(`214:573`)과 완전히 일치: 이름 `font-['Noto_Sans_KR:Bold'] font-bold text-[14px] text-[#1a1a1a]`(Bold 확정, Regular 아님), 전화번호 `Regular 14px #555`, 주소 `Regular 14px #777`, 레이아웃(gap 12px, padding 좌우16/상10/하11)·CatBadge(`256:5` Friend)·Table Row Action(`260:96`/`260:98` 패턴, 41×25 teal/coral 아웃라인) 인스턴스 재사용 전부 확인. 하단 구분선 `border-[var(--color-border-divider-warm,#ede6d8)]`로 변수 바인딩 확인(하드코딩 아님). 새로 그린 벡터/텍스트 스타일 없음. 스크린샷도 원본과 동일하게 렌더링됨.
-- **PASS**: 스펙 시트(`352:726`) — 제목+설명+실제 인스턴스 존재 확인, Component Specs 페이지(`342:2`) 전체 스크린샷으로 11개 시트 정상 배치, 겹침/깨짐 없음.
-- **PASS**: Legacy Table Row(`103:7`) 원본 무결성 — 직접 조회 결과 여전히 `<symbol>` 태그(COMPONENT, FRAME 아님) 확인. 인스턴스 7개 전수 조회 — 전부 정상 크기로 존재, 깨짐/고아 참조 없음. 테스트 산출물(`353:422`/`353:429`) 둘 다 "not found" — 고아 노드 잔존 없음.
-- **PASS**: 문서-Figma 동기화, 원본 미수정 확인.
-- **종합**: HIGH/MEDIUM/FAIL 0건.
+### 2026-07-15 (14차) — 등록된 전체 컴포넌트 토큰 바인딩 전수 재감사(사용자 직접 요청, 스팟체크 아닌 전수 감사)
 
-### 2026-07-14 (9차) — Legacy Table Row 인스턴스 7개 복구(0-7절) 감사
+`docs/design/design-system.md` 5절(컴포넌트 표)을 근거로 삼으려 했으나 **HIGH(신규, 최우선) — design-system.md 소스 오브 트루스 파일이 심각하게 손실된 상태**임을 발견: `Read` 전체 조회 결과 파일이 단 61줄뿐이고, 내용은 문장 중간에서 시작하는 조각 + "9-6절"/"0-11절"/"0-12절" 3개 섹션만 존재 — section 1~4/6~8(컴포넌트 표, 페이지 순서 표 등)/9(인터랙션 상태)가 전부 없음. **(15차 갱신) 이후 design-pl/design-systems가 git 이력+사고 직전 컨텍스트로 624줄 전체 복구 완료 확인, 아래 15차 참고.**
 
-design-systems가 0-6절에서 Detach Instance 없이 COMPONENT→FRAME 전환해 깨뜨린 인스턴스 7개를, 마스터 콘텐츠(`357:303`)를 clone해 복구했다고 보고한 것을 감사. 지시된 6개 항목 전부 개별 확인.
+이 손실 때문에 각 컴포넌트의 nodeId를 design-system.md가 아니라 4개 에이전트의 agent-memory 로그를 전수 검색해 재구성한 뒤 대표 variant 1~2개씩만 감사했다(총 13개 중 12개, Contact Row는 nodeId 미확인으로 보류) — 결과: 하드코딩 발견 0건, HIGH 1건(문서 소실).
 
-- **PASS(1)**: 복원 노드 실측 — `360:297`(구 `103:77`, 700×62, x=40/y=320)과 `361:85`/`92`/`99`/`106`/`113`/`120`(구 `110:220~290`, 각 1024×62, x=24/y=118~488 간격12) 전부 `childrenCount=6`, 보고된 위치·크기와 정확히 일치. 스크린샷 확인 결과 이름/전화번호/주소/카테고리 텍스트 정상 렌더링(빈 박스 완전 해소).
-- **PASS(2)**: 부모 프레임(`110:201`) 전체 스크린샷 — List Title Row/Table Column Header/데이터 행 6개 총 8개 자식이 순서·간격(itemSpacing 12) 정상, 겹침 없이 배치. 상단 타이틀("연락처 목록 — 총 6건")·검색창·테이블 헤더와 자연스럽게 어울림.
-- **PASS(3)**: 마스터(`357:303`)/Contact Row(`351:299`) 무결성 — 둘 다 스크린샷 재확인 결과 손상 없이 정상 렌더링. Contact Row는 이름/전화/주소/CatBadge(친구)/수정·삭제 버튼까지 전부 온전하게 보임(Table Row 계열과 달리 액션 버튼도 뚜렷이 렌더링됨).
-- **PASS(4)**: 옛 깨진 노드 7개(`103:77`/`110:220`/`110:234`/`110:248`/`110:262`/`110:276`/`110:290`) 전부 직접 재조회 결과 "not found" — 고아/중복 잔존 없음.
-- **PASS(5)**: 문서 정직성 — design-system.md 0-7절이 6개 데이터 행의 "원본 데이터 단서 없음 → 대체 예시값" 한계를 은폐 없이 명시(찾아본 단서 목록까지 기록). "8) 표준 절차 신설 — 컴포넌트 해제 전 Detach Instance 우선" 4단계 재발방지 절차도 문서에 그대로 명문화됨.
-- **PASS(6)**: 확정 8개 프레임(`248:11689`) 스크린샷 재확인 결과 이전 라운드들과 동일하게 8개 전부 정상.
-- **참고(LOW, 이번 라운드 결함 아님·감사 제외 대상)**: 복원된 행의 edit-action/delete-action 인스턴스(예: `167:29`/`167:35`, Row Action Button 참조)가 마스터(`357:303`) 포함 전부 시각적으로 빈 상태로 렌더링됨(`get_design_context` 결과 빈 div, 44×44 직접 스크린샷도 완전 백지). 그러나 이는 클론이 마스터의 기존 상태를 그대로 승계한 것으로 이번 복구 작업이 유발한 회귀가 아니며, 설계 문서(0-7절)에도 이미 정직하게 고지돼 있고, 노드명이 `[Legacy B-2] `로 시작해 감사 대상 제외 규칙에 해당. 참고로 Row Action Button 컴포넌트 원본(`260:95`)은 다른 위치에서 아이콘 정상 렌더링 확인됨 — 근본 원인은 이 nested instance의 이번 라운드 이전부터의 별개 결함으로 추정, 후속 라운드에서 필요시 원인 조사 권고(스코어링에는 미반영).
-- **종합**: 지시된 6개 항목 전부 PASS. 신규 결함 0건(스코프 제외 참고사항 1건만 기록).
+### 2026-07-15 (15차) — 문서 복구 후 전체 컴포넌트 전수 재감사 + TypeSelector/NeoInput/CornerInput/NeoSelect 독립 재확인 + Focus 순수성 전수 확인(사용자 직접 요청)
 
-### 2026-07-14 (10차) — 페이지(canvas) 레벨 구조 재정렬(구분 페이지 6개 + 전체 29개 순서 재배열) 감사
+design-system.md가 624줄로 복구된 뒤, 사용자 요청으로 "스팟체크가 아닌 진짜 전수 감사"를 수행. 총 16개 컴포넌트를 `get_design_context`로 직접 재조회(TypeSelector·NeoInput·CornerInput·NeoSelect·NeoBtn·Button·Icon Button·Row Action Button·Table Row Action·Sidebar Nav Item·CatBadge·Contact Row·Card·Toast·Logo·Avatar), 대표 spec sheet 3개는 `get_screenshot`으로 시각 재확인.
 
-design-systems의 0-8절 작업(순수 페이지 레벨 재구성, 내부 콘텐츠 무수정 주장)을 감사. get_metadata(nodeId 없음)는 이번에도 재시도 2회 모두 "레퍼런스" 1개만 반환 — 알려진 도구 한계(0번 항목) 재확인.
+**최우선 재확인(0-9/0-10절, 문서 복구 후 미커밋 구간) — 전부 PASS, 불일치 없음**:
+- TypeSelector(`257:28`): Selected 4종 hex 전부 doc과 정확히 일치(family #ffe4e8/#ff5a76/#a8003b, company #d8fff5/#17a398/#0a4f49, other #ede0ff/#9b72cf/#4b0d9c, friend #e0f0ff/#4a90d9/#1a4c88), Unselected 보더 `component/typeselector-unselected-border`(#ccc) 일치.
+- NeoInput(`288:12`)/CornerInput(`288:27`): Error=No/Yes × Focus=No/Yes × Content 매트릭스, nodeId·variant 개수(7개)·색상(border-error #ff5a76, text-error #a8003b, NeoInput placeholder #bbb vs CornerInput placeholder #ccc 분리 유지) 전부 doc과 일치.
+- NeoSelect(`387:13`): State=Default/Open × Content=Placeholder/Selected 4 variant, hover 옵션 `color/bg-hover-muted`(#f1f1f1) 바인딩, Elevation/Raised 적용 전부 일치.
 
-- **항목1(전체 페이지 순서 실측) — 부분 확인, FAIL 아님(도구 한계)**: design-qa 툴셋(get_metadata/get_screenshot/get_design_context)에는 document.children 전역 순서를 노출하는 수단이 없다(design-systems가 쓴 `use_figma` 스크립트 툴은 design-qa에 없음) — 전역 순서 자체는 재현 불가. 대신 표에 적힌 29개 nodeId 중 20개 이상을 개별 `get_metadata`로 직접 조회해 전부 실존/이름 일치를 확인했다(6개 구분 페이지 전부, 파일럿 8개 프레임 전부, Icons/Table Row/Component Specs/Link 4개, old-사용하지말것 존재만 간접 확인).
-- **LOW(신규, 문서-Figma 미세 불일치)**: `15:3` 페이지 실제 이름이 `"UI-design "`(끝에 공백 1칸)인데, design-system.md 8절 표에는 `UI-design`(공백 없음)으로 기재됨 — 표기 규칙 불일치. 이번 라운드가 "23개 페이지 이름을 재확인했다"고 명시한 라운드라 이때 잡혔어야 함.
-- **PASS(항목2, 구분 페이지 6개)**: `364:2`~`364:7` 전부 `get_metadata` 직접 조회 — width=0/height=0(자식 없음, 완전히 빈 페이지) 확인, 이름도 `--- BRAND ---`/`--- FOUNDATIONS ---`/`--- COMPONENT SPECS ---`/`--- CONCEPTS ---`/`--- COMPONENTS ---`/`--- SCREENS ---` 대시·공백·대문자까지 표와 정확히 일치.
-- **PASS(항목3, 파일럿 내부 무결성 — 최중요)**: 확정 8개 프레임(`214:349` main/`248:8103` main-수정/`248:9867` main-삭제/`242:4280` main-검색없음/`241:1552` Join/`247:6666` login/`247:5303` login-알림창/`247:5558` main-알림창) 전부 `get_metadata`로 개별 조회 — 이름 전부 정확히 일치, 자식 구조(사이드바 카테고리 6건, 테이블 6행, 모달 필드, 배너 등) 전혀 손상 없음. main(`214:349`)·login(`247:6666`) 스크린샷도 정상 렌더링 확인(연락처 6건, 로그인 폼 전부 정상). `248:11689` 전체 스크린샷도 8개 프레임 배치 확인.
-- **PASS(항목4, 샘플 4개 페이지 무손상)**: Icons(`96:7`, 8개 기능 아이콘+10개 Pixel 마이크로 아이콘 전부 존재), Table Row(`103:3`, Contact Row/Row Action Button/Table Row Action/Legacy 컴포넌트 전부 존재), Component Specs(`342:2`, 스크린샷으로 11개 스펙 시트 겹침 없이 순서대로 배치 확인), Link(`341:2`, `341:3` 69×18 존재) — 손실/중복 없음.
-- **항목5(문서 동기화)**: 위 UI-design 공백 LOW 1건 제외하면 8절 표와 Figma 실제 상태(이름·존재) 전부 일치.
-- **종합**: HIGH/MEDIUM/FAIL 0건. LOW 1건(UI-design 페이지명 trailing space 문서 불일치) 신규. 전역 페이지 순서(idx 0~28) 자체는 도구 한계로 이번에도 완전 재현 검증 불가 — 후속 라운드에서 `use_figma` 등 쓰기 가능 도구 접근이 열리면 재검증 권고(design-qa 자체는 읽기 전용이라 우회 불가).
+**HIGH(신규) — Button(`259:609`) Style=Amber, State=Focus(`284:1010`) 스퓨리어스 보더**: Amber Default/Hover/Press/Disabled/Loading 어디에도 보더가 없는데, Focus 상태에서만 `border border-black border-solid`(1px 검정)가 코드에 추가로 붙어있음을 발견 — `get_screenshot`(스펙 시트 `343:50`)으로 시각 재확인 결과 Amber Focus 버튼에만 실제로 얇은 검은 테두리가 렌더링됨(Default/Hover/Press/Disabled/Loading은 테두리 없음, Coral/Neutral Focus는 이 문제 없음). NeoBtn(`259:126`, 스펙 시트 `342:3`)의 동일 Amber/Focus는 이 문제가 없음을 대조 확인 — Button 컴포넌트 1건에 국한된 버그. Focus 순수성 원칙(9-1절: 링 추가 외 배경/보더/텍스트 불변) 위반. **위치: Button 컴포넌트, Style=Amber, State=Focus, node `284:1010`, Component Specs 페이지 `343:50`.**
+
+**MEDIUM(신규) — 버튼류 5개 컴포넌트 Focus 배경 fill 토큰 미바인딩(하드코딩), 광범위**: NeoBtn/Button/Icon Button/Row Action Button/Table Row Action의 Focus variant는 예외 없이 배경을 raw hex(`bg-white`, `bg-[#ffcb47]`, `bg-[#17a398]` 등)로 직접 지정하고 있고, 같은 Style의 Default 형제는 전부 `var(--color-*)` 토큰으로 바인딩돼 있음(예: Amber Default `var(--color-amber-500,#ffcb47)` vs Amber Focus `bg-[#ffcb47]`). 현재 resolved 색상은 Default와 정확히 같아 시각적 회귀는 없으나, "No token = no component" 원칙 위반이며 향후 팔레트 토큰이 바뀌면 Default만 갱신되고 Focus는 옛 값에 고정되는 드리프트 위험이 있음. 대조군으로 NeoInput/CornerInput/NeoSelect/Sidebar Nav Item의 Focus는 전부 정상적으로 토큰 바인딩을 유지하고 있어(예: Sidebar Nav Item Active+Focus `bg-[var(--color-amber-500,#ffcb47)]`) 이 결함이 9-2절 버튼류 전용 패턴임을 확인. 약 32개+ Focus 노드 영향.
+
+**LOW(신규) — Contact Row(`351:299`) 루트 배경 `bg-white` 하드코딩**: 형제 컴포넌트(Card/NeoBtn Neutral 등)는 `var(--color-gray-0,white)` 토큰을 쓰는데 Contact Row 루트만 raw `bg-white`. 위와 같은 계열의 경미한 바인딩 누락.
+
+**Focus 순수성 전수 확인 결과(위 Button/Amber 1건 제외 전부 PASS)**: TypeSelector(Selected/Unselected 8쌍 전부 배경·보더·텍스트 동일, 링만 추가 — 스크린샷 `343:1146` 확인), NeoInput/CornerInput(스크린샷 `344:721` 확인, 4개 variant 전부 보더색·텍스트색 Focus=No/Yes 동일), Sidebar Nav Item(Active+Focus 토큰 동일 유지, Inactive+Focus는 9-5절 정정된 3px OUTSIDE 스트로크 기법 정상 렌더링 — 스크린샷 `343:1106` 재확인), NeoBtn(Amber Focus 정상, 보더 추가 없음 — 스크린샷 `342:3` 확인), Icon Button/Row Action Button/Table Row Action(보더·텍스트색 Focus=Default 동일 유지, 배경만 위 MEDIUM 항목의 토큰 미바인딩).
+
+**나머지 컴포넌트 재확인**: CatBadge(`256:17`, 4종 전부 CatBadge 팔레트 hex 일치), Card(`262:15`, 전부 토큰 바인딩), Toast(`263:53`, success/error 배경·텍스트 토큰 바인딩 정상), Logo(`263:692`, Teal/White 배경 반전 토큰 정상), Avatar(`104:131`, `component/avatar-bg` 토큰 정상) — 전부 PASS, 하드코딩 없음.
+
+**종합**: 총 16개 컴포넌트 직접 재조회(최우선 4개 + 버튼류 5개 + CatBadge/Contact Row/Card/Toast/Logo/Avatar/Sidebar Nav Item), 3개 스펙시트 스크린샷 재확인. **HIGH 1건**(Button Amber Focus 스퓨리어스 보더), **MEDIUM 1건**(버튼류 5개 Focus 배경 토큰 미바인딩, 광범위), **LOW 1건**(Contact Row 배경 하드코딩). 최우선 재확인 대상 4개(TypeSelector/NeoInput/CornerInput/NeoSelect)는 문서-Figma 불일치 0건으로 전부 PASS — 문서 복구가 정확했음을 확인. Count Pill/Pixel 아이콘 11종/Link는 이번 라운드에서 개별 재조회하지 않음(Link는 14차에 이미 확인, Pixel 아이콘은 13차 EyeOff만 확인 — 다음 라운드에서 나머지 10종 개별 재확인 권고).
