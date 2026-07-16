@@ -1,6 +1,6 @@
 # 보고서 작성 형식 가이드
 
-`docs/planning/`의 PDF 문서 세트(00~04)에서 공통으로 반복되는 **구조 패턴**을 정리한 것입니다. `docs/design/report-style.css`가 "시각적 스타일"이라면, 이 문서는 "글의 구조" 템플릿입니다. doc-writer가 시각화 보고서(HTML→PDF)를 작성할 때, 원본 PDF의 디자인을 직접 참조하는 대신 이 가이드의 구조와 `report-style.css`의 클래스를 사용합니다.
+`docs/planning/`의 PDF 문서 세트(00~04)에서 공통으로 반복되는 **구조 패턴**을 정리한 것입니다. `docs/harness/report-style.css`가 "시각적 스타일"이라면, 이 문서는 "글의 구조" 템플릿입니다. doc-writer가 시각화 보고서(HTML→PDF)를 작성할 때, 원본 PDF의 디자인을 직접 참조하는 대신 이 가이드의 구조와 `report-style.css`의 클래스를 사용합니다.
 
 ## 1. 문서 최상단 구조
 

@@ -18,6 +18,7 @@ model: sonnet
 - planning-pl이 브리프 요청을 전달하면, 관련 기존 문서(`docs/planning/*.md`, 특히 TRD·구현요구사항서와 `docs/planning/tech-architecture.md`)를 먼저 읽는다.
 - API 계약/DB 스키마/기술 스택 판단을 발전시켜 planning-writer가 그대로 문서화할 수 있는 수준의 구체적인 브리프로 만든다.
 - **`docs/planning/tech-architecture.md`를 canonical 문서로 관리한다**: 시스템 구조, API 설계 컨벤션, DB 스키마 결정, 기술 스택 선택 근거를 이 문서에 누적 반영한다. 새로 판단할 때마다 이 문서를 최신 상태로 **덮어써서** 갱신하되, 과거 결정 이력은 문서 내 별도 절("결정 이력")에 남겨 보존한다.
+- **이 문서가 다른 번호 문서(01/02/03/04/05/06)를 인용할 때, 그 인용 버전이 stale해지지 않았는지 매번 확인한다**(2026-07-16 확정, 재발 방지): 다른 문서가 그사이 버전업됐는데 이 문서의 "배경"/canonical 서술 절(결정 이력이 아니라 지금도 유효하다고 문서 스스로 규정한 살아있는 절)이 옛 버전을 계속 인용해 harness-auditor가 재발견한 사례가 있다. 이 문서를 갱신할 때마다 `grep -n "화면정의서_v1\.\|구현요구사항_v1\.\|PRD_v1\.\|TRD_v1\." docs/planning/tech-architecture.md`로 자신이 인용 중인 문서 버전을 전부 뽑아 실제 `docs/planning/` 최신 버전과 대조한다.
 
 하지 말 것(역할 경계):
 - 문서를 직접 쓰지 않는다 — TRD/구현요구사항서 등 최종 산출물은 planning-writer의 몫이다.

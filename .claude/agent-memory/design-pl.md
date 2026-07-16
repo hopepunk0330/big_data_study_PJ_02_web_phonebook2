@@ -8,38 +8,48 @@
 ## 정책 메모 (세션 기록 수준 — 하네스 문서는 아직 미수정)
 
 **2026-07-14, 레거시 정리 작업 경계 변경**: 사용자가 "레거시 및 사용안해서 컴포넌트 기능 끊어놓은 것 내가 직접 지울게, 지금 너무 헷갈려서"라고 밝힘. 이후:
-- 레거시/미사용 컴포넌트를 실제로 해제(COMPONENT/COMPONENT_SET→FRAME 전환)하거나 삭제하는 **적극적 정리 작업은 팀이 먼저 나서서 하지 않는다** — 사용자가 Figma에서 직접 처리하기로 함.
+- 레거시/미사용 컴포넌트를 실제로 해제(COMPONENT/COMPONENT_SET→FRAME 전환)하거나 삭제하는 **적극적 정리 작업은 팀이 먼저 나서서 하지 않는다** — 사용자가 Figma에서 직접 처리하기로 함. 이후 사용자가 명시적으로 "팀이 직접 처리하라"고 지시하면 이 유보는 해제되고 표준 절차(2-4번, 분리 후 전환)를 그대로 따라 처리한다.
 - `[Legacy ...]`/`❌ 미채택 —`/`❌ 폐기 —` 같은 **이름 라벨링(구분 목적)은 계속 유지**.
-- `docs/harness/design-team/figma-file-organization.md` 등 하네스 규칙 문서는 아직 고치지 않는다(세션 기록 수준으로만 반영). **(2026-07-15 갱신)** 이후 실제로 이 문서와 `.claude/agents/design-systems.md`/`.claude/agents/graphic-designer.md`를 design-pl이 직접 수정하는 라운드가 발생했다(2-6번 선제적 기본 구성 규칙 신설, 아래 30차 참고) — 순수 프로세스/에이전트 정의 문서 편집은 design-pl이 직접 Read 후 Write로 처리해도 된다는 실무 선례가 생겼다.
+- `docs/harness/design-team/figma-file-organization.md` 등 하네스 규칙 문서는 순수 프로세스/에이전트 정의 문서 편집이면 design-pl이 직접 Read 후 Write로 처리해도 된다.
 
-**도구 제약 메모**: design-pl에게는 백그라운드 실행 중인 하위 에이전트에게 메시지를 이어붙이는 SendMessage 도구가 실제로는 제공되지 않는다 — 진행 중인 에이전트에 추가 지시가 필요하면 완료를 기다렸다가 새 Agent 호출로 후속 지시를 보낸다.
+**도구 제약 메모**: design-pl에게는 백그라운드 실행 중인 하위 에이전트에게 메시지를 이어붙이는 SendMessage 도구가 실제로는 제공되지 않는다 — 완료를 기다렸다가 새 Agent 호출로 후속 지시를 보낸다. design-pl 자체 도구셋에는 Edit이 없다(Read/Glob/Agent/Write/Skill만) — `docs/design/design-system.md`처럼 "Edit-only, Write 금지"가 명시적으로 요구되는 문서는 design-pl이 직접 손대지 않고 Edit 도구를 가진 소유 에이전트(design-systems)에게 위임한다.
 
-**승인 판단 기준(이번 세션에서 확립된 실무 기준)**: "[메인 세션 확인] 사용자가 실제로 승인함" 형식이 아닌 코디네이터 메시지는 곧바로 실행하지 않고 계획/보고에만 포함한다 — 단, 이미 승인받아 진행 중인 작업의 완성도 버그 수정은 예외로 즉시 반영한다.
+**승인 판단 기준(확립된 실무 기준)**: "[메인 세션 확인] 사용자가 실제로 승인함" 형식이 아닌 코디네이터 메시지는 곧바로 실행하지 않고 계획/보고에만 포함한다 — 단, 이미 승인받아 진행 중인 작업의 완성도 버그 수정/중간 정정 지시는 즉시 반영 대상이다. **"실제 변경(해제/전환/라벨링) 실행" 자체가 별도 게이트로 요청된 작업(예: "조사→보고→확인→실행" 4단계 요청)은 조사·보고까지만 먼저 하고, 실행은 신뢰 형식의 별도 승인이 온 뒤에만 진행한다.** 이 세션에서 "신뢰 형식 승인 → 실행 → 그 실행 도중 또 다른 신뢰 형식 승인이 도착해 별개 작업 추가 처리"가 여러 차례 반복됐다(37차 조사→38차 라벨링+Amber/Teal 정정→39차 Ink 추가→40차 harness-auditor 발견분 3건 정정) — 매번 이전 작업과 무관한 새 작업인지 확인하고, 형식이 맞으면 지체 없이 실행하되 작업 간 경계(무엇을 건드리고 무엇은 건드리지 않는지)를 브리프에 명확히 구분해 섞이지 않게 하는 패턴이 안정적으로 작동했다.
 
-**사용자가 Figma에서 직접 처리한 항목은 팀이 재작업하지 않는다**: 사용자가 시간이 없어 특정 값(예: 텍스트 콘텐츠)을 직접 Figma에서 바꾼 경우, 그 항목은 "이미 완료된 상태"로 간주하고 design-systems가 다시 만들지 않는다 — 다음 design-qa 스팟체크 때 반영 여부만 가볍게 확인한다(별도로 재작업하지 않음).
+**서브에이전트 출력 토큰 한도 초과 대응**: design-systems처럼 Figma 조회/조작 스텝이 많은 워커는 "출력 토큰 한도 초과"로 응답이 도중에 끊기는 사고가 반복됐다. 대응: (1) 관련 문서를 다시 읽어 실제 반영 범위 확인. (2) 재호출 시 "재개 확인" 명시. (3) 문서화는 표/불릿 위주로 간결하게. design-scanner(haiku)는 `get_metadata`로 대형 페이지(파일럿·Component Specs처럼 자식이 많은 페이지)를 통째로 조회하면 토큰 초과로 실패한다 — 이런 페이지는 design-systems가 raw script(`use_figma`)로 "1단계 자식만" 순회하는 방식(재귀 없이 `id`/`name`/`type`만 출력)으로 우회해야 한다. design-scanner는 표면 조사에는 적합하지만, 변수 `boundVariableId` 참조 카운트나 alias 체인처럼 깊은 스크립트 순회가 필요한 조사는 애초에 도구셋에 `use_figma`가 없어 불가능 — 이런 조사는 design-systems를 "읽기 전용 조사 콜"(mutation 없음을 스스로 확인·보고하도록 명시)로 호출해 보완한다.
 
-**문서 손상 재발 방지(2026-07-15 재확인)**: `docs/design/design-system.md`처럼 긴 누적 문서에 새 절을 추가할 때는 Write로 통째로 덮어쓰지 말고, 반드시 먼저 전체를 Read한 뒤 그 내용 뒤에 새 절을 붙인 전체 버전을 쓰거나 Edit로 append하라고 워커에게 매번 명시한다 — 과거 Write 오사용으로 586줄→61줄 손상 사고가 있었다.
+**변수 미사용 판정은 "직접 참조 0회"만으로 끝내면 오탐이 난다**: Primitive 계층은 Semantic이 alias로 가리키기만 해도 "간접 사용 중"이라 직접 참조 0회여도 진짜 미사용이 아닐 수 있다. **변수 미사용 감사는 반드시 두 단계(①노드 직접 바인딩 재귀 스캔 ②전체 변수의 `valuesByMode`에서 VARIABLE_ALIAS 체인 확인)를 다 거쳐야 신뢰할 수 있다.**
 
-**구체적 지시는 design-prompter를 생략해도 되는 사례(2026-07-15)**: 노드ID·수정 전/후 값·범위 제한이 이미 100% 명시된 값/바인딩 교정(구조 변경 없음)은 design-prompter를 거치지 않고 design-systems를 바로 호출해도 된다 — 새로운 창작 판단이 없기 때문. **단, "컴포넌트 구조(variant 축) 변경"은 지시가 아무리 구체적이어도 이 예외에서 제외한다(2026-07-15 재확인)** — 삭제/유지 대상까지 사용자가 다 정해줬어도 variant property 재편은 design-prompter를 거쳐 실행 브리프로 구조화한다.
+**"문서(design-system.md) 기록"과 "실제 확정 프레임 실측"이 어긋날 수 있다 — 구조가 비슷한 컴포넌트로 착오 전파 위험**: design-system.md에 "NeoBtn Amber를 리바인딩했다"고 기록돼 있었으나, 실제로는 별도 컴포넌트 Button(`259:609`)에 대한 정당한 작업이 이름·구조가 비슷한 NeoBtn에도 잘못 전파되어 기록된 것으로 드러났다. "다른 컴포넌트와 구조가 비슷하다"는 이유로 작업을 동일 적용할 때는 항상 대상 컴포넌트 이름으로 정확히 재확인하고, 문서 기록을 실측 없이 그대로 신뢰하지 않는다. 특정 Style variant 일부만(전체 ComponentSet이 아니라) 해제/추가하는 절차도 기존 "COMPONENT_SET 전체 FRAME 전환" 절차와 동일 패턴으로 개별 variant 단위에 그대로 일반화됨을 확인.
 
-**서브에이전트 출력 토큰 한도 초과 대응(2026-07-15 신규)**: design-systems처럼 Figma 조회/조작 스텝이 많은 워커는 "출력 토큰 한도 초과"로 응답이 도중에 끊기는 사고가 반복됐다(같은 라운드에서 3회 발생). 이럴 때: (1) 먼저 관련 문서(`docs/design/design-system.md` 등)를 다시 읽어 실제로 어디까지 반영됐는지 확인한다(Write는 대개 끝까지 못 갔지만 Figma 쪽 `use_figma` 조작은 이미 끝났을 수 있음). (2) 재호출할 때 "먼저 기존 산출물이 이미 있는지 확인하고, 있으면 이어받고 없으면 처음부터 진행"하도록 명시한다. (3) 문서화 단계는 장황한 서술 대신 표/불릿 위주로 간결하게 쓰도록 지시해서 재발을 줄인다. **도구 간 판정 불일치도 함께 발견됨**: `get_design_context`(코드 변환/className 기반)로 opacity(paint alpha)를 검증하면 실제로는 정상인데도 "누락"으로 오탐하는 사례가 있었다(바인딩된 변수 fill의 paint opacity가 codegen 출력에서 클래스로 노출되지 않는 것으로 추정) — opacity/paint alpha류 검증은 `get_screenshot` 시각 비교나 `use_figma` raw script(`node.fills[0].opacity` 직접 조회)를 우선하고, className 파생값은 참고용으로만 쓴다(design-qa에게도 이 교훈 전달 완료).
+**ComponentSet의 TEXT 컴포넌트 속성(예: NeoBtn `Label`)은 Style 전체가 공유하는 단일 값일 수 있다(39차 신규 발견)**: 새 Style variant를 추가하며 그 Style 전용 기본 라벨("로그아웃" 등)을 넣으려고 마스터 컴포넌트 속성을 바꿨더니, 같은 ComponentSet의 **다른 모든 Style의 기본 텍스트까지 한꺼번에 바뀌는** 사고 직전 상황이 있었다(design-systems가 스크린샷으로 즉시 발견해 원래 공유 기본값 "검색"으로 되돌리고 전체 Style 무손상 재확인함, 재작업 없이 같은 콜에서 자체 교정). **교훈: ComponentSet에 새 Style을 추가할 때 텍스트/기타 컴포넌트 속성을 그 Style 전용으로 착각해 편집하지 말고, 먼저 그 속성이 ComponentSet 전체 공유인지 variant별 개별인지 확인한 뒤 손댄다.** 앞으로 유사 브리프에 이 확인 절차를 기본 포함.
+
+**대규모 소스 교체(재추출) 라운드는 Stage 분리가 유효했다**: Stage를 작게 쪼개고 각 Stage 호출마다 "재개 확인" 지침을 넣는 관행이 유효함이 반복 확인됨.
+
+**"컴포넌트로 보이는 노드가 실제로는 INSTANCE가 아니라 raw FRAME"인 구조적 문제**: 확정 디자인 섹션의 8개 프레임에서 컴포넌트와 동명인 노드 대다수가 raw FRAME/TEXT/VECTOR였다. 유사 검증/실측 작업을 지시할 때는 INSTANCE 여부를 먼저 type으로 확인하는 절차를 기본 포함한다.
+
+**레거시 컴포넌트가 "키드(published key)"라 물리적 삭제가 원천적으로 불가능할 수 있다**: detach 이후 완전히 `remove()`하려 해도, 라이브러리에 퍼블리시된 적 있는 key를 가진 컴포넌트는 Figma가 key 레지스트리 무결성을 위해 물리적 삭제를 막고 `parent: null` 고아 상태로 되돌린다. 대안: 새 컨테이너(`❌ 폐기 —` 라벨)를 만들어 시각적으로 동일한 FRAME 사본을 그 안에 넣어 Assets 패널 노출을 제거.
+
+**❌ 미채택/❌ 폐기 라벨 산출물은 무엇이든(화면·컴포넌트·토큰) 예외 없이 삭제 금지 — 2026-07-16 오삭제 사고로 재확정**: "컴포넌트를 포함하지 않는 화면은 삭제해도 된다"는 자체 판단으로 파일럿 페이지의 옛 폐기 화면 9개를 완전 삭제해 영구 유실된 사고가 있었다(Cmd+Z 복구 실패). 이후 "필요 없어진 컴포넌트"에 대한 유일한 정당 처리는 컴포넌트 해제(detach→FRAME 전환)뿐이고, 삭제가 필요해 보이면 반드시 메인 세션에 먼저 보고한다. 이 사고 이후 민감한 정리 작업은 "조사 → 보고 → 확인 → 실행" 게이트를 기본 적용한다.
+
+**하네스 규칙 13번(harness-auditor 호출) — B 범위(`docs/design/**`) 누락 정정 확립**: 처음 이 규칙을 만들 때 A 범위(`.claude/agents/**`, `docs/harness/**`)만 넣고 design-pl/design-systems가 가장 자주 건드리는 B 범위(`docs/design/**`, 특히 `design-system.md`)를 빠뜨린 사고가 있었다(2026-07-16, 발견 즉시 정정). 지금은 A 또는 B 어느 쪽을 건드려도 라운드 종료 전 harness-auditor를 호출하는 것으로 확정.
 
 ## 작업 로그
 
-### 2026-07-15 실행 라운드 — TypeSelector/NeoInput/CornerInput/Sidebar Nav Item Focus 구조 단순화 (29차)
-- 배경: 버튼류 5개(NeoBtn/Button/Icon Button/Row Action Button/Table Row Action)는 이미 Focus를 State 열거형 값 하나로 취급(직교 축 없음). 반면 이 4개는 9-3절에서 `Focus=No/Yes` 별도 직교 축으로 설계돼 조합 variant가 늘어나 있었음. 사용자가 "주목적이 Focus가 아니다"라며 버튼류 패턴대로 단순화 요청, 조합 소실(정보 손실)은 명시적으로 감수하기로 확인.
-- **"[메인 세션 확인] 사용자가 실제로 승인함" 형식 승인 받음** — 삭제/유지 대상·이름 규칙까지 전부 구체적으로 지정된 지시였으나, "컴포넌트 구조(variant 축) 변경"이라 판단해 design-prompter를 거쳐 실행 브리프로 구조화한 뒤 design-systems 호출(신규 정책 메모 참고).
-- **design-systems 실행 결과**: TypeSelector 16→12(Selected+Focus=Yes 4개 삭제, Unselected+Focus=Yes 4개는 이름만 State=Focus로 정리). NeoInput/CornerInput 각 7→5(Filled×Focus=Yes 2개씩 삭제, Placeholder×Error=No×Focus=Yes 1개는 State=Focus로 유지). Sidebar Nav Item 4→3(Active+Focus=Yes 1개 삭제, Inactive+Focus=Yes=`287:17`의 9-5절 3px ink OUTSIDE 스트로크 특수 렌더링은 무수정으로 이름만 State=Focus 정리). 총 삭제 9개 variant, 유지 25개는 시각 무수정. 삭제 후보 9개는 전부 Component Specs 스펙 시트 그리드에서만 참조되고 있어(다른 화면/확정 프레임 참조 0건) 스펙 시트 재구성 시 구 그리드를 먼저 제거해 인스턴스 0건을 만든 뒤 마스터 삭제(design-pl 보고 대기 없이 처리, 스펙 시트 자체가 갱신 대상이었으므로). 스펙 시트 4개 재구성 중 auto-layout Cell `clipsContent=true`가 Focus 링을 잘라내는 버그 발견해 정정. design-system.md 0-15절 신설, 5절 표 갱신, 9-3절은 삭제 않고 "과거 기록" 라벨로 보존.
-- **design-qa 스팟체크**: 5개 항목 PASS(variant 개수·이름·`287:17` 특수 스트로크 보존·스펙 시트·문서). MEDIUM 1건(CornerInput 개별 노드 `398:892` description이 리네임 이전 문구 잔존 — ComponentSet 레벨은 정상), LOW 1건(0-9절 과거 리스크 기록이 TypeSelector 인스턴스 존재를 놓쳤음 — 오늘 작업과 무관, 참고 전달만). 확정 프레임 `main-수정`(`248:8103`) 내 TypeSelector 인스턴스 4개는 전부 보존된 variant 참조, 깨진 인스턴스 없음 확인.
-- **MEDIUM 즉시 반영**: 이미 승인된 작업의 완성도 버그로 판단해 design-systems 재호출, `398:892` description을 ComponentSet 레벨 문구와 일치하도록 정정(구조/시각 변경 없음).
-- 상태: 완료. LOW 1건(0-9절 기록 부정확)은 사용자에게 참고 보고만 하고 별도 조치 없음.
+### 2026-07-16 실행 라운드 — NeoBtn Style=Ink 신규 추가 (39차)
+- 배경: 38차의 "로그아웃 버튼 덤 발견"을 메인 세션이 직접 재조사 — 확정 디자인 main 계열 5개 프레임 전부에서 로그아웃 NeoBtn이 기존 Neutral(흰배경+ink보더)과 배경/보더/텍스트가 전부 반전된 별개 스타일(검정 배경 `#1a1a1a`+무보더+흰 텍스트, Compact 79×25, radius8)임을 확인, AskUserQuestion으로 "Style=Ink 신규 추가" 승인받음.
+- design-systems에 직접 실행 지시(설계 판단 필요 없이 13절 Sky/Navy 추가 절차를 그대로 재사용하는 기계적 작업이라 design-prompter 생략). Size=Compact만, State 6개(Default/Hover/Press/Focus/Disabled/Loading) 한 번에 완성 — TODO 이월 없음.
+- 진행 중 두 가지 이슈를 design-systems가 자체 발견·해결: (1) 9-1절 Hover/Press 공식("ink 방향 블렌드")이 배경 자체가 이미 ink라 무의미해 흰색 방향 블렌드로 대체(문서화된 판단), (2) ComponentSet의 `Label` 텍스트 속성이 Style 전체 공유값이라 편집 시 다른 Style 기본 텍스트까지 바뀔 뻔한 걸 스크린샷으로 즉시 발견해 원복(위 정책 메모 참고).
+- 결과: NeoBtn variant 36→42(Style 옵션: Coral/Neutral/Sky/Navy/Ink). WCAG 전부 PASS(Disabled 3.88:1은 기존 프로젝트 표준과 동일). 스펙 시트(`342:3`)에 Ink/Compact 행 추가, `docs/design/design-system.md` 18절 신규 기록.
+- 상태: 완료. 확정 디자인 8개 프레임은 이번 라운드에서 열람도 하지 않음(메인 세션이 이미 실측값을 넘겨줘서 재열람 불필요).
 
-### 2026-07-15 실행 라운드 — Checkbox 등록 + 선제적 기본 구성(2-6번) 규칙 신설 (30차)
-- 배경: 사용자가 로그인 확정 프레임(`247:6666`)의 "☐ 로그인 상태 유지" 체크박스(`247:6822`)가 여러 커버리지 감사 라운드를 거치고도 정식 컴포넌트로 등록되지 않았다고 직접 지적("규칙만 쓰고 실행을 빠뜨린 상태"). 동시에 라디오 버튼 필요 여부 확인과, "확정 프레임에 없어도 이 프로젝트가 실제로 쓸 법한 기본 구성 요소(디바이더 등)를 미리 갖추는" 선제적 규칙 신설을 요청.
-- **"[메인 세션 확인] 사용자가 실제로 승인함" 형식 승인 받음**.
-- **하네스 갱신(design-pl 직접)**: `docs/harness/design-team/figma-file-organization.md`에 **2-6번(선제적 기본 구성)** 신설 — 기존 2-4번 "빠진 표준 폼 컨트롤"(반응형, 확정 프레임에서 발견됐을 때만)과 구분되는 상위 규칙으로, 확정 프레임에 안 보여도 이미 확정된 토큰·패턴만으로 이 프로젝트가 실제로 쓸 법한 기본 구성 요소를 design-systems/graphic-designer가 먼저 갖춘다는 내용. `.claude/agents/design-systems.md`(판단 기준에 2-6번 항목 추가, 할 일에 커버리지 점검 항목 추가, 하지 말 것에 "단순 벡터 프리미티브는 직접 만들어도 됨" 예외 추가)와 `.claude/agents/graphic-designer.md`(커스텀 그래픽 협업 흐름 추가)에도 반영.
-- **design-prompter 브리프 → design-systems + ux-designer 병렬 호출**(2-4번 규칙대로 ux-designer 병행, Figma 쓰기는 design-systems만이라 충돌 없음).
-- **design-systems 실행 결과**(2회 출력 토큰 한도 초과 후 재시도로 완료): Checkbox 컴포넌트(`474:899`, 신규 페이지 `474:881`) State=Default/Checked/Focus/Disabled 4 variant 등록, 라벨은 TEXT 프로퍼티(`label`, 기본값 "로그인 상태 유지"), 원본(`247:6822`/`247:6825`)과 hex/opacity/바인딩 단위 일치. 신규 토큰 0개(기존 `color/gray/0`/`color/ink/900` 재사용). 스펙 시트 `475:762` 신설. **라디오**: 확정 8프레임 ELLIPSE 32건 전수 스캔 결과 라디오 패턴 0건 + SCR-002가 Select/TypeSelector로 이미 커버 → 미등록 판단(근거 기록). **디바이더**: Contact Row가 이미 자체 구분선 보유 + 확정 프레임에 독립 divider 도형 0건 → 미등록 판단(근거 기록). CornerInput 스펙 시트(`344:740`) 라벨은 이미 정상이라 수정 불필요. `docs/design/design-system.md` 0-17절/14절 append(문서 손상 없음, 헤더·기존 절 보존 확인).
-- **ux-designer 병행 검토 결과**: "로그인 상태 유지" 체크박스가 01/02/04 기획 문서 어디에도 대응 기능 요구사항(세션 지속 로직)이 없음을 확인·보고(삭제/추가 판단은 하지 않음, 발견 사실만). 8개 확정 프레임 재스캔에서 신규 불일치 3건 발견: (1) main-검색없음 헤더가 "검색결과 총 6건" 고정 표시(실제 0건과 불일치), (2) "전체" 카테고리(비검색) 상태에서도 헤더가 "검색결과" 접두어 유지(02문서는 "총 N건"만 정의), (3) main-삭제 모달이 커스텀 모달인데 02문서 SCR-002는 여전히 native confirm()으로 서술 — 처리 여부는 사용자 확인 필요, 이번 라운드에서 조치하지 않음.
-- **design-qa 감사 — 우여곡절 있었으나 최종 PASS**: 1차 감사에서 HIGH 2건(Label 3개 variant + Disabled Box의 paint opacity 0.5 누락) 지적 → design-systems 재호출(2회 토큰 한도 초과 후 재시도) → design-systems가 raw script로 "이미 0.5 정상"이라 반박 → design-qa 재검증도 여전히 FAIL(코드 변환 결과 기반) → **스크린샷 순수 시각 비교로 최종 판정**한 결과 실제로는 opacity 정상 반영돼 있었음이 확인돼 PASS로 철회. 원인은 `get_design_context`(className 기반 코드 변환)가 바인딩된 변수 fill의 paint opacity를 codegen 출력에 반영하지 않는 도구 한계로 추정(위 정책 메모에 교훈 기록).
-- 상태: 완료. ux-designer가 발견한 신규 불일치 3건은 사용자 확인 필요 항목으로 메인 세션에 보고, 이번 라운드에서 조치하지 않음.
+### 2026-07-16 harness-auditor 첫 B범위 감사 — design-system.md 내부 정합성 3건 발견·보고 (턴 종료)
+- 배경: 13번 규칙에 B 범위(`docs/design/**`)가 누락돼 있던 걸 발견 즉시 정정(위 정책 메모 참고). 정정 직후 첫 B 범위 감사를 harness-auditor에게 요청.
+- 발견 3건: (1) 9-1절 본문에 Focus 링의 FocusRing 자식 RECTANGLE 메커니즘 서술이 없는데 18/19절이 "9-1절 공식 그대로"라며 인용하는 앞뒤 불일치. (2) NeoBtn Amber/Teal이 0-25절에서 이미 해제됐는데 컴포넌트 표/보류 문단이 현재형으로 남아있는 stale 서술. (3) 8절 "활성 레거시 0개" 선언이 0-25절 이후 추가 해제분(24 variant)을 반영 못한 스코프 문제.
+- 메인 세션이 1건(구 Style 언급)을 직접 grep으로 재확인해 실제 결함임을 확정 → 사용자 승인("응") → 신뢰 형식 승인으로 재개.
+
+### 2026-07-16 실행 라운드 — harness-auditor 발견 3건 문서 정정 + 재검증 (40차)
+- 전부 `docs/design/design-system.md` 텍스트 정정, Figma 조작 없음. 지시가 이미 구체적(줄 번호/원인/조치 방식 명시)이라 design-prompter 생략, design-systems에 직접 지시.
+- design-systems 결과: (1) 9-1절 Focus 항목에 FocusRing 자식 RECTANGLE 메커니즘(offset -4.5, cornerRadius=버튼 radius+4.5, strokeWeight 3, `color/ink/900`) 정식 서술 추가, 7-2절 각주 원문 수치와 일치 확인. (2) 컴포넌트표/보류문단 2곳 + grep 재점검으로 추가 발견한 1-3절/3절 2곳, 총 4곳에 "0-25절 참고"/시점 각주 추가(원 기록은 삭제하지 않고 보존, 이 문서 관례 준수). (3) 8절 결론에 "이 절의 '0개' 선언은 14절까지 기준" 스코프 각주 추가(기존 "0개" 문구·숫자는 무변경).
+- harness-auditor 재검증 결과: **3건 모두 해소, 새 불일치 없음**. 수치·컨테이너ID(`784:940`) 교차검증 일치, 목차/절 번호/앵커 손상 없음, 미각주 잔여 Amber/Teal 언급 없음(문서 전체 재grep 확인), variant 개수 산술(48→50→60→36→42)로 시간순 정합성까지 교차검증.
+- 상태: 완료. Figma 노드는 이번 라운드에서 전혀 건드리지 않음.

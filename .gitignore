@@ -1,5 +1,6 @@
 .venv/
 __pycache__/
+.DS_Store
 .pytest_cache/
 pdf-maker/node_modules/
 pdf-maker/결과.pdf

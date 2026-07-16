@@ -10,23 +10,23 @@
 
 ## A. 그대로 유지 (하네스 — 포터블)
 
-- `.claude/agents/*.md` — 전체 23개(디자인팀 12 + 기획팀 5 + 개발+QA팀 4[dev-pl, backend-engineer, frontend-engineer, qa-engineer] + code-reviewer, doc-writer)
+- `.claude/agents/*.md` — 전체 24개(디자인팀 12 + 기획팀 5 + 개발+QA팀 4[dev-pl, backend-engineer, frontend-engineer, qa-engineer] + code-reviewer, doc-writer, harness-auditor)
 - `.claude/skills/*/SKILL.md` — design-concept-round, report-pdf, review, summary
 - `.claude/commands/*.md` — summary.md
 - `.claude/hooks/stop-failure-notify.sh` — 스크립트 로직 자체는 포터블(단, 아래 C-2 웹훅 파일은 별도 취급)
-- `docs/harness/**` — claude-harness.md, design-team/figma-file-organization.md, 이 리셋 체크리스트
+- `docs/harness/**` — claude-harness.md, git-workflow.md, design-team/figma-file-organization.md, 이 리셋 체크리스트, report-format-guide.md·report-style.css(범용 보고서 HTML/PDF 템플릿 — 프로젝트 브랜드 색이 아니라 남색/호박색 범용 톤이라 포터블. `docs/design/`에 잘못 있던 것을 이번에 이쪽으로 재분류함, 2026-07-16)
 - `docs/karpathy_skills.md`
 - `pdf-maker/make-pdf.js`, `pdf-maker/package.json` — md→PDF 변환 유틸리티(절차/도구), 생성물은 B그룹
 - `.gitignore` — 항목 전부가 이 프로젝트 데이터가 아니라 Python 범용 관례(`.venv/`, `__pycache__/`, `.pytest_cache/`)나 A그룹 도구/인프라에 종속된 무시 규칙(`pdf-maker/node_modules/`, `pdf-maker/결과.pdf`, `.claude/settings.local.json`, `.claude/hooks/.slack-webhook-url`)이다. 새 프로젝트에서 일부 경로(예: pdf-maker를 안 쓰는 프로젝트)가 안 맞아도 그냥 매칭 안 될 뿐 해롭지 않으므로 그대로 유지한다
 
 ## B. 삭제/초기화 (이 프로젝트 데이터 — 포터블 아님)
 
-- `docs/design/*.md` — brand-guide.md, design-system.md, graphic-assets.md, missing-screens.md, report-format-guide.md
+- `docs/design/*.md` — brand-guide.md, design-system.md, graphic-assets.md, missing-screens.md
 - `docs/design/confirmed/*.md` — 사용자가 확정한 이 프로젝트 디자인 기록
 - `docs/planning/**` — 00~06 번호 문서(md·PDF 전부), `old/`, `service-concept.md`, `tech-architecture.md` 전부
 - `docs/pdf/**` — 생성된 PDF/HTML 산출물
 - `.claude/logs/stop-failures.log`
-- `backend/`, `frontend/`, `tests/`, `pdf-maker/문서.html`, `pdf-maker/결과.pdf` — 실제 애플리케이션 코드/생성물. **`backend/CLAUDE.md`/`frontend/CLAUDE.md`(이 프로젝트의 확정 스택·파일구조 요약)도 포함** — 삭제해도 문제없다, backend-engineer/frontend-engineer가 새 프로젝트에서 작업을 시작하면 그 프로젝트의 `docs/planning`·`docs/design`을 읽어 그 자리에서 다시 만들어내도록 하네스 규칙(`.claude/agents/backend-engineer.md`·`frontend-engineer.md` "할 일 0번")에 이미 명문화돼 있다 — 수동으로 남겨둘 필요 없음.
+- `backend/`, `static/`, `frontend/`, `tests/`, `pdf-maker/문서.html`, `pdf-maker/결과.pdf` — 실제 애플리케이션 코드/생성물. **`backend/CLAUDE.md`/`frontend/CLAUDE.md`(이 프로젝트의 확정 스택·파일구조 요약)도 포함** — 삭제해도 문제없다, backend-engineer/frontend-engineer가 새 프로젝트에서 작업을 시작하면 그 프로젝트의 `docs/planning`·`docs/design`을 읽어 그 자리에서 다시 만들어내도록 하네스 규칙(`.claude/agents/backend-engineer.md`·`frontend-engineer.md` "할 일 0번")에 이미 명문화돼 있다 — 수동으로 남겨둘 필요 없음. **`static/`은 실제로 서빙되는 화면 코드(`index.html`/`app.js`)가 들어가는 폴더로, `backend/`·`frontend/`와 형제 폴더다(05 TRD §3) — 가이드 문서가 아니라 이 프로젝트 고유의 구현 산출물이므로 B그룹이 맞다.**
 - 루트 `CLAUDE.md` — 이 프로젝트 고유 규칙(들여쓰기, 검증 명령 등). 새 프로젝트는 새로 작성하되, 이 파일의 "행동 지침"·"기본 도구" 절만 템플릿으로 참고 가능
 - `.claude/agent-memory/*.md`의 "작업 로그" 섹션 내용 — 파일 자체는 남겨도 되지만 내용은 비우거나 "신설" 상태로 리셋(에이전트가 다음 실행 시 알아서 새로 채움)
 
@@ -38,6 +38,7 @@
    - `.claude/agents/brand-designer.md` 21번째 줄 — "이 프로젝트(연락처 관리 웹 서비스)에 맞게"
    - `.claude/agents/planning-writer.md` 17번째 줄, `.claude/agents/qa-planner.md` 23번째 줄 — `06_연락처관리_웹서비스_테스트계획서_v1.0.md` 예시 파일명
    - `docs/harness/design-team/figma-file-organization.md` 42번째 줄 — "연락처" 예시 언급
+   - `.claude/agents/service-planner.md`·`.claude/agents/tech-architect.md`·`.claude/agents/dev-pl.md` — "이 프로젝트는 FastAPI+DB 과제" 류의 스택 예시 언급. 전부 "지금 이 프로젝트는 X지만 다음 프로젝트는 그 문서를 따라간다" 식으로 명시적으로 비하드코딩 처리돼 있어 기능적으로는 안전하지만, 새 프로젝트 복사 시 예시 문구만 참고용임을 인지할 것
 4. **`~/.claude/agents/*.md` (전역)**: 디자인팀 12개 + 개발+QA팀 4개(dev-pl, backend-engineer, frontend-engineer, qa-engineer)는 이미 복사돼 있다. 기획팀 5개(planning-pl, service-planner, tech-architect, qa-planner, planning-writer)는 아직 프로젝트 로컬에만 있다 — 다른 프로젝트에서도 기획팀을 쓰려면 이때 전역으로 복사할지 결정한다(리셋과 별개로, 아직 결정 안 된 사항).
 
 ## 검증 방법 (리셋 실행 전 필수)

@@ -4,95 +4,100 @@
 
 ## 작업 로그
 
-### 2026-07-15 (14차) — 등록된 전체 컴포넌트 토큰 바인딩 전수 재감사(사용자 직접 요청, 스팟체크 아닌 전수 감사)
-
-`docs/design/design-system.md` 5절(컴포넌트 표)을 근거로 삼으려 했으나 **HIGH(신규, 최우선) — design-system.md 소스 오브 트루스 파일이 심각하게 손실된 상태**임을 발견: `Read` 전체 조회 결과 파일이 단 61줄뿐이고, 내용은 문장 중간에서 시작하는 조각 + "9-6절"/"0-11절"/"0-12절" 3개 섹션만 존재 — section 1~4/6~8(컴포넌트 표, 페이지 순서 표 등)/9(인터랙션 상태)가 전부 없음. **(15차 갱신) 이후 design-pl/design-systems가 git 이력+사고 직전 컨텍스트로 624줄 전체 복구 완료 확인, 아래 15차 참고.**
-
-이 손실 때문에 각 컴포넌트의 nodeId를 design-system.md가 아니라 4개 에이전트의 agent-memory 로그를 전수 검색해 재구성한 뒤 대표 variant 1~2개씩만 감사했다(총 13개 중 12개, Contact Row는 nodeId 미확인으로 보류) — 결과: 하드코딩 발견 0건, HIGH 1건(문서 소실).
-
-### 2026-07-15 (15차) — 문서 복구 후 전체 컴포넌트 전수 재감사 + TypeSelector/NeoInput/CornerInput/NeoSelect 독립 재확인 + Focus 순수성 전수 확인(사용자 직접 요청)
-
-design-system.md가 624줄로 복구된 뒤, 사용자 요청으로 "스팟체크가 아닌 진짜 전수 감사"를 수행. 총 16개 컴포넌트를 `get_design_context`로 직접 재조회(TypeSelector·NeoInput·CornerInput·NeoSelect·NeoBtn·Button·Icon Button·Row Action Button·Table Row Action·Sidebar Nav Item·CatBadge·Contact Row·Card·Toast·Logo·Avatar), 대표 spec sheet 3개는 `get_screenshot`으로 시각 재확인.
-
-**최우선 재확인(0-9/0-10절, 문서 복구 후 미커밋 구간) — 전부 PASS, 불일치 없음**:
-- TypeSelector(`257:28`): Selected 4종 hex 전부 doc과 정확히 일치(family #ffe4e8/#ff5a76/#a8003b, company #d8fff5/#17a398/#0a4f49, other #ede0ff/#9b72cf/#4b0d9c, friend #e0f0ff/#4a90d9/#1a4c88), Unselected 보더 `component/typeselector-unselected-border`(#ccc) 일치.
-- NeoInput(`288:12`)/CornerInput(`288:27`): Error=No/Yes × Focus=No/Yes × Content 매트릭스, nodeId·variant 개수(7개)·색상(border-error #ff5a76, text-error #a8003b, NeoInput placeholder #bbb vs CornerInput placeholder #ccc 분리 유지) 전부 doc과 일치.
-- NeoSelect(`387:13`): State=Default/Open × Content=Placeholder/Selected 4 variant, hover 옵션 `color/bg-hover-muted`(#f1f1f1) 바인딩, Elevation/Raised 적용 전부 일치.
-
-**HIGH(신규) — Button(`259:609`) Style=Amber, State=Focus(`284:1010`) 스퓨리어스 보더**: Amber Default/Hover/Press/Disabled/Loading 어디에도 보더가 없는데, Focus 상태에서만 `border border-black border-solid`(1px 검정)가 코드에 추가로 붙어있음을 발견 — `get_screenshot`(스펙 시트 `343:50`)으로 시각 재확인 결과 Amber Focus 버튼에만 실제로 얇은 검은 테두리가 렌더링됨(Default/Hover/Press/Disabled/Loading은 테두리 없음, Coral/Neutral Focus는 이 문제 없음). NeoBtn(`259:126`, 스펙 시트 `342:3`)의 동일 Amber/Focus는 이 문제가 없음을 대조 확인 — Button 컴포넌트 1건에 국한된 버그. Focus 순수성 원칙(9-1절: 링 추가 외 배경/보더/텍스트 불변) 위반. **위치: Button 컴포넌트, Style=Amber, State=Focus, node `284:1010`, Component Specs 페이지 `343:50`.** **(16차 갱신) 이후 12-1절에서 정정 완료.**
-
-**MEDIUM(신규) — 버튼류 5개 컴포넌트 Focus 배경 fill 토큰 미바인딩(하드코딩), 광범위**: NeoBtn/Button/Icon Button/Row Action Button/Table Row Action의 Focus variant는 예외 없이 배경을 raw hex(`bg-white`, `bg-[#ffcb47]`, `bg-[#17a398]` 등)로 직접 지정하고 있고, 같은 Style의 Default 형제는 전부 `var(--color-*)` 토큰으로 바인딩돼 있음. **(16차 갱신) 이후 12-2절에서 정정 완료(design-system.md 5절 표에 반영 확인).**
-
-**LOW(신규) — Contact Row(`351:299`) 루트 배경 `bg-white` 하드코딩**: **(16차 갱신) 12-3절에서 정정 완료(design-system.md 5절 표에 반영 확인).**
-
-**Focus 순수성 전수 확인 결과(위 Button/Amber 1건 제외 전부 PASS)**: TypeSelector·NeoInput/CornerInput·Sidebar Nav Item·NeoBtn·Icon Button/Row Action Button/Table Row Action 전부 배경·보더·텍스트 Focus=No/Yes 동일, 링만 추가.
-
-**나머지 컴포넌트 재확인**: CatBadge/Card/Toast/Logo/Avatar 전부 PASS, 하드코딩 없음.
-
-**종합**: HIGH 1건, MEDIUM 1건, LOW 1건 — 전부 16차 이전 라운드(12-1/12-2/12-3절)에서 정정 완료 확인.
-
-### 2026-07-15 (16차) — Focus 축을 State 열거형 값으로 소급 통합(0-15절, TypeSelector/NeoInput/CornerInput/Sidebar Nav Item 4개) 스팟체크
-
-사용자가 "[메인 세션 확인] 사용자가 실제로 승인함" 형식으로 승인한 순수 구조 재편(시각 변경 없음, 이름/속성만 재편) 작업을 감사.
-
-**PASS(1) — TypeSelector(`257:28`)**: `get_metadata`로 12 variant(Category(4)×State=Selected/Unselected/Focus(3)) 정확히 확인 — Friend/Family/Other/Company 각 3개씩. 스크린샷(스펙시트 `343:1146`)으로 Selected/Unselected 색상 과거와 동일 확인, Focus 4종은 Unselected 룩 + 포커스 링 유지 확인. ComponentSet 설명 필드에 "Focus=No/Yes" 잔재 없음(새 formula로 정확히 갱신됨).
-
-**PASS(2) — NeoInput(`288:12`)/CornerInput(`288:27`)**: 각 5 variant(Content=Filled/Placeholder × Error=No/Yes(4) + 단일 State=Focus(1)) `get_metadata`로 정확히 확인. 스크린샷(스펙시트 `344:721`/`344:740`)으로 기본 4개 시각 무변경, Focus 셀은 placeholder 텍스트+포커스 링 유지 확인. Focus variant 원본 대비 바운딩박스가 정확히 +6px(3px×2, 스펙대로 DROP_SHADOW spread 3px) 커짐을 확인해 링이 실제로 렌더링됨을 간접 검증. **(17차 갱신) 이 "+6px 바운딩박스 = 링 렌더링 확인"이라는 간접 검증 방법론에 한계가 있었음이 17차에서 드러남 — 바운딩박스만으로는 이펙트 alpha/visible 여부까지 검증되지 않는다. 17차부터는 반드시 고배율 직접 시각 확인을 병행할 것.**
-
-**MEDIUM(신규, 경미) — CornerInput 개별 Focus variant(`398:892`) description에 리네임 이전 문구 잔존**: ComponentSet(`288:27`) 레벨 description은 새 "State=Focus" formula로 정확히 갱신됐으나, 그 안의 개별 variant 노드(`398:892`, "Content=Placeholder, Error=No, State=Focus") 자체의 description 텍스트는 아직 `"Focus=Yes(포커스) 상태."`라는 구 표현을 그대로 담고 있다. NeoInput 쪽 대응 노드(`398:886`)는 이런 잔재가 없어(개별 description에 애초에 Focus 언급이 없었음) 이 결함은 CornerInput 1건에 국한된다. 사용자에게 노출되는 화면 요소가 아니라 Figma 컴포넌트 메타데이터(라이브러리 사용자용 문서)에 국한된 문제라 심각도는 MEDIUM(HIGH 아님) — 체크리스트가 명시적으로 "description 필드 정리 확인"을 요구했기에 별도 보고.
-
-**PASS(3) — Sidebar Nav Item(`258:29`)**: `get_metadata`로 3 variant(State=Active/Inactive/Focus) 확인. **핵심 리스크 포인트 재확인**: `287:17`(구 Inactive+Focus=Yes) 개별 스크린샷 + `get_design_context` 코드 확인 결과 `border-3 border-[#1a1a1a] border-solid`(3px ink), 배경 클래스(`bg-*`) 없음(fills=[] 유지), `rounded-[var(--radius-10,10px)]`, `w-[173px] h-[40px]` — 9-5절에서 만든 3px ink OUTSIDE 스트로크 특수 렌더링이 손상 없이 그대로 보존됨을 확인. Active/Inactive 시각도 과거와 동일(색상·그림자·카운트필 무변경).
-
-**PASS(4) — Component Specs 스펙 시트 4개**: `343:1146`/`344:721`/`344:740`/`343:1106` 전부 새 variant 개수(12/5/5/3)에 맞게 그리드 재구성됨을 스크린샷으로 확인, "Focus=No/Yes" 표기 잔재 없음(전부 "State=Focus" 라벨). Focus 셀의 포커스 링이 클리핑되지 않고 온전히 보임(design-systems가 보고한 `clipsContent` 버그 정정이 실제로 적용됨) — Default(연회색 얇은 보더) 대비 Focus(검은 두꺼운 보더+링) 시각 차이가 스크린샷에서 명확히 구분됨.
-
-**PASS(5) — 문서(design-system.md)**: 전체 698줄로 손상 없음 확인(14차의 파일 손실 재발 아님). 0-15절이 실제로 추가돼 있고 보고 내용과 정확히 일치. 5절 컴포넌트 표의 TypeSelector/Sidebar Nav Item/NeoInput/CornerInput 4개 행 모두 새 variant 수(12/3/5/5)와 0-15절 참조로 갱신됨을 확인. 9-3절은 삭제되지 않고 제목에 "⚠ 과거 기록, 아래 참고" 표시 + 본문에 "**⚠ 2026-07-15, 0-15절 갱신**... 과거 기록으로 보존한다(삭제하지 않음)" 명시적 보존 문구와 함께 원 표가 그대로 남아있음을 확인. 7-2절 해당 항목도 취소선+RESOLVED로 정확히 갱신됨.
-
-**PASS(6, 참고 항목) — 삭제 9개 variant 인스턴스 검증**: 구 그리드 프레임 4개(`343:1149`/`403:11`/`403:918`/`343:1109`)와 삭제된 마스터 variant 3개(`287:918`/`288:10`/`287:14`, 대표 샘플)를 `get_metadata`로 직접 재조회한 결과 전부 "노드 없음" 에러 — 보고대로 삭제 완료 확인. **추가 검증(design-systems 보고에 없던 부분)**: 확정 프레임 `main-수정`(`248:8103`) 내부의 "종류" 선택 칩 4개(`399:198`/`399:242`/`399:243`/`399:244`)가 실제로는 TypeSelector 마스터의 진짜 INSTANCE임을 발견(0-9절은 이 프레임에 Avatar 외 인스턴스가 없다고 기록했었음 — 오래된 기록과 현재 상태가 다름, 별도 LOW 관찰 사항). 4개 인스턴스의 mainComponent를 개별 재조회한 결과 각각 `257:16`(Friend Selected)/`257:7`(Family Unselected)/`257:10`(Other Unselected)/`257:13`(Company Unselected)로 전부 **보존된(삭제되지 않은) variant**를 참조하고 스크린샷도 정상 렌더링(빈 박스 없음) — 삭제된 9개 variant를 참조하는 깨진 인스턴스는 발견되지 않음.
-
-**LOW(관찰, 이번 작업 결함 아님) — 0-9절 인스턴스 리스크 기록과 현재 상태 불일치**: 0-9절은 "main-수정 프레임엔 Avatar 외 인스턴스가 없다"고 명시했으나 이번에 직접 재확인한 결과 TypeSelector 인스턴스 4개가 실제로 존재한다(위 PASS 6 참고). 오늘 작업으로 생긴 문제는 아니고 오늘 확인한 결과 깨짐도 없지만, 과거 리스크 평가 기록의 정확성에 의문이 있어 design-pl 경유로 참고 전달 권고(다음 컴포넌트 삭제 라운드의 인스턴스 전수 검색 신뢰도와 관련).
-
-**종합**: 체크리스트 6개 항목(TypeSelector/NeoInput·CornerInput/Sidebar Nav Item/스펙시트/문서/인스턴스 참조) 전부 PASS 또는 정정 완료 확인. **MEDIUM 1건 신규**(CornerInput 개별 variant description 잔재), **LOW 1건 신규**(0-9절 과거 리스크 기록 부정확, 오늘 결함 아님). HIGH 0건 — 핵심 리스크 포인트였던 Sidebar Nav Item 9-5절 특수 스트로크 기법은 완전히 보존됨을 확인.
-
-### 2026-07-15 (17차) — NeoInput/CornerInput `Content=Filled, Error=Yes, State=Focus`(0-16절 복원분) 스팟체크
-
-배경: 29차(0-15절)에서 실수로 함께 삭제됐던 "빨간 에러 보더+검은 포커스 링 동시 존재" 조합을 0-16절에서 복원(신규 노드 NeoInput `456:2`, CornerInput `456:4`). design-systems는 0-16절에서 strokes/텍스트fills/effects(DROP_SHADOW spread3·offset0,0·color#1a1a1a·alpha1)를 속성 단위로 재조회해 기존 참조 노드와 일치한다고 자체 재대조를 완료했다고 기록했으나, **이번 스팟체크에서 고배율(`maxDimension:2000`) 직접 스크린샷으로 재확인한 결과 실제 렌더링은 다르다는 것을 발견했다.**
-
-**HIGH(신규, 최우선) — `Content=Filled, Error=Yes, State=Focus` 포커스 링이 시각적으로 렌더링되지 않음(NeoInput `456:2`, CornerInput `456:4` 둘 다)**:
-- 대조군: 기존에 이미 작동 확인된 `Content=Placeholder, Error=No, State=Focus`(NeoInput `398:886`, CornerInput `398:892`)를 고배율로 다시 스크린샷한 결과, Default(`398:884`/`398:890`, 180×36/392×44, 바운딩박스 무변화)와 뚜렷이 구분되는 두꺼운 검은 사각 아웃라인이 명확히 보이고, 바운딩박스도 186×42/398×50(+6px/+6px, spread 3px 만큼 확장)로 커진다 — 여기까지는 정상.
-- 문제 노드: `456:2`/`456:4`를 동일한 방식(고배율, base64 직접 확인)으로 재확인한 결과, 바운딩박스는 동일하게 186×42/398×50(+6px/+6px)로 **지오메트리상 커져 있었으나**, 실제 렌더된 이미지에는 검은 링이 전혀 보이지 않고 빨간/코랄 보더(Error 보더)만 보인다 — Default 짝(`378:4`/`378:856`, 180×36/392×44, 바운딩박스 무변화)과 육안상 구분이 불가능할 정도로 동일하다.
-- `Component Specs` 스펙 시트(`344:721`/`344:740`)를 페이지 컨텍스트 그대로(전체 프레임) 재확인해도 동일 — "Focus" 행의 왼쪽 셀("Content=Placeholder, Error=No 기반")은 위 Default 행보다 뚜렷하게 굵고 검은 보더로 시각적으로 구분되지만, 오른쪽 셀("Content=Filled, Error=Yes 기반")은 바로 위 Default 행의 빨간 보더 셀과 두께·색이 완전히 동일해 보여 사용자가 스펙 시트만 훑어봐도 포커스 상태를 구분할 수 없다.
-- **해석**: 바운딩박스가 두 경우 모두 동일하게 확장된 것으로 보아 DROP_SHADOW 이펙트 자체는 지오메트리 레벨에서 존재하는 것으로 보이나(spread 3px 계산에는 반영됨), 실제 페인트(alpha/visible/color)가 `456:2`/`456:4`에서만 깨져 있을 가능성이 높다 — design-systems의 0-16절 자체 재대조는 속성값(재질의 결과 텍스트)만 확인했고 실제 렌더 스크린샷 검증은 문서에 명시돼 있지 않다(0-15절 작업 때는 명시적으로 스크린샷 검증을 언급했는데 0-16절엔 그 문구가 없음 — 검증 누락 추정).
-- **접근성 영향**: 이 조합(폼 필드에 값이 입력된 채 유효성 오류가 있고, 키보드 포커스가 가 있는 상태)은 실사용 빈도가 매우 높은 시나리오인데, 키보드 포커스 표시가 시각적으로 전혀 구분되지 않아 WCAG 2.4.7(Focus Visible) 위반이다.
-- **위치**: NeoInput `456:2`(Input 페이지 `100:2`, ComponentSet `288:12`), CornerInput `456:4`(Input 페이지 `100:2`, ComponentSet `288:27`), Component Specs 스펙 시트 `344:721`/`344:740`의 Focus 행 오른쪽 셀.
-- **개선안**: design-systems가 `456:2`/`456:4`의 raw effect 프로퍼티(alpha/visible/blendMode/color)를 `398:886`/`398:892`(정상 작동 참조)와 나란히 직접 재조회해 차이점을 찾아 정정. 속성 텍스트 일치만으로 끝내지 말고 반드시 고배율 스크린샷으로 실제 페인트 여부까지 재검증할 것.
-
-**PASS — 나머지 5개 항목**:
-1. 6 variant 확인: `get_metadata`로 NeoInput/CornerInput 각각 정확히 6개 variant(Content×Error 4 + State=Focus 2) 확인.
-2. (위 HIGH에 통합)
-3. 기존 5개 variant 무회귀: `261:10`/`378:4`/`398:884`/`398:888`(NeoInput), `261:12`/`378:856`/`398:890`/`398:894`(CornerInput) 전부 바운딩박스가 원본 크기 그대로(확장 없음)이고 색상·보더 과거와 동일함을 재확인. `398:886`/`398:892`(기존 Focus)도 무회귀.
-4. Placeholder×Error=Yes×Focus=Yes(3중 조합) 없음: `get_metadata` 결과 NeoInput/CornerInput 각 6개 variant 목록에 해당 조합 부재 확인 — 의도대로 제외 유지.
-5. 스펙 시트 FocusSection 2칸 분리: `344:721`/`344:740` 스크린샷 확인 결과 "Focus" 행이 좌(Placeholder×Error=No 기반)/우(Filled×Error=Yes 기반) 2개 셀로 라벨과 함께 정상 분리돼 있고 레이아웃 겹침/깨짐 없음(단, 우측 셀의 시각적 문제는 위 HIGH 참고).
-6. 문서(design-system.md) 0-16절/0-15절 정정 노트/5절 표: NeoInput/CornerInput을 6 variant로 정확히 반영, 텍스트 서술 자체는 정합적. 단, 0-16절이 "재조회해 ... 기존 노드와 hex·바인딩 단위로 정확히 일치함을 확인" 이라고 적은 자체 재대조 결론이 실제 렌더 상태와 어긋나는 것으로 드러나 이 서술은 신뢰할 수 없다(위 HIGH 근거).
-
-**종합**: HIGH 1건(포커스 링 렌더링 실패, NeoInput+CornerInput 2개 노드+스펙시트 2곳), 나머지 5개 항목 PASS. MEDIUM/LOW 0건.
-
 ### 2026-07-15 (18차) — Checkbox 컴포넌트(`474:899`, 0-17절/14절) 신규 등록분 독립 재감사
 
-design-systems가 0-17절/14절에서 "원본(`247:6822`)과 hex·opacity·바인딩 단위로 정확히 일치"라고 자체 재대조를 완료했다고 기록한 Checkbox 4 variant를, design-qa가 별도 시선으로 `get_design_context`/`get_screenshot`으로 재실측했다. 원본 확정 8개 프레임은 이번에도 읽기 전용으로만 확인(login `247:6666` 스크린샷 재확인 결과 무수정).
+**HIGH(신규) — Label 텍스트 paint opacity 0.5가 Default/Checked/Focus 3개 variant 전부에서 누락**: 원본 `247:6825`는 rgba(26,26,26,0.5)인데 등록 컴포넌트는 풀 오퍼시티로 바인딩. **(18-1차, 0-18절에서 design-systems가 raw script 재조회 결과 실제로는 4곳 모두 opacity 0.5로 이미 정확히 반영돼 있었음을 확인 — design-qa의 FAIL 판정은 `get_design_context`(className 기반)에 의존한 오탐으로 정정됨. 이후 감사에서는 opacity 검증 시 codegen보다 raw script/스크린샷을 우선할 것.)**
 
-**HIGH(신규) — Label 텍스트 paint opacity 0.5가 Default/Checked/Focus 3개 variant 전부에서 누락**: 원본 `247:6825`는 `get_design_context` 코드에 `text-[rgba(26,26,26,0.5)]`로 명확히 opacity 0.5가 찍혀 나온다. 그런데 등록된 Checkbox의 Default(`474:884`)/Checked(`474:887`)/Focus(`474:891`) 라벨은 전부 `text-[color:var(--color-ink-900,#1a1a1a)]`로 알파 채널 없이 풀 오퍼시티로 바인딩돼 있다(Disabled(`474:894`)에만 별도의 `opacity-85` 클래스가 붙어 있어, 코드 생성기가 opacity를 감지하면 클래스로 노출한다는 것 자체는 확인됨 — 즉 Default/Checked/Focus에 opacity 클래스가 없는 것은 렌더링 누락이 아니라 실제로 opacity가 1임을 강하게 시사). design-system.md 0-17절/14절은 "Label 텍스트 색/opacity | ink/900, paint opacity 0.5 | 원본과 동일 | 일치"라고 명시했으나 실측 결과와 어긋난다. **확정 디자인 대비 추출 정확도 최우선 원칙 위반** — hex 자체(#1a1a1a)는 맞지만 원본이 가진 opacity 레이어가 통째로 누락됐다. **위치: Checkbox 컴포넌트, ComponentSet `474:899`, State=Default(`474:895`)/Checked(`474:896`)/Focus(`474:897`) 3개 variant의 라벨 텍스트 노드(`474:884`/`474:887`/`474:891`).**
+**HIGH(신규) — Disabled variant Box fill/stroke paint opacity 0.5가 반영되지 않음**: 위와 동일한 오탐 패턴으로 추정, 0-18절에서 정확히 반영돼 있음이 재확인됨.
 
-**HIGH(신규) — Disabled variant Box(14×14 인디케이터) fill/stroke paint opacity 0.5가 반영되지 않음**: `get_design_context` 결과 Disabled(`474:898`)의 Box(`474:893`) 클래스는 `bg-[var(--color-gray-0,white)] border-2 border-[var(--color-ink-900,#1a1a1a)] border-solid`로, Default Box(`474:883`)와 opacity 관련 차이가 전혀 없다. 스펙 시트 셀 스크린샷(Disabled `475:782` vs Default `475:766`, 200×70 동일 캔버스로 직접 비교)에서도 두 박스의 보더 진하기가 육안상 구분되지 않는다 — opacity 0.5라면 `#1a1a1a` 2px 보더가 흰 배경 위에서 뚜렷하게 중간 회색(~#8d8d8d)으로 옅어져야 하는데 그렇지 않다. design-system.md 0-17절/9-1절/14절은 "Box fill/stroke paint opacity 0.5"를 명시하고 14절 표는 "일치"로 재확인했다고 적었으나 실측과 다르다. **9-1절 Disabled 공통 공식(배경/보더 opacity 0.5)을 따르지 않는 유일한 컴포넌트로 확인됨** — 다른 9개 Disabled 대응 컴포넌트(NeoBtn 등)는 15차 이전 라운드에서 이 공식 준수가 이미 확인된 바 있어 Checkbox 1건에 국한된 결함으로 보인다. **위치: Checkbox 컴포넌트, State=Disabled(`474:898`), Box 노드 `474:893`.**
+**PASS — 나머지 항목**: Box 크기/색, Checked 체크마크, Focus 순수성(링 색 자체는 시스템 공통의 raw hex 하드코딩 기존 갭, 9-4절 기 문서화 — Checkbox 신규 결함 아님), TEXT 프로퍼티, 스펙 시트, 라디오/디바이더 판단 근거, 원본 무수정.
 
-**PASS — 나머지 항목**:
-- Box 14×14 크기·흰 배경·2px ink 보더(border-box=INSIDE 상당)는 원본 `247:6823`과 코드 레벨에서 정확히 일치(4 variant 전부 `size-[14px]`, `border-2 border-[var(--color-ink-900,#1a1a1a)]`).
-- Checked(`474:896`) 체크마크: 형태 자연스러움, Pixel/* 마이크로 아이콘 트랙과 스타일 충돌 없음(단순 프리미티브로 별도 그래픽 트랙 아님, 문서 서술과 일치).
-- Focus(`474:897`) 순수성: Box 클래스가 Default와 동일(`border-2 border-[var(--color-ink-900,#1a1a1a)]`)하고 스퓨리어스 보더 없음 — 과거 Button Amber Focus(15차 HIGH) 같은 사고 재발 없음. DROP_SHADOW 추가만 확인(단, 링 색 자체는 시스템 전체와 동일하게 raw `#1a1a1a` 하드코딩 — 9-4절에 이미 시스템 공통 갭으로 문서화된 기존 이슈라 Checkbox 신규 결함 아님, 참고만).
-- `label` TEXT 컴포넌트 프로퍼티: 4 variant 전부 함수 시그니처에 `label?: string`로 노출됨, 기본값 "로그인 상태 유지" 확인.
-- 스펙 시트(`Spec — Checkbox`, `475:762`): 제목+설명+4칸 그리드(Grid `475:765`)+상태 라벨 텍스트 4개 전부 스크린샷으로 정상 렌더링 확인, variant 피커 없이 훑어보기 가능.
-- 라디오/디바이더 미등록 판단(0-17절 2)/3)): ELLIPSE/LINE 전수 스캔 근거와 화면정의서 근거가 design-system.md에 명확히 기록돼 있음을 확인(값 재감사는 대상 아님, 문서화 상태만 확인).
-- 원본 확정 프레임: login(`247:6666`) 스크린샷 재확인 결과 체크박스 포함 전체 프레임 무수정 확인.
+**종합(정정 반영)**: opacity 관련 2건은 design-systems 재조회로 실제로는 이상 없음 확인됨 — **codegen(get_design_context)로 opacity를 판정하면 오탐이 난다는 교훈**을 다음 라운드에 반영(19차부터 실제 적용). LOW 1건(페이지 순서 도구 한계로 완전 재확인 불가).
 
-**페이지 순서(0번 원칙 관련 한계)**: `get_metadata`(nodeId 없이 호출)는 이번에도 페이지 1개(`--- BRAND CONCEPTS ---`)만 반환해 전체 순서를 도구로 직접 재확인할 수 없었다(문서화된 기존 도구 한계). 대신 개별 nodeId로 Link(`341:2`)/Checkbox(`474:881`)/`--- SCREENS ---`(`364:7`) 3개 페이지의 실제 존재를 각각 확인 — 전부 정상 존재. Checkbox가 정확히 Link와 `--- SCREENS ---` 사이(idx 25)에 있는지 순서 자체는 도구 한계로 완전히 재확인하지 못함(LOW, design-pl 참고).
+### 2026-07-16 (19차) — Stage2 확정 디자인 세트(8프레임) 토큰 바인딩 반영분(0-20절) 독립 2차 검증
 
-**종합**: HIGH 2건 신규(Label opacity 0.5 누락 — Default/Checked/Focus, Disabled Box opacity 0.5 누락) — 둘 다 design-systems의 0-17절/14절 자체 재대조가 "일치"로 잘못 보고한 항목. 나머지 체크리스트 항목(Box 크기/색, Checked 체크마크, Focus 순수성, TEXT 프로퍼티, 스펙 시트, 라디오/디바이더 판단 근거, 원본 무수정)은 전부 PASS. LOW 1건(페이지 순서 도구 한계로 완전 재확인 불가).
+배경: design-systems가 Stage1(실측+diff+토큰 신설)·Stage2(컴포넌트 리바인딩+문서 갱신) 2단계로 새 확정 디자인 세트(`501:2505` 하위 8프레임)를 반영 완료, 자체 재대조도 마쳤다고 보고. 사용자가 "토큰과 스타일은 컴포넌트에 꼭 연결되어 있어야한다"고 강조해 design-qa가 독립적으로 재검증(1건 제외 opacity codegen 오탐 교훈 반영 — 이번엔 raw hex 판정에 `get_design_context`(className) + `get_screenshot`(시각/픽셀 비교) 병행 사용, opacity는 다루지 않는 라운드라 해당 리스크 낮음).
+
+**감사 대상 8건 전부 PASS — hex·바인딩 확정 프레임과 정확히 일치**: Sidebar Nav Item/Card/Icon Alert/NeoBtn/Button/Link/Checkbox/Contact Row 전부 확인(상세는 git 이력 참고).
+
+**의도된 예외 3건 — 정확히 그렇게 처리됐음을 확인(결함 아님)**: main-삭제/main-알림창 구값 잔존(read-only 방침), 헤더 로그아웃 NeoBtn 미토큰화, main-검색없음 "전체 보기" 버튼 신규 variant 보류.
+
+**Colors 카탈로그(`95:2`) 갱신 확인 — PASS(당시)**: "Stage2 신규 Primitives(6개)"/"Stage2 신규 Semantic Colors(7개)" 섹션(`625:1078`/`625:1104`) 존재, 13개 스와치 hex 전부 일치 — **단, 이 섹션은 이후 0-21절에서 임시 섹션으로 재판정되어 정식 Primitives(`95:44`)/Semantic(`95:123`) 그리드로 통합·삭제됨(20차에서 재확인).**
+
+**design-system.md 문서 상태 — PASS**: 845줄, 손상 없음.
+
+**MEDIUM(신규) — NeoBtn/Sidebar Nav Item 스펙 시트 캡션 텍스트, 0-20절의 "갱신 완료" 주장과 실제 불일치**: Link/Checkbox 캡션은 Stage2 문단 반영됐으나 NeoBtn(`342:5`)/Sidebar Nav Item(`343:1108`) 캡션은 구 설명 그대로 — 이후 별도 라운드에서 정정 완료(0-20절 각주에 반영 확인, 20차에서 재확인).
+
+**종합**: 8건 전부 PASS, 의도된 예외 3건 확인, MEDIUM 1건(문서 서술 부정확) — 이후 정정 완료.
+
+### 2026-07-16 (20차) — Disabled 색 토큰화 라운드(Stage2-a/b/c, 0-22/0-23절) 독립 재검증
+
+배경: opacity 기반 Disabled → 색 토큰 기반(bg-disabled/border-disabled/text-disabled) 전환 라운드 완료 보고에 대한 독립 재감사. 특히 "FOUNDATIONS 스와치가 또 다른 별도 임시 섹션에 들어간 것 아니냐"는 사용자 의심 지점을 최우선 검증.
+
+**HIGH(신규, 최우선) — FOUNDATIONS Colors 페이지, 신규 Disabled 토큰 4종이 정식 Primitives(`95:44`)/Semantic(`95:123`) 그리드가 아니라 별도 병렬 섹션("신규 Primitives" `436:3`, "Semantic Colors (Additional)" `436:143`, 둘 다 0-14절 기원)에 추가됨**. 바로 앞선 라운드(0-21절)가 정확히 이 파편화 패턴("Stage2 신규" 임시 섹션 `625:1077~1104`)을 정리해 "신규 토큰은 정식 Primitives/Semantic 그리드에 통합"이라는 원칙을 확립했는데, 0-23절 6항은 "0-21절 관례를 그대로 따랐다"고 서술하면서도 실제로는 0-21절이 정리한 대상이 아닌 별개의 기존 병렬 섹션(`436:3`/`436:143`)에 추가해 동일한 파편화가 재현됐다 — 문서 서술도 이를 "관례 준수"로 잘못 기술. 부수: `436:2` 제목이 gray/425 추가 후에도 "22개"로 카운트 미갱신(실제 23개). **개선안**: gray/425(`650:2`)→`95:44`, bg/border/text-disabled(`650:6/10/14`)→`95:123`으로 재통합, 또는 최소 0-23절 서술과 `436:2` 카운트 정정. **(21차에서 완전히 재통합 완료 확인됨 — 아래 참고.)**
+
+**PASS — 토큰 값**: `color/bg-disabled`(`643:2`)=#929292(gray/425), `border-disabled`(`643:3`)=#5C6366(gray/600), `text-disabled`(`643:4`)=#555555(gray/650) raw 스와치 재조회로 정확히 일치.
+
+**PASS — 4개 컴포넌트 적용**(NeoBtn/Button/Table Row Action/Checkbox Disabled variant): className 바인딩 + 스크린샷 시각 확인 둘 다 통일된 회색 톤, opacity 1 정상 확인.
+
+**PASS — Input 예외**(NeoInput `644:2`/CornerInput `644:963`): 배경/보더만 disabled 토큰, 텍스트는 `color/ink/900` 유지, `text-disabled` 미사용 확인 — 지시대로 정확.
+
+**PASS — 문서 정합성**: design-system.md 900줄 전체 Read, 손상 없음(절 번호 연속 0-1~0-23/1~12절). 9-1/9-4/5절/7-2절 전부 최종값과 Icon Button/Row Action Button 미적용 TODO 정확히 반영.
+
+**참고(HIGH/MEDIUM 아님)**: Icon Button/Row Action Button Disabled 미적용은 문서화는 정확하나, 사용자 원문("버튼, Table Row Action") 범위에 포함될 가능성 있어 design-pl 통해 재확인 권장.
+
+**종합**: HIGH 1건(FOUNDATIONS 섹션 파편화 재발), 나머지 전부 PASS.
+
+### 2026-07-16 (21차) — FOUNDATIONS Colors 섹션 완전 재통합(0-23절 6항 정정분) 재검증
+
+배경: 20차에서 지적한 HIGH(신규 Disabled 4종이 `436:3`/`436:143` 병렬 섹션에 추가됨)에 대해, design-systems가 재조사 결과 이 두 섹션이 이번 라운드가 만든 게 아니라 0-14절부터 존재해온 미통합 레거시(각 22/13개, 총 35개 기존 스와치)였음을 확인하고, 4종만 빼내는 대신 **두 섹션 전체(39개)를 정식 Primitives(`95:44`)/Semantic(`95:123`) 그리드로 완전 통합**하고 빈 섹션 프레임 4개(`436:3`/`436:143`/`436:2`/`436:142`)를 삭제했다고 보고. 독립 재검증 수행.
+
+**PASS(1) — 임시 섹션 표시 완전 제거 확인**: `get_metadata`로 Colors Root(`95:40`) 전체 재조회 — 자식 섹션이 Primitives/Semantic/Contrast Notes/Category Colors/Component Colors 5개뿐, "신규"/"Additional"/"Stage2" 텍스트 노드 0건. `get_screenshot`(전체 페이지)로도 육안 재확인, 잘림/겹침 없음.
+
+**PASS(2) — 4개 노드 삭제 확인**: `436:3`/`436:143`/`436:2`/`436:142` 각각 `get_metadata` 직접 재조회 결과 전부 "not found"(삭제 확인).
+
+**PASS(3) — 39개 스와치 정식 그리드 편입 확인(스팟체크)**: Primitives Row(`95:44`) 39개(기존 16 + 신규 23, gray/425 `650:2` 포함) 전수 나열 확인, Semantic Row(`95:123`) 31개(기존 15 + 신규 16, bg-disabled/border-disabled/text-disabled `650:6`/`650:10`/`650:14` 포함) 전수 나열 확인 — hex·alias 라벨(gray/425=#929292, bg-disabled=alias gray/425 등) 전부 0-23절 문서값과 일치.
+
+**PASS(4) — Variable 실제 바인딩 회귀 없음(대표 3종 스팟체크)**: 기존 정상 작동 토큰(`color/background`=alias gray/50 `95:124`, `color/teal/500` `95:45`)은 여전히 실제 CSS var(`var(--color-background,...)`, `var(--color-teal-500,...)`)로 바인딩 확인. 신규 Disabled 토큰도 실사용 컴포넌트에서 무결 확인 — NeoInput Disabled(`644:2`) bg=`var(--color-bg-disabled,#929292)`/border=`var(--color-border-disabled,#5c6366)`/텍스트는 여전히 `var(--color-ink-900,#1a1a1a)`(text-disabled 미사용 원칙 유지), Checkbox Disabled Box(`474:893`) 동일 패턴 확인. 재통합 과정에서 실제 컴포넌트 바인딩 손상 없음.
+
+**PASS(5) — design-system.md 정합성**: 901줄 전체 Read, 손상 없음(절 번호 연속 0-1~0-23/1~12, 표 깨짐·중복 없음). 0-23절 6항 서술("두 섹션 전체 39개를 정식 그리드로 통합, 헤더+빈 프레임 4개 삭제")이 Figma 실측과 정확히 일치.
+
+**LOW(관찰, 이번 라운드 결함 아님) — FOUNDATIONS 카탈로그 스와치 자체의 바인딩 불균일**: 신규 통합된 레거시 섹션 출신 스와치들(예: `650:6` bg-disabled, `436:4` ink/800, `625:1079` sky/500)은 rectangle fill이 raw hex(`bg-[#929292]` 등, var() 아님)로만 그려져 있고 실제 Figma Variable에 바인딩돼 있지 않다 — 반면 원래부터 있던 핵심 스와치(`95:45` teal/500, `95:124` background)는 CSS var로 정상 바인딩. 단, `625:1079`(0-20/21절, 이번 라운드 이전 생성)도 이미 미바인딩 상태였음을 확인해 **이번 재통합이 새로 만든 문제가 아니라 0-14절부터의 기존 카탈로그 제작 관행**으로 판단됨. 실사용 컴포넌트(NeoInput/Checkbox 등)는 전부 정상 바인딩이라 실질 영향 없음 — 카탈로그 페이지 자체의 스와치를 향후 라이브 바인딩 방식으로 통일할지는 별도 라운드 판단 사항으로 기록만 남김.
+
+**종합**: 20차 HIGH 완전히 해소 확인(전부 PASS). 신규 LOW 1건(카탈로그 스와치 미바인딩, 기존 관행/실질 영향 없음, 결함 아님·참고 기록).
+
+### 2026-07-16 (22차) — 확정 8프레임 전수 대조 후속 반영 P1~P15(13절) 독립 재검증
+
+배경: 34차 전수 대조로 발견된 15건(P1~P15) 중 11건 REFLECT/4건 조치없음 처리 완료 보고에 대한 독립 재감사. `use_figma`(raw script) 도구가 없어 전부 `get_design_context`/`get_metadata`/`get_screenshot` 조합으로 검증(고배율 스크린샷을 raw 색상 판정의 1차 근거로 우선 사용, 18차 opacity 오탐 교훈 반영).
+
+**HIGH(신규, 최우선) — P12 Checkbox 체크마크(`474:888`) 색상, design-system.md의 "ink/900로 정정 완료" 서술과 실제 렌더링 불일치 의심**: State=Checked(`474:896`) 박스를 `get_screenshot`으로 네이티브 해상도(14×14) 확대 확인한 결과, 체크마크가 밝은/흰색 계열로 보이고 ink(#1A1A1A) 검정으로 보이지 않는다. 같은 파이프라인의 State=Default(`474:895`, 2px ink 보더가 뚜렷한 검정으로 렌더링됨)를 대조군으로 삼아 비교했을 때 체크마크 톤이 명백히 더 밝다 — ink 검정이라면 sky/500(#1395E6) 배경 위에서 뚜렷한 어두운 마크로 보여야 하는데 실제로는 반대로 밝게 보인다. `get_design_context`는 이 노드를 boolean 그룹 이미지로 플래튼해 className에 색상 텍스트가 노출되지 않아 hex 자체는 확정할 수 없었다(raw script 부재로 인한 도구 한계) — 그러나 시각적 증거는 P12가 주장하는 "border-divider-cool(옅은 하늘색)→ink/900(검정) 정정"이 실제로 반영되지 않았거나, 반영됐어도 흰색 등 전혀 다른 값으로 렌더링되고 있음을 시사한다. **개선안**: design-systems가 `474:888`의 stroke boundVariable/hex를 raw script로 직접 재조회해 실제 값을 확인하고, ink/900이 아니면 재정정 후 다시 스크린샷 검증할 것 — 이번 항목은 "최우선" 지정 항목이라 재확인 없이 넘기지 않는다.
+
+**PASS — P1**: NeoBtn(`259:126`) ComponentSet에 `712:2`(Sky)/`712:4`(Navy)가 정상 위치(x=3016/3086, 기존 variant열 바로 뒤)로 편입 확인. fill/텍스트 전부 `var(--color-bg-brand-blue)`/`var(--color-ink-900)`/`var(--color-bg-accent-navy)`/`var(--color-text-inverse)` 토큰 바인딩(raw hex 없음). WCAG 상대휘도 공식 독립 재계산 결과 Sky+ink=5.363:1, Navy+white=8.907:1 — 문서 기재값(5.36/8.91)과 소수점까지 일치.
+
+**PASS — P2**: RowActionButton Danger/Default(`260:53`) bg=`var(--color-bg-cta-amber,#ffce2c)`, border=`var(--color-ink-900,#1a1a1a)` 1px 확인. Neutral(`260:34`)은 `var(--component-row-action-button-border-neutral,#1c1f21)` 그대로 무수정 확인.
+
+**PASS — P4**: NeoInput 4개(`261:10`/`378:4`/`398:884`/`398:888`) 전부 drop-shadow Hard-2 확인, Focus(`398:886`/`456:2`)·Disabled(`644:2`) 전부 제외 확인. NeoSelect Default 2개(`261:660`/`401:866`) Hard-2 확인, Open 2개(`387:12`/`401:869`) 트리거는 Hard-2 없이 옵션패널만 Elevation/Raised — 이중 그림자 방지 정확히 반영.
+
+**PASS(값) / MEDIUM(문서 서술) — P5**: CountPill Active(`258:12`)에 drop-shadow Hard-1 실제 적용 확인(PASS). 단 컴포넌트 자체의 Figma description이 "Active=흰 배경, 그림자 없음"으로 이번 변경 이전 서술 그대로 남아 있어 실제 상태와 모순 — 컴포넌트 description 필드 자체가 SoT 중 하나인데 갱신 누락. NeoBtn(`259:126`) description도 P1(Sky/Navy 추가)·P11(Amber ink 보더 추가)을 반영하지 않고 구 서술 그대로.
+
+**PASS — P6/P7**: Icon Button 5 State 중 3개(`259:610`/`284:1040`/`284:1042`) className에 rounded 클래스 없음(radius 0) 확인. Card Modal(`262:6`)/Auth(`262:10`) 동일하게 radius 0 확인.
+
+**PASS — P8**: Modal(`262:7`) border-b-2 ink-900, Auth Top(`262:11`) border-b-2 ink-900, Auth Bottom(`262:14`) border-t-2 ink-900 전부 확인.
+
+**PASS — P9/P3/P13/P15(조치 없음 항목)**: CornerInput 7 variant 전수 조회 결과 CornerBracket 잔존 0건(P9 결론 유지 확인). RowActionButton Neutral 위 P2에서 재확인(무수정). Sidebar Nav Item(`258:29`)은 Active/Inactive/Focus 3 variant만 존재, 신규 이례값 반영 없음 확인(P13). P15는 원본 확정 프레임 대상이라 감사 범위 밖(손대지 않음 원칙) — 마스터 쪽엔 애초에 대응 항목 없음 확인.
+
+**PASS — P10**: CornerInput 7 variant(`261:12`/`378:856`/`398:890`/`398:892`/`398:894`/`456:4`/`644:963`) 전부 text-[13px] 확인.
+
+**PASS — P11**: NeoBtn Amber Default(`259:110`)/Focus Default(`284:115`)/Focus Compact(`284:155`), Button Amber Default(`259:603`)/Focus(`284:1010`) 전부 border-2 ink-900 확인. Focus는 border 추가 후에도 FocusRing 오버레이(ink, border-3) 그대로 유지 — Default와 배경/텍스트 동일, 차이는 보더(모든 State 공통 추가)+링뿐이라 순수성 위반 아님.
+
+**PASS — P14**: Toast Success subtitle(`263:45`) `var(--color-text-muted-toast,#5c6366)` 바인딩 확인, title은 `var(--color-ink-900,#1a1a1a)` 유지 확인.
+
+**PASS — FOUNDATIONS Colors(`95:2`)**: `716:6`(text-muted-toast 스와치)가 정식 Semantic Row(`95:123`) 그리드 안에 위치(마지막 자식), Colors Root(`95:40`)는 여전히 5개 섹션(Primitives/Semantic/Contrast Notes/Category Colors/Component Colors)뿐 — "신규"/"Stage2"/"Additional" 병렬 섹션 재발 없음.
+
+**PASS — 문서 손상 여부**: design-system.md 965줄, 1~230행/230~539행/700~965행 샘플링 결과 절 번호 연속(0-1~0-24, 1~13절), 중복·누락·표 깨짐 없음.
+
+**PASS — `.claude/agents/design-systems.md` 원칙 추가**: "색상 등 시각 속성도 인스턴스 단위 오버라이드로 처리한다" 항목이 기존 판단 기준 불릿 리스트 중간(23번째 줄)에 자연스럽게 삽입돼 있고, 앞뒤 기존 항목 삭제·손상 없음.
+
+**LOW(관찰, 이번 라운드 결함 아님) — Focus 링이 문서(9-1절, 2겹 DROP_SHADOW)와 실제 구현(별도 "FocusRing" 오버레이 자식 노드, border-3 ink solid) 방식이 다름**: NeoBtn/Button/NeoInput/CornerInput/Icon Button Focus variant 전수에서 일관되게 관찰됨 — 이번 라운드(P1~P15) 이전부터의 기존 구현 방식으로 이번 라운드가 새로 만든 회귀는 아니다(모든 Focus에서 색·굵기 일관). 다만 NeoInput/CornerInput의 Error×Focus 조합(`456:2`/`456:4`)도 에러 상태임에도 링이 빨강이 아니라 ink로 렌더링되어, 9-1절이 문서화한 "에러 상태는 흰갭+빨간 링" 표준과 다르다 — 결함이라기보단 문서-구현 표기 불일치이자 향후 점검 후보로만 기록.
+
+**종합**: HIGH 1건(P12 체크마크 색상, 최우선 재확인 필요), MEDIUM 1건(CountPill/NeoBtn description 미갱신), LOW 1건(Focus 링 구현방식 문서 불일치, 결함 아님). 나머지 12개 항목 전부 PASS — hex/바인딩/구조 모두 문서 기재값과 일치 확인.
