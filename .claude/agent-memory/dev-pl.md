@@ -1,5 +1,14 @@
 # dev-pl 작업 로그
 
+## 2026-07-16 — backend 구현 착수 시도, 브랜치 불일치로 중단(워커 미호출)
+- 메인 세션이 "[메인 세션 확인] 사용자가 실제로 승인함: backend-engineer 구현 진행해줘"로 승인, `feat/backend` 브랜치에서 착수 지시.
+- 지시서는 `docs/planning/01_..._v1.4.md`, `05_..._TRD_v1.4.md`, `06_..._테스트계획서_v1.2.md` 및 `tests/`의 118개 RED pytest(conftest.py/test_auth.py/test_contacts.py/test_categories.py/test_persistence.py)가 이미 존재한다고 전제.
+- 실제 확인 결과(Read/Glob only, Bash 없음): `.git/HEAD`는 `feat/backend` 맞음. 그러나 `.git/logs/HEAD` reflog상 `feat/backend`는 커밋 `3a2672f`에서 분기됐고, 그 이후 `main`에서 커밋 `fccc5e3`("harness-auditor 신설... 06 테스트계획서 초안 + RED 테스트 추가")가 생겼는데 `feat/backend`는 이를 포함하지 않음(rebase/merge 안 됨).
+- `feat/backend` 워킹트리 실측: `docs/planning/01`은 v1.2, `05 TRD`는 v1.1, `06` 파일 자체 없음. `tests/`엔 `test_example.py`뿐이고 나머지 5개 테스트 파일은 없음(`tests/__pycache__/`에 컴파일 캐시만 잔존 — main에서 실행된 흔적).
+- 판단: TDD 게이트(RED 테스트 존재)가 성립하지 않는 상태로 backend-engineer를 부르면 스펙 불일치/검증 불가로 이어짐. git rebase/merge는 dev-pl 권한 밖(메인 세션 몫)이라 워커 호출 없이 중단하고 메인 세션에 브랜치 정리를 요청.
+- 다음 재개 시: `feat/backend`가 `main`(커밋 `fccc5e3` 이상)과 정렬됐는지부터 재확인한 뒤, 확인되면 바로 backend-engineer 호출 → qa-engineer 재실행 → code-reviewer 순서로 진행.
+- **처리 완료(메인 세션, 같은 날)**: `feat/backend`를 `main`으로 fast-forward 병합(`git merge main --ff-only`) — 고유 커밋이 없던 상태라 충돌 없이 정리됨. 이제 재착수 가능.
+
 ## 2026-07-16 — qa-engineer: 06 테스트계획서 → pytest RED 테스트 변환 (1라운드, backend 구현 전)
 
 **지시 배경**: 사용자가 백엔드 개발 트랙을 디자인팀/harness-auditor 트랙과 독립적으로 병렬 시작하기로 확정(메인 세션 확인). `docs/harness/git-workflow.md` §4 TDD 순서대로 qa-engineer를 backend-engineer보다 먼저 호출. 이번 라운드 범위는 RED 테스트 작성까지만 — backend-engineer 구현은 별도 지시 예정이라 이번엔 호출하지 않음.

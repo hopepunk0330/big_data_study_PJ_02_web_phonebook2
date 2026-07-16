@@ -1,0 +1,15 @@
+services:
+  pg-lab:
+    image: postgres:16
+    container_name: pg-lab
+    environment:
+      POSTGRES_USER: contact_app
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: contact_app
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_lab_data:/var/lib/postgresql/data
+
+volumes:
+  pg_lab_data:
