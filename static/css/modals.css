@@ -12,13 +12,23 @@
     z-index: 100;
 }
 .modal-body {
-    padding: 24px;
+    /* get_design_context(940:1135 EditModal) 실측: Content padding은 px-32 py-28
+       (2026-07-18 정정, 기존 균일 24px는 좌우가 8px씩 좁았다). */
+    padding: 28px 32px 24px;
+}
+/* .banner 전역 오버레이 정정(2026-07-18, missing-screens.md 85-87행): edit-error-banner가
+   모달을 닫지 않고 자체 오버레이로 뜨도록 하는 relative 기준점. .toast(position:absolute
+   top:0)가 이 래퍼 기준으로 폼 위에 겹쳐 뜬다 — 헤더는 이 래퍼 밖이라 영향 없음. */
+.modal-form-area {
+    position: relative;
 }
 .modal-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 16px;
+    /* Content의 gap-20(형제 전체 균등 20px, 2026-07-18 재실측 정정 — 기존 16은
+       4px 부족했다) */
+    margin-bottom: 20px;
 }
 .modal-header h2 {
     font-size: 16px;
@@ -48,9 +58,12 @@
     font-size: 12px;
 }
 .modal-actions {
+    /* ButtonRow(940:2665) 실측: gap-[8px](기존 12는 근사치였음) + 자체 pt-[4px] —
+       마지막 필드의 margin-bottom(20, .field 기본값)과 합쳐 Content gap-20과
+       거의 같은 24px 총 간격이 되도록 margin-top을 8→4로 정정(2026-07-18). */
     display: flex;
-    gap: 12px;
-    margin-top: 8px;
+    gap: 8px;
+    margin-top: 4px;
 }
 .modal-actions .btn {
     flex: 1;
@@ -82,7 +95,10 @@
     margin-bottom: 20px;
 }
 .warning-box-icon {
+    /* IconWrap(1001:1610) 실측: pt-[2px] — 아이콘이 첫 텍스트 줄과 정확히
+       나란히 오도록 살짝 아래로 내린다(2026-07-18 정정). */
     flex-shrink: 0;
+    padding-top: 2px;
 }
 .icon-warning {
     display: block;

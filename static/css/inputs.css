@@ -18,6 +18,24 @@
 .input:disabled {
     background: var(--color-gray-350);
     border-color: var(--color-gray-600);
+    cursor: not-allowed;
+    /* 텍스트는 ink-900 유지(Default와 동일) — NeoInput/CornerInput 예외(9-1절):
+       입력창은 값을 보여주는 display라 텍스트만은 무채색화하지 않는다. */
+}
+/* Focus — design-system.md 9-1절 2겹 링 공식(흰 1px 갭 + ink 4px 링) 재사용.
+   브라우저 기본(UA) 아웃라인은 :focus-visible과 별개로 모든 :focus에서 제거한다
+   (2026-07-18 버그 수정 — buttons.css와 동일 원인/패턴). */
+.input:focus {
+    outline: none;
+}
+.input:focus-visible {
+    box-shadow: 0 0 0 1px var(--color-white), 0 0 0 4px var(--color-ink-900);
+}
+/* 마우스 클릭 예외(2026-07-18, static/app.js의 using-mouse 클래스와 짝) — 브라우저
+   내장 :focus-visible 휴리스틱이 텍스트 인풋에는 마우스 클릭에도 매치된다(버튼과
+   달리). 마지막 입력 방식이 마우스였을 때만 이 컴포넌트의 링을 좁게 무력화한다. */
+body.using-mouse .input:focus-visible {
+    box-shadow: var(--shadow-hard-2);
 }
 .input-compact {
     height: 36px;
@@ -41,6 +59,26 @@ select.input {
 }
 .input-corner::placeholder {
     color: var(--color-text-placeholder-input);
+}
+.input-corner:focus {
+    outline: none;
+}
+.input-corner:focus-visible {
+    box-shadow: 0 0 0 1px var(--color-white), 0 0 0 4px var(--color-ink-900);
+}
+/* 마우스 클릭 예외 — 위 .input과 동일 근거(static/app.js의 using-mouse 클래스). */
+body.using-mouse .input-corner:focus-visible {
+    box-shadow: none;
+}
+/* CornerInput State=Disabled(644:963, 2026-07-18 pwreset2 "아이디 확인됨" 표시
+   구조 정정 근거) — 실제 <input>이 아니라 값을 보여주기만 하는 div+span이라
+   :disabled 의사클래스를 못 쓰므로 모디파이어 클래스로 동일 토큰을 적용한다. */
+.input-corner-disabled {
+    display: flex;
+    align-items: center;
+    background: var(--color-gray-350);
+    border-color: var(--color-gray-600);
+    color: var(--color-ink-900);
 }
 
 /* ── Field(라벨+입력창 묶음) ───────────────────────────────────────────── */
@@ -94,36 +132,56 @@ select.input {
     gap: 8px;
 }
 .search-input-wrap {
+    position: relative;
     flex: 1;
     height: 44px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 14px;
     background: var(--color-white);
     border: var(--border-base) solid var(--color-ink-900);
     border-radius: var(--radius-10);
     box-shadow: var(--shadow-hard-2);
 }
+/* Pixel/Search(15px) — node 938:343 실측: 인풋 기준 절대 위치 left:14px top:10px
+   (main 937:298 get_design_context 재조회로 좌표 확정, flex 중앙정렬 근사치가
+   아니라 이 좌표를 그대로 씀). */
 .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 10px;
     width: 15px;
     height: 15px;
     flex-shrink: 0;
     color: var(--color-sky-500);
 }
 .search-field {
-    flex: 1;
+    width: 100%;
     height: 100%;
     min-width: 0;
     border: none;
     outline: none;
     background: transparent;
-    padding: 0;
+    padding: 9.5px 14px 9.5px 37px;
     font-size: 14px;
     color: var(--color-ink-900);
 }
 .search-field::placeholder {
     color: var(--color-text-placeholder-input);
+}
+.search-input-wrap:focus-within {
+    box-shadow: var(--shadow-hard-2), 0 0 0 1px var(--color-white), 0 0 0 4px var(--color-ink-900);
+}
+/* 마우스 클릭 예외(2026-07-18) — .input/.input-corner와 동일 원인이지만 여기는
+   :focus-visible이 아니라 :focus-within(래퍼)이라 마우스/키보드 구분이 아예 없어서
+   지금까지 이 컴포넌트만 놓쳤었다. static/app.js의 using-mouse 클래스로 동일하게
+   좁혀서 마우스 클릭 시에는 링을 끈다. */
+body.using-mouse .search-input-wrap:focus-within {
+    box-shadow: var(--shadow-hard-2);
+}
+/* 추가 정정(2026-07-18): 전역 `*:focus-visible`(layout.css) 규칙이 `.search-field`
+   자체(래퍼가 아니라 진짜 <input>)에도 직접 매치돼, 위 wrap 예외와 별개로 인풋
+   자체에 또 하나의 링을 그리고 있었다 — 텍스트 인풋이라 마우스 클릭에도
+   :focus-visible이 매치되는 동일 브라우저 스펙 때문. 이것도 마우스일 때 꺼준다. */
+body.using-mouse .search-field:focus-visible {
+    box-shadow: none;
 }
 
 /* ── TypeSelector (연락처 수정 모달 "종류" 칩) ─────────────────────────── */
@@ -134,6 +192,9 @@ select.input {
     margin-bottom: 20px;
 }
 .type-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
     padding: 6px 12px;
     border-radius: 999px;
     border: var(--border-base) solid var(--color-gray-300);
@@ -141,6 +202,26 @@ select.input {
     color: var(--color-text-muted-subtle);
     font-size: 12px;
     font-weight: 700;
+}
+/* TypeSelector(257:28) 실측: 글자 앞 6px 컬러 닷은 선택 여부와 무관하게 항상
+   카테고리 색으로 표시된다(2026-07-18 정정 — 기존엔 닷 자체가 마크업에 없었음). */
+.type-chip .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.type-chip.cat-friend .dot {
+    background: var(--cat-friend-border);
+}
+.type-chip.cat-family .dot {
+    background: var(--cat-family-border);
+}
+.type-chip.cat-other .dot {
+    background: var(--cat-other-border);
+}
+.type-chip.cat-company .dot {
+    background: var(--cat-company-border);
 }
 .type-chip.selected.cat-friend {
     border-color: var(--cat-friend-border);

@@ -315,3 +315,115 @@ def test_tc_e2e_scr003_08_session_expiry_forces_login_screen(page, api_request):
 
     page.get_by_role("button", name="로그인", exact=True).wait_for()
     page.screenshot(path="docs/screenshot/category-10-로그인화면복귀.png")
+
+
+# ── 5-4b. 사이드바 카테고리 nav 클릭 필터링 (2026-07-18 사용자 결정 기능 확장) ──────
+#
+# 근거: docs/planning/02 화면정의서 v1.15 255행은 "클릭 시 필터링 동작 없음(표시
+# 전용)"이라고 명시했으나, 사용자가 이번 라운드에서 클릭 시 실제 필터링 동작을
+# 추가하기로 결정(static/app.js의 renderCategoryNav 위 주석 및 selectCategoryFilter
+# 참고). 문서 개정은 dev-pl이 별도로 planning 팀에 요청 예정 — 이 파일은 미변경.
+# 아래 4개 케이스는 qa-planner의 06 문서가 아니라 frontend-engineer가 구현 완료 후
+# 제안한 케이스를 실제 구현(static/app.js)을 직접 확인해 옮긴 것이다.
+
+
+def test_tc_e2e_scr003_09_category_nav_click_filters_contacts_table(page, api_request):
+    username, _ = signup(api_request)
+    login(api_request, username)
+    friend_id = get_category_id(api_request, "친구")
+    family_id = get_category_id(api_request, "가족")
+    api_request.post("/contacts", data=contact_payload(friend_id, name="민지"))
+    api_request.post("/contacts", data=contact_payload(friend_id, name="지수"))
+    api_request.post("/contacts", data=contact_payload(family_id, name="수민"))
+    _login_via_page(page, username)
+
+    page.screenshot(path="docs/screenshot/category-11-필터전전체목록.png")
+    page.locator("#category-nav .nav-item", has_text="친구").click()
+    page.wait_for_timeout(500)
+    page.screenshot(path="docs/screenshot/category-12-친구필터적용.png")
+
+    names = page.locator("#contact-rows .name").all_text_contents()
+    assert set(names) == {"민지", "지수"}
+
+
+def test_tc_e2e_scr003_10_category_nav_click_shows_active_state(page, api_request):
+    username, _ = signup(api_request)
+    _login_via_page(page, username)
+
+    all_item = page.locator("#category-nav .nav-item", has_text="전체")
+    friend_item = page.locator("#category-nav .nav-item", has_text="친구")
+    assert all_item.get_attribute("aria-pressed") == "true"
+    assert "active" in all_item.get_attribute("class")
+
+    friend_item.click()
+    page.wait_for_timeout(500)
+    page.screenshot(path="docs/screenshot/category-13-친구액티브상태.png")
+
+    assert friend_item.get_attribute("aria-pressed") == "true"
+    assert "active" in friend_item.get_attribute("class")
+    assert all_item.get_attribute("aria-pressed") == "false"
+    assert "active" not in all_item.get_attribute("class")
+
+
+def test_tc_e2e_scr003_11_category_nav_click_all_resets_filter(page, api_request):
+    username, _ = signup(api_request)
+    login(api_request, username)
+    friend_id = get_category_id(api_request, "친구")
+    family_id = get_category_id(api_request, "가족")
+    api_request.post("/contacts", data=contact_payload(friend_id, name="민지"))
+    api_request.post("/contacts", data=contact_payload(family_id, name="수민"))
+    _login_via_page(page, username)
+
+    page.locator("#category-nav .nav-item", has_text="친구").click()
+    page.wait_for_timeout(500)
+    assert page.locator("#contact-rows .name").all_text_contents() == ["민지"]
+
+    page.locator("#category-nav .nav-item", has_text="전체").click()
+    page.wait_for_timeout(500)
+    page.screenshot(path="docs/screenshot/category-14-전체클릭필터해제.png")
+
+    names = page.locator("#contact-rows .name").all_text_contents()
+    assert set(names) == {"민지", "수민"}
+    assert page.locator(
+        "#category-nav .nav-item", has_text="전체"
+    ).get_attribute("aria-pressed") == "true"
+
+
+def test_tc_e2e_scr003_12_category_filter_and_search_are_mutually_exclusive(page, api_request):
+    username, _ = signup(api_request)
+    login(api_request, username)
+    friend_id = get_category_id(api_request, "친구")
+    family_id = get_category_id(api_request, "가족")
+    api_request.post("/contacts", data=contact_payload(friend_id, name="민지"))
+    api_request.post("/contacts", data=contact_payload(friend_id, name="지수"))
+    api_request.post("/contacts", data=contact_payload(family_id, name="수민"))
+    _login_via_page(page, username)
+
+    # 1) 카테고리 필터("친구") 적용 중 검색 실행 → 실제 구현(runSearch)은 검색 시
+    # selectedCategoryId를 null로 되돌려 "전체"가 다시 active 되고, 검색은 카테고리
+    # 무관하게 전체 대상으로 실행된다.
+    page.locator("#category-nav .nav-item", has_text="친구").click()
+    page.wait_for_timeout(500)
+    page.get_by_placeholder("이름으로 검색 (예: 윤아)").fill("수민")
+    page.get_by_role("button", name="검색", exact=True).click()
+    page.wait_for_timeout(500)
+    page.screenshot(path="docs/screenshot/category-15-카테고리필터중검색실행.png")
+
+    names = page.locator("#contact-rows .name").all_text_contents()
+    assert names == ["수민"]
+    assert page.locator(
+        "#category-nav .nav-item", has_text="전체"
+    ).get_attribute("aria-pressed") == "true"
+    assert page.locator(
+        "#category-nav .nav-item", has_text="친구"
+    ).get_attribute("aria-pressed") == "false"
+
+    # 2) 검색 결과가 남아 있는 상태에서 카테고리("친구") 클릭 → 실제 구현
+    # (selectCategoryFilter)은 검색창 값을 비우고 카테고리 필터만 적용한다.
+    page.locator("#category-nav .nav-item", has_text="친구").click()
+    page.wait_for_timeout(500)
+    page.screenshot(path="docs/screenshot/category-16-검색중카테고리클릭.png")
+
+    assert page.get_by_placeholder("이름으로 검색 (예: 윤아)").input_value() == ""
+    names_after = page.locator("#contact-rows .name").all_text_contents()
+    assert set(names_after) == {"민지", "지수"}

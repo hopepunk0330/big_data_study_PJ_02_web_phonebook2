@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>연락처 관리 서비스</title>
+    <!-- 웹폰트 로드(2026-07-18 발견·수정): CSS 전체가 "Noto Sans KR"/"Baloo 2"를
+         font-family로 지정해왔지만 실제로 이 폰트들을 로드하는 태그가 어디에도
+         없었다 — 시스템에 두 폰트가 설치돼 있지 않은 한 계속 기본 sans-serif로
+         조용히 폴백되고 있었다(로고 워드마크가 Figma의 Baloo 2 룩과 달라 보인
+         근본원인). -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <!-- 컴포넌트별 CSS 분리(2026-07-18 재작업 라운드) — 토큰이 가장 먼저,
          나머지는 화면과 무관하게 컴포넌트 성격별로 분리해 컴포넌트 하나를
          디자인과 대조/수정할 때 그 파일만 열어보면 되게 한다. -->
@@ -80,18 +88,117 @@
             <path d="M7 11H9V13H7V11Z" fill="var(--color-white)" />
         </symbol>
 
+        <!-- Icon/User(96:45, 24x24) — 헤더 Avatar 내부 사람 아이콘(stroke-only 실루엣).
+             get_design_context(main 937:298) 실제 에셋(imgIconUser)에서 curl로 path 추출.
+             2026-07-18 발견: 기존 .avatar가 빈 원이었다(아이콘 자체가 아예 없었음) — 전체
+             아이콘 체크리지 대조 중 확인. -->
+        <symbol id="icon-user" viewBox="0 0 24 24">
+            <circle cx="12" cy="24" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" fill="none"/>
+        </symbol>
+
         <!-- Icon/Alert(96:41, 24x24) — 성공 토스트/에러 배너 공용, 색은 배경으로만 구분. -->
         <symbol id="icon-alert" viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="10" fill="var(--color-amber-600)" stroke="var(--color-ink-900)" stroke-width="3" />
             <rect x="10.75" y="7" width="2.5" height="7" rx="1.25" fill="var(--color-ink-900)" />
             <circle cx="12" cy="17.25" r="1.25" fill="var(--color-ink-900)" />
         </symbol>
+
+        <!-- Pixel/Edit(255:62, 14x14) — Row Action Button(사이드바 카테고리 관리) Neutral 아이콘.
+             get_design_context(main 937:298) 실제 에셋(imgPixelEdit)에서 curl로 path 그대로 추출. -->
+        <symbol id="px-edit" viewBox="0 0 14 14">
+            <path d="M1.75 12.25H0V14H1.75V12.25Z" fill="currentColor"/>
+            <path d="M1.75 10.5H0V12.25H1.75V10.5Z" fill="currentColor"/>
+            <path d="M3.5 12.25H1.75V14H3.5V12.25Z" fill="currentColor"/>
+            <path d="M3.5 8.75H1.75V10.5H3.5V8.75Z" fill="currentColor"/>
+            <path d="M5.25 10.5H3.5V12.25H5.25V10.5Z" fill="currentColor"/>
+            <path d="M5.25 7H3.5V8.75H5.25V7Z" fill="currentColor"/>
+            <path d="M7 8.75H5.25V10.5H7V8.75Z" fill="currentColor"/>
+            <path d="M7 5.25H5.25V7H7V5.25Z" fill="currentColor"/>
+            <path d="M8.75 7H7V8.75H8.75V7Z" fill="currentColor"/>
+            <path d="M8.75 3.5H7V5.25H8.75V3.5Z" fill="currentColor"/>
+            <path d="M10.5 5.25H8.75V7H10.5V5.25Z" fill="currentColor"/>
+            <path d="M10.5 1.75H8.75V3.5H10.5V1.75Z" fill="currentColor"/>
+            <path d="M12.25 3.5H10.5V5.25H12.25V3.5Z" fill="currentColor"/>
+            <path d="M12.25 0H10.5V1.75H12.25V0Z" fill="currentColor"/>
+            <path d="M14 1.75H12.25V3.5H14V1.75Z" fill="currentColor"/>
+            <path d="M10.5 0H8.75V1.75H10.5V0Z" fill="currentColor"/>
+            <path d="M14 0H12.25V1.75H14V0Z" fill="currentColor"/>
+        </symbol>
+
+        <!-- Pixel/Delete(255:104, 13.25x14) — Row Action Button Danger 아이콘.
+             get_design_context(main 937:298) 실제 에셋(imgGroup1)에서 curl로 path 그대로 추출. -->
+        <symbol id="px-delete" viewBox="0 0 13.25 14">
+            <path d="M3.5 0H1.75V1.75H3.5V0Z" fill="currentColor"/>
+            <path d="M5.25 0H3.5V1.75H5.25V0Z" fill="currentColor"/>
+            <path d="M7 0H5.25V1.75H7V0Z" fill="currentColor"/>
+            <path d="M8.75 0H7V1.75H8.75V0Z" fill="currentColor"/>
+            <path d="M10.5 0H8.75V1.75H10.5V0Z" fill="currentColor"/>
+            <path d="M1.75 1.75H0V3.5H1.75V1.75Z" fill="currentColor"/>
+            <path d="M3.5 1.75H1.75V3.5H3.5V1.75Z" fill="currentColor"/>
+            <path d="M5.25 1.75H3.5V3.5H5.25V1.75Z" fill="currentColor"/>
+            <path d="M7 1.75H5.25V3.5H7V1.75Z" fill="currentColor"/>
+            <path d="M8.75 1.75H7V3.5H8.75V1.75Z" fill="currentColor"/>
+            <path d="M10.5 1.75H8.75V3.5H10.5V1.75Z" fill="currentColor"/>
+            <path d="M12.25 1.75H10.5V3.5H12.25V1.75Z" fill="currentColor"/>
+            <path d="M13.25 1.75H11.5V3.5H13.25V1.75Z" fill="currentColor"/>
+            <path d="M1.75 3.5H0V5.25H1.75V3.5Z" fill="currentColor"/>
+            <path d="M12.25 4.5H10.5V6.25H12.25V4.5Z" fill="currentColor"/>
+            <path d="M1.75 5.25H0V7H1.75V5.25Z" fill="currentColor"/>
+            <path d="M5.25 5.25H3.5V7H5.25V5.25Z" fill="currentColor"/>
+            <path d="M8.75 5.25H7V7H8.75V5.25Z" fill="currentColor"/>
+            <path d="M12.25 5.5H10.5V7.25H12.25V5.5Z" fill="currentColor"/>
+            <path d="M1.75 7H0V8.75H1.75V7Z" fill="currentColor"/>
+            <path d="M5.25 7H3.5V8.75H5.25V7Z" fill="currentColor"/>
+            <path d="M8.75 7H7V8.75H8.75V7Z" fill="currentColor"/>
+            <path d="M12.25 7.25H10.5V9H12.25V7.25Z" fill="currentColor"/>
+            <path d="M1.75 8.75H0V10.5H1.75V8.75Z" fill="currentColor"/>
+            <path d="M5.25 8.75H3.5V10.5H5.25V8.75Z" fill="currentColor"/>
+            <path d="M8.75 8.75H7V10.5H8.75V8.75Z" fill="currentColor"/>
+            <path d="M12.25 9H10.5V10.75H12.25V9Z" fill="currentColor"/>
+            <path d="M1.75 10.5H0V12.25H1.75V10.5Z" fill="currentColor"/>
+            <path d="M5.25 10.5H3.5V12.25H5.25V10.5Z" fill="currentColor"/>
+            <path d="M8.75 10.5H7V12.25H8.75V10.5Z" fill="currentColor"/>
+            <path d="M12.25 10.5H10.5V12.25H12.25V10.5Z" fill="currentColor"/>
+            <path d="M3.5 12.25H1.75V14H3.5V12.25Z" fill="currentColor"/>
+            <path d="M5.25 12.25H3.5V14H5.25V12.25Z" fill="currentColor"/>
+            <path d="M7 12.25H5.25V14H7V12.25Z" fill="currentColor"/>
+            <path d="M8.75 12.25H7V14H8.75V12.25Z" fill="currentColor"/>
+            <path d="M10.5 12.25H8.75V14H10.5V12.25Z" fill="currentColor"/>
+        </symbol>
+
+        <!-- Pixel/Plus(9x9) — NeoBtn 추가(연락처/카테고리) Leading Icon.
+             get_design_context(main 937:298) 실제 에셋(imgLeadingIcon)에서 curl로 path 추출. -->
+        <symbol id="px-plus" viewBox="0 0 9 9">
+            <path d="M5.4 0H3.6V9H5.4V0Z" fill="currentColor"/>
+            <path d="M9 3.6H0V5.4H9V3.6Z" fill="currentColor"/>
+        </symbol>
+
+        <!-- Pixel/Logout(9x9, 헤더 로그아웃 NeoBtn Leading Icon 실사용 인스턴스 크기).
+             get_design_context(main 937:298) 실제 에셋(imgLeadingIcon1)에서 curl로 path 추출. -->
+        <symbol id="px-logout" viewBox="0 0 9 9">
+            <path d="M4.84615 0.692308H0.692308V1.38462H4.84615V0.692308Z" fill="currentColor"/>
+            <path d="M1.38462 1.38462H0.692308V7.61538H1.38462V1.38462Z" fill="currentColor"/>
+            <path d="M4.84615 1.38462H4.15385V7.61538H4.84615V1.38462Z" fill="currentColor"/>
+            <path d="M4.84615 7.61538H0.692308V8.30769H4.84615V7.61538Z" fill="currentColor"/>
+            <path opacity="0.12" d="M4.15385 1.38462H1.38462V7.61538H4.15385V1.38462Z" fill="currentColor"/>
+            <path d="M3.46154 3.46154H2.76923V5.53846H3.46154V3.46154Z" fill="currentColor"/>
+            <path d="M7.61538 3.46154H4.84615V4.15385H7.61538V3.46154Z" fill="currentColor"/>
+            <path d="M7.61538 4.84615H4.84615V5.53846H7.61538V4.84615Z" fill="currentColor"/>
+            <path d="M7.61538 2.76923H6.92308V3.46154H7.61538V2.76923Z" fill="currentColor"/>
+            <path d="M8.30769 3.46154H7.61538V5.53846H8.30769V3.46154Z" fill="currentColor"/>
+            <path d="M7.61538 5.53846H6.92308V6.23077H7.61538V5.53846Z" fill="currentColor"/>
+        </symbol>
     </svg>
 
     <!-- ══════════════════════════════════════════════════════════════
          섹션 A — 로그인/회원가입 (SCR-001) + 비밀번호 재설정 (SCR-004)
          ══════════════════════════════════════════════════════════════ -->
-    <section id="screen-auth">
+    <!-- hidden 기본값(2026-07-18 FOUC 수정): /auth/me 응답 전까지 screen-auth/screen-main
+         둘 다 안 보이게 시작한다 — 이전에는 이 섹션에 hidden이 없어 응답 전까지
+         로그인 화면이 잠깐 보였다가 사라지는 깜빡임(FOUC)이 있었다. app.js init()이
+         응답을 받아 showLogin()/showMain() 중 하나를 호출해야만 해당 섹션이 보인다. -->
+    <section id="screen-auth" hidden>
 
         <!-- SCR-001 로그인/회원가입 -->
         <div id="view-login" class="auth-page">
@@ -117,18 +224,28 @@
             <div class="card auth-card">
                 <div class="card-accent-top"></div>
                 <div class="card-body">
-                    <div class="brand-row">
-                        <span class="brand-badge"><svg class="brand-badge-star" viewBox="0 0 10 10" aria-hidden="true"><use href="#px-star"></use></svg></span>
-                        <span class="brand-name">yourbook.</span>
-                    </div>
-
-                    <div id="login-error-banner" class="banner banner-error" hidden>
+                    <!-- 순서 주의(2026-07-18 사용자 제보, get_design_context 936:1191 재실측 확정):
+                         Figma login-알림창은 오류/성공 배너가 로고보다 먼저(카드 최상단)
+                         온다 — 배너를 로고 아래로 두면 순서가 뒤바뀐다.
+                         오버레이 주의(2026-07-18 전체 화면 재대조 라운드 발견): confirmed
+                         문서 11절/design-system.md Toast(263:53) 설명이 "login-알림창/
+                         main-알림창은 하단 콘텐츠를 밀어내지 않는 절대위치 오버레이"라고
+                         명시하는데, main-toast(아래 main 화면)는 이미 .toast로 구현돼
+                         있었지만 이 auth 배너들은 그동안 일반 flow(margin-bottom로 아래
+                         내용을 밀어냄)로 구현돼 있었다 — .toast 클래스를 추가해 main과
+                         동일한 절대위치 오버레이 패턴으로 맞춘다. -->
+                    <div id="login-error-banner" class="toast banner banner-error" hidden>
                         <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
                         <span id="login-error-text"></span>
                     </div>
-                    <div id="login-success-banner" class="banner banner-success" hidden>
+                    <div id="login-success-banner" class="toast banner banner-success" hidden>
                         <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
                         <span id="login-success-text"></span>
+                    </div>
+
+                    <div class="brand-row">
+                        <span class="brand-badge"><svg class="brand-badge-star" viewBox="0 0 10 10" aria-hidden="true"><use href="#px-star"></use></svg></span>
+                        <span class="brand-name">yourbook.</span>
                     </div>
 
                     <form id="login-form">
@@ -214,16 +331,19 @@
                          똑같은 문자열이라 hidden 상태에서도 get_by_text 매칭에 함께 잡힌다 —
                          AUTH_PLACEHOLDERS와 동일한 패턴으로 활성 화면일 때만 텍스트를 채운다
                          (app.js applyAuthTitles 참고), 기본은 빈 문자열. -->
+                    <!-- 순서 주의(login-알림창 936:1191과 동일 카드 구조 재사용 — 배너를
+                         로고보다 먼저 둔다, 2026-07-18 사용자 제보 대응). 오버레이 주의(위
+                         login-error-banner와 동일 근거) — .toast로 절대위치 오버레이. -->
+                    <div id="pwreset1-error-banner" class="toast banner banner-error" hidden>
+                        <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
+                        <span id="pwreset1-error-text"></span>
+                    </div>
+
                     <div class="brand-row">
                         <span class="brand-badge"><svg class="brand-badge-star" viewBox="0 0 10 10" aria-hidden="true"><use href="#px-star"></use></svg></span>
                         <span class="brand-name">yourbook.</span>
                     </div>
                     <p class="auth-card-title" id="pwreset1-title"></p>
-
-                    <div id="pwreset1-error-banner" class="banner banner-error" hidden>
-                        <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
-                        <span id="pwreset1-error-text"></span>
-                    </div>
 
                     <form id="pwreset1-form">
                         <div class="field">
@@ -271,22 +391,41 @@
                 <div class="card-accent-top"></div>
                 <div class="card-body">
                     <!-- pwreset1과 동일 원칙(로고는 항상 유지, 단계 라벨은 별도 타이틀로) -->
+                    <!-- 순서 주의(login-알림창 936:1191과 동일 카드 구조 재사용 — 배너를
+                         로고보다 먼저 둔다, 2026-07-18 사용자 제보 대응). 오버레이 주의(위
+                         login-error-banner와 동일 근거) — .toast로 절대위치 오버레이. -->
+                    <div id="pwreset2-error-banner" class="toast banner banner-error" hidden>
+                        <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
+                        <span id="pwreset2-error-text"></span>
+                    </div>
+                    <!-- get_design_context(996:2575) 실측: 이 Toast는 main-toast와 동일하게
+                         title+subtitle 2줄 구조("비밀번호가 변경되었습니다" / "잠시 후
+                         로그인 화면으로 이동합니다") — 단일 줄이 아니다. -->
+                    <div id="pwreset2-success-banner" class="toast banner banner-success" hidden>
+                        <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
+                        <div>
+                            <div class="toast-title" id="pwreset2-success-text"></div>
+                            <div class="toast-subtitle">잠시 후 로그인 화면으로 이동합니다</div>
+                        </div>
+                    </div>
+
                     <div class="brand-row">
                         <span class="brand-badge"><svg class="brand-badge-star" viewBox="0 0 10 10" aria-hidden="true"><use href="#px-star"></use></svg></span>
                         <span class="brand-name">yourbook.</span>
                     </div>
                     <p class="auth-card-title" id="pwreset2-title"></p>
 
-                    <div id="pwreset2-error-banner" class="banner banner-error" hidden>
-                        <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
-                        <span id="pwreset2-error-text"></span>
+                    <!-- 구조 정정(2026-07-18, get_design_context 996:376/996:2575 재실측
+                         확정): Figma는 이 "확인된 아이디" 표시를 일반 문단(<p>)이 아니라
+                         Field-Username + CornerInput(State=Disabled, bg-disabled #bbb/
+                         border-disabled #5c6366, 텍스트 ink-900)로 렌더링한다 — 다른
+                         Field(새 비밀번호 등)와 동일한 라벨+박스 구조를 그대로 재사용. -->
+                    <div class="field">
+                        <label>아이디</label>
+                        <div class="input-corner input-corner-disabled">
+                            <span id="pwreset2-username"></span>
+                        </div>
                     </div>
-                    <div id="pwreset2-success-banner" class="banner banner-success" hidden>
-                        <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
-                        <span id="pwreset2-success-text"></span>
-                    </div>
-
-                    <p>아이디: <strong id="pwreset2-username"></strong> (확인됨)</p>
 
                     <form id="pwreset2-form">
                         <div class="field">
@@ -300,7 +439,7 @@
                             </div>
                         </div>
                         <div class="field">
-                            <label for="pwreset2-confirm-password">새 비밀번호 확인</label>
+                            <label for="pwreset2-confirm-password">비밀번호 확인</label>
                             <div class="password-wrap">
                                 <input class="input" type="password" id="pwreset2-confirm-password"
                                        placeholder="위와 동일하게 입력">
@@ -343,10 +482,15 @@
                         <h1>연락처 목록</h1>
                         <div class="header-right">
                             <div class="user-chip">
-                                <span class="avatar"></span>
+                                <span class="avatar">
+                                    <svg class="icon-user" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-user"></use></svg>
+                                </span>
                                 <span id="username-label"></span>
                             </div>
-                            <button class="btn btn-ink" id="btn-logout">로그아웃</button>
+                            <button class="btn btn-ink" id="btn-logout">
+                                <svg class="icon-logout" viewBox="0 0 9 9" aria-hidden="true"><use href="#px-logout"></use></svg>
+                                로그아웃
+                            </button>
                         </div>
                     </header>
 
@@ -357,6 +501,16 @@
                                 <div class="toast-title" id="main-toast-text"></div>
                                 <div class="toast-subtitle">방금 · 잠시 후 사라짐</div>
                             </div>
+                        </div>
+                        <!-- 위치 정정(2026-07-18, get_design_context main-오류배너 996:3165 재실측
+                             확정): 이 배너(연락처 전화번호중복 409/형식위반 422 등)는 폼 안에
+                             박힌 인라인 배너가 아니라, main-toast(성공)와 정확히 같은 자리
+                             (main-content 기준 absolute overlay, 같은 좌표 474,93/폭 812)에
+                             뜨는 에러 전용 Toast다 — main-toast와 동일한 .toast 오버레이
+                             패턴으로 이동, 기존 add-form-card 내부 인라인 배너 자리는 비움. -->
+                        <div id="main-error-toast" class="toast banner banner-error" hidden>
+                            <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
+                            <span id="main-error-text"></span>
                         </div>
 
                         <div class="search-row">
@@ -383,16 +537,15 @@
                         </div>
 
                         <div class="add-form-card">
-                            <div id="add-error-banner" class="banner banner-error" hidden>
-                                <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
-                                <span id="add-error-text"></span>
-                            </div>
                             <form id="add-contact-form" class="add-form-row">
                                 <input class="input" id="add-name" placeholder="이름" maxlength="5">
                                 <input class="input" id="add-phone" placeholder="전화번호">
                                 <input class="input" id="add-addr" placeholder="주소">
                                 <select class="input" id="add-category"></select>
-                                <button type="submit" class="btn btn-sky" id="btn-add-contact">추가</button>
+                                <button type="submit" class="btn btn-sky" id="btn-add-contact">
+                                    <svg class="icon-plus" viewBox="0 0 9 9" aria-hidden="true"><use href="#px-plus"></use></svg>
+                                    추가
+                                </button>
                             </form>
                         </div>
 
@@ -403,18 +556,26 @@
                             </span>
                         </div>
 
-                        <table class="contact-table">
-                            <thead>
-                            <tr>
-                                <th>이름</th>
-                                <th>전화번호</th>
-                                <th>주소</th>
-                                <th>종류</th>
-                                <th>변경하기</th>
-                            </tr>
-                            </thead>
-                            <tbody id="contact-rows"></tbody>
-                        </table>
+                        <!-- 2026-07-19 크로스브라우저 수정: <thead th>에 position:sticky를 걸던
+                             이전 방식이 WebKit/Safari에서 안정적으로 지원되지 않는 잘 알려진 이슈라,
+                             헤더를 테이블 밖 별도 고정 div(.contact-table-header)로 분리했다. 폭은
+                             .contact-table-wrap의 CSS 변수(--col-*-width)를 헤더/본문 tbody 양쪽이
+                             그대로 공유해 어긋나지 않는다. 스크롤되는 <table>은 thead 없이 tbody만
+                             갖는다(app.js는 그대로 #contact-rows에 렌더링). -->
+                        <div class="contact-table-wrap">
+                            <div class="contact-table-header" role="row">
+                                <span class="cth-cell cth-name" role="columnheader">이름</span>
+                                <span class="cth-cell cth-phone" role="columnheader">전화번호</span>
+                                <span class="cth-cell cth-addr" role="columnheader">주소</span>
+                                <span class="cth-cell cth-type" role="columnheader">종류</span>
+                                <span class="cth-cell cth-actions" role="columnheader">변경하기</span>
+                            </div>
+                            <div class="contact-table-scroll">
+                                <table class="contact-table" aria-label="연락처 목록">
+                                    <tbody id="contact-rows"></tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </main>
 
@@ -431,15 +592,23 @@
                     <p class="section-label">카테고리 관리</p>
                     <ul class="manage-list" id="category-manage-list"></ul>
 
-                    <div id="category-error" class="banner banner-error" hidden>
-                        <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
-                        <span id="category-error-text"></span>
-                    </div>
-
-                    <div class="category-add-row">
-                        <input class="input input-compact" id="new-category-name"
-                               placeholder="새 카테고리" maxlength="10">
-                        <button class="btn btn-navy btn-compact" id="btn-add-category">추가</button>
+                    <!-- 오버레이 재통합(2026-07-19, 사용자 결정 — main-오류배너 패턴으로
+                         공통화): 카테고리 추가 실패(409 이름중복/422 등)는 더 이상 사이드바
+                         로컬 오버레이(구 #category-error, 좁은 사이드바 폭 탓에 뜨면 바로
+                         아래 "새 카테고리" 입력창 자체를 가리는 트레이드오프가 있었다)로
+                         띄우지 않는다 — main-error-toast(996:3165, 409/422/404 공용 오류
+                         배너)와 완전히 동일한 공용 슬롯을 그대로 재사용해 content-body
+                         상단(검색행 위)에 뜨게 한다(app.js 참고). 이 래퍼는 이제 순수
+                         레이아웃 컨테이너라 position:relative가 더 이상 필요 없다. -->
+                    <div class="category-footer">
+                        <div class="category-add-row">
+                            <input class="input input-compact" id="new-category-name"
+                                   placeholder="새 카테고리" maxlength="10">
+                            <button class="btn btn-navy btn-compact" id="btn-add-category">
+                                <svg class="icon-plus" viewBox="0 0 9 9" aria-hidden="true"><use href="#px-plus"></use></svg>
+                                추가
+                            </button>
+                        </div>
                     </div>
                 </aside>
             </div>
@@ -456,32 +625,48 @@
                             <svg class="icon-close" viewBox="0 0 10 10" aria-hidden="true"><use href="#px-close"></use></svg>
                         </button>
                     </div>
-                    <div id="edit-error-banner" class="banner banner-error" hidden>
-                        <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
-                        <span id="edit-error-text"></span>
+                    <!-- 오버레이 정정(2026-07-18, .banner 전역 10곳 재점검 — missing-screens.md
+                         85-87행 근거): 모달이 열린 채로 유지돼야 하는 케이스(tests/test_contacts.py
+                         TC-E2E-SCR002-08 "모달 유지" 단언)라 delete/rename-category처럼
+                         모달을 닫고 main-error-toast로 보낼 수 없다 — 모달 내부에서 자체
+                         오버레이로 처리한다. .modal-form-area(position:relative) 래퍼를
+                         새로 두고 그 안에서 배너를 절대위치(.toast)로 얹어, 보일 때 폼
+                         필드를 밀어내지 않고 그 위에 겹쳐 보이게 한다(main-error-toast와
+                         동일 원리, 이 모달 전용 정확한 Figma 좌표는 없어 근거 없이
+                         발명하지 않고 기존 오버레이 패턴을 그대로 재사용). -->
+                    <div class="modal-form-area">
+                        <div id="edit-error-banner" class="toast banner banner-error" hidden>
+                            <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
+                            <span id="edit-error-text"></span>
+                        </div>
+                        <form id="edit-contact-form">
+                            <div class="field">
+                                <label for="edit-name">이름</label>
+                                <input class="input" id="edit-name" placeholder="이름" maxlength="5">
+                            </div>
+                            <div class="field">
+                                <label for="edit-phone">전화번호</label>
+                                <input class="input" id="edit-phone" placeholder="전화번호">
+                            </div>
+                            <div class="field">
+                                <label for="edit-addr">주소</label>
+                                <input class="input" id="edit-addr" placeholder="주소">
+                            </div>
+                            <div class="field">
+                                <label>종류</label>
+                                <div class="type-selector" id="edit-category-selector"></div>
+                            </div>
+                            <div class="modal-actions">
+                                <!-- 색상 정정(2026-07-18, get_design_context 940:1135 재실측 확정):
+                                     Figma Button(259:609)은 이 자리에서 Style=Amber다 — 라벨은
+                                     Figma가 "저장하기"지만 tests/test_contacts.py 4곳이 정확히
+                                     "저장"(exact) 로케이터라 라벨은 기존 그대로 유지, 색상만
+                                     sky→amber로 정정(라벨 불일치는 기존에 이미 별도 보고된 사항). -->
+                                <button type="submit" class="btn btn-amber" id="btn-save-edit">저장</button>
+                                <button type="button" class="btn btn-neutral" id="btn-cancel-edit">취소</button>
+                            </div>
+                        </form>
                     </div>
-                    <form id="edit-contact-form">
-                        <div class="field">
-                            <label for="edit-name">이름</label>
-                            <input class="input" id="edit-name" placeholder="이름" maxlength="5">
-                        </div>
-                        <div class="field">
-                            <label for="edit-phone">전화번호</label>
-                            <input class="input" id="edit-phone" placeholder="전화번호">
-                        </div>
-                        <div class="field">
-                            <label for="edit-addr">주소</label>
-                            <input class="input" id="edit-addr" placeholder="주소">
-                        </div>
-                        <div class="field">
-                            <label>종류</label>
-                            <div class="type-selector" id="edit-category-selector"></div>
-                        </div>
-                        <div class="modal-actions">
-                            <button type="submit" class="btn btn-sky" id="btn-save-edit">저장</button>
-                            <button type="button" class="btn btn-neutral" id="btn-cancel-edit">취소</button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
@@ -503,10 +688,9 @@
                             <strong id="delete-category-name"></strong> 카테고리를 삭제하시겠습니까? 이 카테고리를 사용 중인 연락처가 있으면 삭제할 수 없습니다.
                         </p>
                     </div>
-                    <div id="delete-category-error-banner" class="banner banner-error" hidden>
-                        <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
-                        <span id="delete-category-error-text"></span>
-                    </div>
+                    <!-- 인라인 배너 없음(2026-07-18 흐름 정정): 409(사용중삭제거부)는
+                         모달을 닫고 main-error-toast 오버레이로 표시한다 —
+                         missing-screens.md 5번 항목/main-오류배너(996:3165) 확정 근거. -->
                     <div class="modal-actions">
                         <button type="button" class="btn btn-coral" id="btn-confirm-delete-category">삭제하기</button>
                         <button type="button" class="btn btn-neutral" id="btn-cancel-delete-category">취소</button>
@@ -526,10 +710,9 @@
                             <svg class="icon-close" viewBox="0 0 10 10" aria-hidden="true"><use href="#px-close"></use></svg>
                         </button>
                     </div>
-                    <div id="rename-category-error-banner" class="banner banner-error" hidden>
-                        <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
-                        <span id="rename-category-error-text"></span>
-                    </div>
+                    <!-- 인라인 배너 없음(2026-07-18 흐름 정정): 409(이름중복)도 모달을
+                         닫고 main-error-toast 오버레이로 표시한다 — main-오류배너
+                         (996:3165)가 "카테고리이름중복(409)"까지 커버 대상으로 명시. -->
                     <form id="rename-category-form">
                         <div class="field">
                             <label for="rename-category-name">이름</label>

@@ -4,113 +4,6 @@
 
 ---
 
-## 2026-07-17 — E2E 12곳 `api_request` 미로그인 버그 수정(dev-pl 지시, surgical fix)
-
-**배경**: `signup(api_request)`만 호출하고 `page`는 `_login_via_page`로 별도 로그인시키면서,
-`api_request`(독립 쿠키 저장소) 쪽은 로그인 없이 그대로 `/categories`·`/contacts` 등 인증
-필요 엔드포인트를 호출하던 12개 E2E 테스트를 수정. `signup(...)` 바로 다음 줄에
-`login(api_request, username)`을 추가(`page`용 `_login_via_page`는 그대로 유지 — 의도된
-별개 로그인).
-
-**수정한 12곳**: `test_auth.py`의 `test_tc_e2e_scr900_02`, `_04`(2곳, `login`은 이미 import돼
-있었음) / `test_contacts.py`의 `test_tc_e2e_scr002_01`, `_04`, `_06`, `_07`, `_08`, `_09`,
-`_10`(7곳, `login` import 추가) / `test_categories.py`의 `test_tc_e2e_scr003_03`, `_05`,
-`_06`(3곳, `login` import 추가). 지시받은 12곳 모두 실제로 "signup만 하고 그 `api_request`로
-곧바로/나중에 인증 필요 호출"하는 패턴임을 직접 확인 후 수정 — 오탐·누락 없었음.
-
-**검증**: (1) 수정한 12개 테스트를 실제 실행 → 전부 `_login_via_page`의
-`get_by_placeholder("영문 소문자·숫자 4~20자")` 30초 타임아웃(프론트 미기동)으로 실패
-— 이전처럼 `get_category_id`의 `c["name"]` TypeError나 401로 죽는 케이스는 0건, 실패 지점이
-전량 "프론트엔드 부재"로 이동한 것 확인. (2) 별도로 `requests`로 backend에 직접
-signup→(로그인 전)`GET /categories`→login→(로그인 후)`GET /categories`를 재현해 login 유무에
-따라 401→200으로 바뀜을 재확인(수정 논리 자체의 타당성 검증, `api_request`가 아닌 `requests`
-사용은 순수 확인용이며 테스트 코드에는 미반영).
-
-**주의**: 프론트엔드가 아직 없어 `page` 기반 어설션까지 GREEN 확인은 불가 — frontend-engineer
-작업 완료 후 같은 12개(및 나머지 SCR900/SCR002/SCR003 E2E 전체)를 재실행해 RED→GREEN 전환만
-확인하면 된다. 이번 라운드는 "api_request 인증 버그 제거"까지만 확인 범위.
-
----
-
-## 2026-07-17 — 전역 CLAUDE.md 규칙 반영: E2E(`page` 기반) 테스트에 스크린샷 캡처 호출 추가
-
-**배경**: 전역/프로젝트 `CLAUDE.md`의 "playwright 테스트는 스텝마다 `docs/screenshot/`에 캡처"
-규칙을 `test_tc_e2e_*`(및 `test_persistence.py`에서 실제 `Page` 객체를 쓰는 TC-PERSIST-04)에
-반영. **테스트 로직(어설션·API 호출·셀렉터)은 한 글자도 건드리지 않고** `page.screenshot(path=...)`
-줄만 핵심 단계(입력 직후·클릭/제출 직후·결과 확인 직전 등) 사이에 삽입하는 surgical 작업만 수행.
-`docs/screenshot/` 폴더 신규 생성.
-
-**적용 범위와 파일명 컨벤션**: `test_auth.py` 17개 E2E(SCR-001→`login-01~13`, SCR-004→
-`pwreset-01~13`, SCR-900→`alert-01~11`, 화면 흐름별로 번호를 이어감) / `test_contacts.py`
-SCR-002 12개(`contacts-01~19`) / `test_categories.py` SCR-003 8개(`category-01~10`) /
-`test_persistence.py`는 `browser.new_context().new_page()`로 실제 `Page`를 다루는
-`test_tc_persist_04`만 해당(`persist-01~02`) — 나머지 PERSIST 01~03은 `APIRequestContext`만
-쓰고 화면이 없어 스크린샷 대상에서 제외(함수명이 `test_tc_e2e_*`가 아니라 `test_tc_persist_*`인
-것과 일치, 지시문의 "page 픽스처를 쓰는 E2E 테스트"라는 괄호 설명을 실제 기준으로 삼음).
-전체 68개 `page.screenshot(...)` 호출 추가, 파일명 중복 없음(전수 `uniq -d` 확인).
-
-**스팟체크(프론트가 부분적으로 존재해 실행 가능했음)**: (1) `test_tc_e2e_scr001_01`(초기 화면
-1스텝) 실행 → GREEN, `docs/screenshot/login-01-초기화면.png`(297KB) 실제 저장 확인 — 캡처
-메커니즘 정상 동작. (2) `test_tc_e2e_scr003_01`(카테고리 추가, 로그인 이후 단계 필요) 실행 →
-`_login_via_page`의 로그아웃 버튼 대기에서 30초 타임아웃으로 실패 — 프론트엔드 로그인/카테고리
-화면이 아직 미완성이라는 기존 알려진 사실과 일치, 스크린샷 코드 자체의 결함 아님. `python -m
-py_compile`로 4개 파일 전부 구문 오류 없음도 확인.
-
-**다음 라운드(frontend-engineer 구현 완료 후)**: 같은 4개 파일 전체를 재실행해 RED→GREEN 전환
-여부 확인 + `docs/screenshot/`에 몇 장이 실제로 쌓였는지 정식 카운트해 보고.
-
----
-
-## 2026-07-17 — frontend-engineer 구현 완료 후 잔여 11건 로케이터 정밀화(surgical, dev-pl 지시)
-
-**배경**: 8개 화면 구현 완료 후 107/118 GREEN, 잔여 11건이 실제 DOM에 동일 텍스트/역할 요소가
-여러 개 동시 존재해 Playwright strict mode violation을 일으키는 것으로 지목받아 재조사·수정.
-직접 실행해 원인을 1건씩 재현 후 수정(추정이 아니라 실측 확인).
-
-**1) "이름" placeholder 충돌(exact=True 추가)**: `#add-name`(placeholder="이름")과
-`#search-name`이 동시 존재해 `get_by_placeholder("이름")`이 strict mode violation. `test_auth.py`
-3곳(456/471/484번 함수 내부) + `test_contacts.py` 6곳(연락처 추가 폼 필드)에 `exact=True` 추가.
-
-**2) "추가" 버튼 중복(지시받은 것보다 범위가 넓었음)**: 지시문은 `test_tc_e2e_scr002_05` 1건만
-언급했으나, 실측 결과 `#btn-add-contact`/`#btn-add-category` 두 버튼이 항상 동시에 DOM에 존재해
-**".click()"/".dblclick()"도 index 없이는 전부 strict violation**이었다(사전에 "이름" placeholder
-에서 먼저 죽어 가려져 있던 잠재 실패). `test_auth.py` 3곳 + `test_contacts.py` 5곳(365/382/397/429/543
-번 줄, scr002_01/02/03/05/12)에 연락처 추가 버튼이므로 전부 `.nth(0)` 추가(카테고리 버튼은
-`test_categories.py`가 이미 일관되게 `.nth(1)` 사용 중이라 그대로 둠). 검증 도중 발견해 dev-pl
-지시 범위보다 넓게 고쳤음 — 원래 report된 "1건"이 아니라 실제로는 8개 테스트 함수에 영향.
-
-**2-1) 부수 발견 — 검색 placeholder 문구 변경**: `#search-name`의 실제 placeholder가 지시문의
-"이름 검색"이 아니라 `"이름으로 검색 (예: 윤아)"`로 이미 바뀌어 있었음(지시문도 "frontend-engineer가
-Figma 재확인 후 바뀔 수 있다"고 미리 경고한 부분). `test_contacts.py`의 `get_by_placeholder("이름
-검색")` 2곳을 실제 문구로 교체(검색 대상 필드 자체는 동일, 텍스트만 동기화).
-
-**3) 카테고리명 3곳 동시 노출**: 실측 결과 지시문이 말한 "카테고리 관리 목록"이 아니라 `#add-category`
-(select option), `#category-nav`(사이드바), `#category-manage-list`(관리 목록, `li[aria-label]`
-구조) 3곳이었음(관리 목록도 포함되지만 위치가 다름). `test_tc_e2e_scr003_01`/`_03`은 원래 어설션이
-없는 순수 동기화용 `.wait_for()`라 `.first`를 시도했으나 DOM 순서상 `.first`가 항상 숨겨진
-`<option>`을 집어 "hidden" 상태로 30초 타임아웃 — `<option>`은 Playwright 기준 절대 visible이
-될 수 없으므로 `#category-nav` 스코프로 재수정(테스트 취지상 "카테고리 목록"에 반영됐는지 확인이
-가장 적합). `test_tc_e2e_scr003_07`(삭제 취소 후 "친구" 유지 확인 — 실제 assert 존재)은 삭제
-버튼을 클릭한 동일 영역인 `#category-manage-list`로 스코프.
-
-**부수 이슈 — 외부 uvicorn이 테스트 도중 다운됨**: 처음 재실행 중 서버가 죽어 114개 전부 실패로
-보였다가(테스트 코드 문제 아님, `curl`로 확인) 재기동 후 정상. `test_persistence.py`는 자체
-`subprocess.Popen`으로 uvicorn을 띄우는데 `.env`를 source하지 않은 셸에서 실행하면
-`KeyError: DATABASE_URL`로 스폰된 서브프로세스가 즉시 죽음 — 반드시 `set -a; source .env; set +a`
-후 이 파일만 단독 실행해야 함(코드 버그 아님, 실행 환경 이슈).
-
-**검증 결과**: `test_auth.py`+`test_contacts.py`+`test_categories.py` 114개 전부 GREEN(기존
-107→114, 11건 전부 해소 확인). `test_persistence.py` 별도 실행 4개 전부 GREEN. 합계 **118/118
-GREEN**. `docs/screenshot/`에 72장 존재(우리 68장 + frontend-engineer 쪽 별도 3장 `main-*`,
-1장 `contacts-18-검색인풋아이콘수정확인.png` — 우리 테스트 파일 소관 아님, 그대로 둠).
-
-**다음에 재호출 시 참고**: 화면 구조가 다시 바뀌면(placeholder 문구, 버튼/셀렉터 배치) 이 라운드처럼
-"이름"류 부분일치·"추가" 버튼 인덱스·카테고리명 3중 노출 패턴이 재발할 수 있음 — 매번 실측(브라우저
-DOM) 먼저 확인 후 스코핑할 것, 지시문의 추정 범위만 믿고 고치면 놓치는 케이스가 있다(이번에 "1건"으로
-보고된 게 실제로는 8건).
-
----
-
 ## 2026-07-17 — 오늘 최종 라운드: 단위/통합 테스트 분리 실행 + 보고서 문서화 절차 최초 적용
 
 **배경**: dev-pl 지시로 오늘부터 "단위 테스트와 통합 테스트를 각각 별도로 실행하고, 실행마다
@@ -206,3 +99,125 @@ CATEGORY 19). 이전 라운드부터 `test_tc_iso_*`를 정식 단위 테스트 
 
 **다음 라운드 참고**: `test_tc_iso_*`를 `-k "test_tc_api or test_tc_iso"`로 함께 실행하는 게
 이제 정착된 패턴 — 앞으로도 이 커맨드를 단위 테스트 기본 실행 명령으로 사용.
+
+---
+
+## 2026-07-18 — 사용자 버그 리포트("검색 필터링 안 됨") 라이브 재현 확인(dev-pl 긴급 지시)
+
+**배경**: 사용자가 "검색창에 이름을 써도 필터링이 안 된다"고 보고, 메인 세션이 백엔드 API는
+curl로 정상 확인 → 프론트 쪽 라이브 재현만 확인해 달라는 요청. frontend-engineer가 `static/`을
+별도 라운드로 수정 중이라 이번엔 `static/` 코드를 일절 건드리지 않고 재현/진단만 수행(테스트
+코드도 새로 커밋하지 않고 스크래치패드 1회성 스크립트로 처리).
+
+**1) 기존 회귀 케이스 재실행**: `test_tc_e2e_scr002_04_search_by_name_replaces_list`(06 문서
+§5-3, qa-planner 기설계 TC-E2E-SCR002-04)만 단독 재실행 → **1 passed**(1.11s). 이 테스트는
+`api_request`로 "윤아" 2건을 미리 넣고 검색하는 패턴.
+
+**2) 라이브 재현 스크립트(사용자 시나리오 그대로, UI로 계정 생성부터)**: pytest 정식 케이스가
+아닌 1회성 Playwright 스크립트(스크래치패드, 저장소 미커밋)로 회원가입→로그인→UI 폼으로
+서로 다른 이름 4건("윤아"/"철수"/"영희"/"민수") 추가→검색창에 "윤아"→[검색] 클릭까지 실제
+사용자 흐름을 재현. 콘솔(`console`/`pageerror`)·네트워크(`/contacts` 요청/응답) 전부 캡처.
+
+**결과: 재현 안 됨.** 검색 후 화면에 "윤아" 1건만 남고 "검색결과 총 1건"으로 정상 교체(다른
+3건 사라짐). 네트워크 로그상 `GET /contacts?name=%EC%9C%A4%EC%95%84` → `200` 정상 요청/응답
+확인. `pageerror` 0건. 페이지 최초 진입(로그인 전) 시점의 401 콘솔 에러 1건은 검색 동작과
+무관(로그인 이후 흐름엔 영향 없음).
+
+**결론**: 현재 코드에서는 버그 미재현. 가능한 원인(추정): (1) 사용자 테스트 시점과 현재 사이에
+frontend-engineer 라운드에서 이미 수정됐을 가능성, (2) 브라우저 캐시로 구버전 `app.js` 실행,
+(3) 이번엔 "전체" 카테고리+신규 계정 조합만 검증 — 특정 카테고리 필터 선택 후 검색 등 다른
+조합은 검증 범위 밖(재현 안 되면 사용자에게 정확한 재현 스텝 추가 요청 필요).
+
+**보고서**: `docs/test-reports/integration-2026-07-18.md`(단발성 라이브 재현 확인 전용, 전체
+회귀 스위트 재실행 아님) 신규 작성. 스크린샷 `docs/screenshot/search-repro-01~06` 6장 신규 캡처.
+
+**주의(역할 경계 재확인)**: `static/index.html`/`app.js`는 이번 작업에서 읽기만 하고 수정하지
+않음 — frontend-engineer 병행 라운드와 충돌 방지 지시를 그대로 준수.
+
+---
+
+## 2026-07-18 — 카테고리 nav 클릭 필터링 신규 기능 테스트 4건 추가(frontend-engineer 제안 케이스)
+
+**배경**: 사용자 결정으로 사이드바 카테고리 nav 클릭 시 실제 필터링 동작이 신규 추가됨
+(frontend-engineer 구현 완료, `static/app.js`의 `selectCategoryFilter`/`renderCategoryNav`/
+`runSearch`). 원래 02 화면정의서 v1.15 255행("클릭 시 필터링 동작 없음")을 사용자가 이번에
+기능 확장하기로 결정 — 문서 개정은 dev-pl이 별도로 planning 팀에 요청 예정, 이 라운드에서 02
+문서는 건드리지 않음. 06 테스트계획서에도 이 기능 관련 문구가 전혀 없어(grep 0건 확인) qa-planner
+설계 케이스가 아니라 frontend-engineer가 제안한 4개 케이스를 실제 구현 코드를 직접 읽고 확인한
+뒤 옮김.
+
+**구현 확인(코드 리딩)**: `selectCategoryFilter`는 클릭 시 검색창 값을 비우고
+`category_id` 쿼리로 `loadContacts` 호출, `renderCategoryNav`는 `state.selectedCategoryId`
+기준으로 `active` 클래스+`aria-pressed`를 부여. `runSearch`는 검색 실행 시
+`state.selectedCategoryId`를 null로 되돌려 "전체"를 다시 active로 만든다 — 즉 카테고리 필터와
+검색은 상호 배타적으로 서로를 리셋하는 구조(양방향 모두 확인 후 테스트 작성).
+
+**추가한 4개 테스트**(`tests/test_categories.py`, SCR-003 E2E 섹션 맨 끝에 추가):
+1. `test_tc_e2e_scr003_09_category_nav_click_filters_contacts_table` — "친구" 클릭 시 해당
+   카테고리 연락처만 테이블에 표시.
+2. `test_tc_e2e_scr003_10_category_nav_click_shows_active_state` — 클릭 항목
+   `aria-pressed="true"`+`active` 클래스, 나머지는 `false`/클래스 없음.
+3. `test_tc_e2e_scr003_11_category_nav_click_all_resets_filter` — "전체" 클릭 시 필터 해제,
+   전체 목록 복원.
+4. `test_tc_e2e_scr003_12_category_filter_and_search_are_mutually_exclusive` — 카테고리 필터
+   중 검색 실행(→ 전체 active로 복귀, 검색은 카테고리 무관 전체 대상) / 검색 중 카테고리 클릭
+   (→ 검색어 지워지고 카테고리 필터만 적용) 양방향 모두 검증.
+
+**검증 결과**: 신규 4개 단독 실행 4 passed(7.07s). 단위 테스트(`test_tc_api or test_tc_iso`)
+76 passed(11.34s, 회귀 없음). 전체 E2E(`test_tc_e2e`) 42 passed(38 기존+4 신규, 32.41s).
+TC-PERSIST 4 passed(4.92s, `pg-lab` 재시작 후 정상 재기동 확인). 합계 **122개(76+42+4) 전부
+GREEN**, 실패 0건.
+
+**스크린샷**: 신규 8장(`category-11-필터전전체목록.png`~`category-16-검색중카테고리클릭.png`,
+파일당 1~2스텝).
+
+**발견 사항(dev-pl 보고)**: `docs/screenshot/category-11-이름수정모달.png`,
+`category-12-삭제확인모달.png` 2개 orphan 파일 발견 — 현재 어떤 테스트 코드도 이 파일명을
+생성하지 않음(과거 리팩토링 이전 버전의 잔재로 추정). 이번에 신규 케이스가 같은 번호(11/12)를
+이어받아 사용해 번호가 겹친다(파일명은 다름). 삭제하지 않고 보고만 함(산출물 임의 삭제 금지 원칙).
+
+**보고서**: `docs/test-reports/unit-2026-07-18.md`(신규), `docs/test-reports/
+integration-2026-07-18.md`(같은 날 앞선 "검색 필터링 버그 재현" 섹션에 새 섹션 이어붙임, 덮어쓰지
+않음).
+
+---
+
+## 2026-07-18 — 프론트엔드 정합화 작업 완료 후 최종 전체 회귀(dev-pl 지시, 오늘 마무리 라운드)
+
+**배경**: 오늘 하루 진행된 프론트엔드 정합화 작업(카테고리 모달, 아이콘, 로고, 배너 오버레이 통합,
+사이드바 스크롤, 테이블 컬럼/스크롤, 포커스 상태, 웹폰트 로딩 등)이 전부 완료된 뒤 dev-pl이 요청한
+최종 마무리 회귀 라운드. 새 테스트 케이스 추가 없이 기존 스위트 전체 재실행 + 보고서 갱신 +
+어제자 보고서 아카이브가 목적.
+
+**환경 확인(매번 반복되는 패턴)**: 지시 없이도 직접 `curl`/`docker ps`로 확인 — 이번에도 백엔드가
+다운(`curl` 000)돼 있어 `.venv/bin/uvicorn`으로 재기동 후 진행(DB 컨테이너 `pg-lab`은 기동 중).
+
+**단위 테스트**: `pytest tests/test_auth.py tests/test_contacts.py tests/test_categories.py -k
+"test_tc_api or test_tc_iso" -v` → **76개 전부 PASSED**, 12.06s. 오늘 앞선 두 라운드와 동일 수치,
+정합화 작업이 UI 전용이라 API 로직 영향 없음을 실측으로 재확인.
+
+**통합 테스트**: `pytest tests/ -k "test_tc_e2e" -v` → **42개 전부 PASSED**, 51.15s(SCR-001 7 +
+SCR-004 6 + SCR-900 5 + SCR-002 12 + SCR-003 12). `test_persistence.py`(`.env` source 후 단독
+실행) → **4개 전부 PASSED**, 5.57s(TC-PERSIST-02가 `pg-lab` 재시작 후 8초 만에 정상 재기동
+확인). 합계 **46개 전부 GREEN**.
+
+**최종 결과**: 단위 76 + 통합 46(E2E 42 + PERSIST 4) = **122개 전부 GREEN**, 실패 0건. 오늘 하루
+전체 작업(버그 재현 확인, 카테고리 nav 필터링 신규 4건, 프론트엔드 정합화)을 통틀어 회귀 없음.
+
+**스크린샷**: `docs/screenshot/` 실측 총 **82장**. 로그인/회원가입/비밀번호재설정(`login-*`,
+`pwreset-*`), 세션만료/오류알림(`alert-*`), 연락처 CRUD+빈상태(`contacts-*`), 카테고리 CRUD+nav
+필터링(`category-*`), 데이터지속성(`persist-*`) 등 정식 pytest 스위트 커버 화면 75장(mtime
+05:14 전후, 이번 실행분으로 갱신 확인) + 오늘 정합화 작업 자체를 캡처한 `round-login-*`/
+`round-main-*` 7장(mtime 05:08, 우리 테스트 코드 소관 아닌 별도 라운드 산출물 — 그대로 둠) = 82장.
+과거 로그에 있던 orphan 파일(`category-11/12-이름수정모달·삭제확인모달.png`)은 이번 실측에서
+더 이상 발견되지 않음(자연 소멸, 재조치 불필요). 지난 라이브 재현 라운드의 `search-repro-*`
+6장(스크래치패드 산출물, 미커밋)도 남아있지 않음 — 둘 다 정상.
+
+**보고서**: `docs/test-reports/unit-2026-07-18.md`/`integration-2026-07-18.md`를 지시대로
+최종 라운드 내용으로 덮어씀(단, integration은 기존 관례대로 오늘 앞선 두 섹션 뒤에 세 번째
+섹션으로 이어붙이는 형태 유지 — 완전 삭제 없이 이력 보존). 어제자(`unit-2026-07-17.md`,
+`integration-2026-07-17.md`)는 `docs/test-reports/old/`로 이동(원본 파일명 그대로 보존, 신규
+생성).
+
+**다음 라운드 참고**: `round-*` 접두사 스크린샷은 우리 테스트 스위트가 생성하는 파일이 아니므로
+회귀 스위트 재실행 시 갱신되지 않는 게 정상 — 개수 확인 시 혼동 주의.

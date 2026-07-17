@@ -22,7 +22,17 @@
     border-top: var(--border-base) solid var(--color-ink-900);
 }
 .card-body {
+    /* 균등 20px gap(2026-07-18, get_design_context 936:1191/995:303/996:376 재실측
+       근거) — Figma "Content" 컨테이너(936:1217 등)는 Logo/타이틀/Field.../
+       ConfettiFooter까지 전부 flex-col gap-[20px]로 쌓는다. .auth-card form의
+       내부 gap-20(위 수정)만으로는 브랜드 로고→form 사이, form→ConfettiFooter
+       사이 간격이 여전히 개별 margin(16/12px 등)에 의존해 어긋났다 — card-body
+       자체를 flex-col gap-20으로 바꿔 그 바깥 형제(브랜드로고/타이틀/폼/
+       컨페티푸터)까지 전부 균등해지게 한다. */
     padding: 32px 32px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
     position: relative;
 }
 
@@ -43,8 +53,26 @@
     width: 420px;
     max-width: 100%;
 }
+/* Logo(263:679) 컴포넌트 자체가 p-[16px]로 심볼+워드마크를 감싼다 — 우리
+   .brand-row는 그 안쪽 padding을 생략하고 margin-bottom만 뒀었는데, 이 상단
+   16px 여백이 없으면 위 토스트 오버레이(.toast, 2026-07-18 수정)가 로고
+   아이콘을 침범해 가린다(card-body padding-top 32 + 16 = 48 ≈ 토스트 높이
+   44~48px). Logo 컴포넌트 스펙 그대로 auth 카드에만 상단 16px을 복원한다
+   (사이드바 .brand-row는 이 컨텍스트 밖이라 영향 없음). */
+.auth-card .brand-row {
+    /* 24px로 재조정(2026-07-18): pwreset2-success Toast(996:2575)는 title+
+       subtitle 2줄 구조라 렌더 높이가 단일줄 배너(~44~48px)보다 커서(~53px)
+       16px 버퍼로는 로고 배지 상단이 살짝 가려졌다 — 두 줄짜리까지 커버하도록
+       24px로 늘림(card-body padding-top 32 + 24 = 56px, 53px보다 여유 있게). */
+    padding-top: 24px;
+    /* card-body가 이제 gap:20으로 간격을 주므로(위 수정) .brand-row 자체의
+       margin-bottom(기본 16px, layout.css)은 겹쳐 더해지면 36px로 어긋난다 —
+       auth 카드 안에서는 0으로 죽이고 gap에게 맡긴다. */
+    margin-bottom: 0;
+}
 .auth-card-title {
-    margin: 0 0 20px;
+    /* margin-bottom도 위와 동일 이유로 0 — gap:20이 담당 */
+    margin: 0;
     font-family: "Noto Sans KR", sans-serif;
     font-weight: 900;
     font-size: 18px;
@@ -78,16 +106,32 @@
     height: 2px;
     background: rgba(26, 26, 26, 0.1);
 }
+/* 균등 20px gap(2026-07-18 버그 수정, get_design_context 936:1191 재실측 근거):
+   936:1217(Content 컨테이너)은 Logo/Field/Checkbox-Link-Row/Button/Divider/Button
+   전부를 균등 20px gap으로 쌓는다(content-stretch flex flex-col gap-[20px]). 기존
+   `> * + * { margin-top:12px }`는 CSS 형제결합자가 DOM 순서를 기준으로 삼는데,
+   login-form은 순서 트릭(CSS order)으로 시각 순서와 DOM 순서가 달라 실제 계산된
+   간격이 12~32px로 제각각이었다(divider→회원가입 버튼 사이만 28px로 유독 넓었던
+   원인). flex `gap`은 DOM 순서가 아니라 시각(정렬 후) 순서를 기준으로 적용되므로
+   order 트릭과도 안전하게 호환된다 — 자식 개별 margin은 전부 0으로 죽이고 gap
+   하나로만 간격을 준다. */
 .auth-card form {
     display: flex;
     flex-direction: column;
+    gap: 20px;
 }
 .auth-card form .btn {
     width: 100%;
     margin-bottom: 0;
 }
-.auth-card form > * + * {
-    margin-top: 12px;
+.auth-card form .field {
+    margin-bottom: 0;
+}
+.auth-card form .row-between {
+    margin-bottom: 0;
+}
+.auth-card form .divider {
+    margin: 0;
 }
 
 /* ── Auth 배경 장식(BgPixels/DashedEllipse/ConfettiFooter, graphic-assets.md
@@ -158,6 +202,12 @@
     justify-content: center;
     gap: 12px;
     margin-top: 12px;
+}
+/* card-body가 gap:20을 담당하는 auth 카드 안에서는 이 자체 margin-top이 겹쳐
+   더해지므로 0으로 죽인다(2026-07-18, 위 card-body 수정과 짝) — 다른 컨텍스트에
+   .confetti-footer가 없어 영향 범위는 auth 카드로 한정된다. */
+.auth-card .confetti-footer {
+    margin-top: 0;
 }
 .confetti-diamond {
     width: 5.6px;

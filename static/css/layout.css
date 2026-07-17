@@ -6,6 +6,20 @@
     box-sizing: border-box;
 }
 
+/* 브라우저 기본 포커스 아웃라인 전역 리셋(2026-07-18) — 그동안 .btn/.row-action/
+   .input 등 컴포넌트별로 개별 적용했으나, nav-item(사이드바 카테고리)처럼 커버되지
+   않은 요소는 계속 브라우저 기본 아웃라인이 남아있었다. 매번 컴포넌트마다 따로
+   추가하는 대신 전역으로 한 번에 처리한다 — 어떤 새 인터랙티브 요소가 추가되든
+   기본으로 이 규칙을 물려받는다. 커스텀 링(box-shadow)이 이미 정의된 컴포넌트는
+   더 구체적인 선택자가 이 파일 이후에 로드되는 buttons.css/inputs.css에서
+   덮어써 그대로 유지된다. */
+*:focus {
+    outline: none;
+}
+*:focus-visible {
+    box-shadow: 0 0 0 1px var(--color-white), 0 0 0 4px var(--color-ink-900);
+}
+
 body {
     margin: 0;
     font-family: "Noto Sans KR", -apple-system, sans-serif;
@@ -23,8 +37,9 @@ button {
 }
 
 /* ── Logo(심볼+워드마크, design-system.md 7절/confirmed 7절) ─────────────
-   심볼은 코랄 원 + 2px ink 스트로크 + 내부 흰 PxStar(빈 원이 아니다, 항상
-   별을 품는다). 워드마크 색은 배경에 따라 반전(흰 배경=ink, 브랜드색 배경=흰색)
+   심볼은 코랄 원 + 2px ink 스트로크 + 내부 잉크색(#1a1a1a) PxStar(빈 원이
+   아니다, 항상 별을 품는다 — 2026-07-18 정정, design-system.md 35절 참고).
+   워드마크 색은 배경에 따라 반전(흰 배경=ink, 브랜드색 배경=흰색)
    — 사이드바(스카이블루 배경)에서는 .sidebar .brand-row .brand-name로 반전. ── */
 .brand-row {
     display: flex;
@@ -41,7 +56,10 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-white);
+    /* 2026-07-18 정정: Figma 원본 SVG 에셋(Pixel/Star, 263:666 내부)을 직접
+       확인한 결과 별 fill이 흰색이 아니라 color/ink/900(#1a1a1a)이었다 —
+       design-system.md 텍스트 설명("내부 흰 PxStar")이 stale했다. */
+    color: var(--color-ink-900);
     flex-shrink: 0;
 }
 .brand-badge-star {
@@ -94,12 +112,39 @@ button {
     margin: 16px 0 8px;
 }
 .nav-list {
+    /* get_design_context(937:298) 실측: CategoryNav 영역은 238px 고정+overflow-clip —
+       Figma는 정적 목업이라 클립 처리했지만, 실제 앱은 카테고리 개수가 유동적이라
+       클립(잘려서 안 보임) 대신 스크롤로 구현한다(2026-07-18 dev-pl 지시). 시각적
+       높이(238px)는 그대로 유지하고, 넘치는 카테고리는 이 영역 안에서만
+       overflow-y:auto로 스크롤된다 — 사이드바 전체 높이에는 영향 없음.
+       max-height 재조정(2026-07-18, dev-pl 지시 — 실측 기반): 전체+가족+기타+직장+친구
+       5개(nav-item 5개) 상태를 Playwright로 렌더링해 scrollHeight를 재본 결과
+       256px였다(238px로는 마지막 항목이 잘림) — 딱 맞게 260px로 소폭만 상향. */
+    max-height: 260px;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 4px;
     list-style: none;
     margin: 0;
-    padding: 0;
+    /* 그림자 클리핑 정정(2026-07-18, 신규 harness 규칙): overflow-y:auto는 overflow-x도
+       암묵적으로 auto가 되어 좌우도 클리핑된다 — nav-item.active의 shadow-hard-2(우측+
+       하단 2px)가 잘리지 않도록 그 오프셋만큼(4px) 우측/하단 패딩을 준다. */
+    padding: 0 4px 4px 0;
+}
+.nav-list::-webkit-scrollbar {
+    width: 8px;
+}
+.nav-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+.nav-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
+}
+.nav-list {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
 }
 .nav-item {
     display: flex;
@@ -111,6 +156,9 @@ button {
     background: rgba(255, 255, 255, 0.18);
     font-weight: 700;
     font-size: 14px;
+    /* 클릭 가능(2026-07-18, 카테고리 nav 필터 신규 기능) — 표시 전용에서 인터랙티브
+       요소로 승격됐으니 커서로 클릭 가능함을 알린다. */
+    cursor: pointer;
 }
 .nav-item.active {
     background: var(--color-navy-700);
@@ -132,24 +180,53 @@ button {
     box-shadow: var(--shadow-hard-1);
 }
 .manage-list {
+    /* max-height 근거(2026-07-18, dev-pl 지시 — Figma에 고정값 없어 "균형 잡힌 값"을
+       판단): design-system.md 38-1절에서 실측된 CatRows(937:1180, 기본 4행 상태)
+       확정 높이 114px을 그대로 재사용한다 — 임의로 새 수치를 고르지 않고, 이미
+       문서화된 "카테고리 4개 기본 상태" 실측값을 스크롤 임계값으로 삼은 것.
+       기본 시드 카테고리(가족/친구/기타/회사) 4개까지는 스크롤 없이 다 보이고,
+       5개째부터 이 영역 안에서만 overflow-y:auto로 스크롤된다.
+       max-height 재조정(2026-07-18, dev-pl 지시 — 실측 기반): 시드 3개(가족/기타/친구)
+       + 사용자 추가 "직장" 4개 상태를 Playwright로 렌더링해 scrollHeight를 재본 결과
+       114px로는(border-top 2px 포함) clientHeight가 112px이 되어 2px 잘렸다 — 딱
+       맞게 120px로 소폭만 상향. */
+    max-height: 120px;
+    overflow-y: auto;
     list-style: none;
     margin: 0;
-    padding: 8px 0 0;
+    /* 그림자 클리핑 정정(2026-07-18, 신규 harness 규칙): row-action-icon 버튼의
+       shadow-hard-1(우측+하단 1px)이 잘리지 않도록 우측/하단 패딩을 준다. */
+    padding: 8px 4px 4px 0;
     display: flex;
     flex-direction: column;
     gap: 6px;
     border-top: var(--border-base) solid rgba(26, 26, 26, 0.3);
 }
+.manage-list::-webkit-scrollbar {
+    width: 8px;
+}
+.manage-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+.manage-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
+}
+.manage-list {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
+}
 .manage-list li {
+    /* CatRow(node 937:1181 등) 실측: 라벨(100px 고정) + 액션 컨테이너(60px 고정) gap8,
+       space-between이 아니라 좌측 정렬 후 고정폭으로 배치한다. */
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 8px;
     font-size: 12px;
     font-weight: 700;
 }
 .manage-list li .cat-name {
-    width: 76px;
+    width: 100px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -157,18 +234,21 @@ button {
 .manage-list li .actions {
     display: flex;
     gap: 4px;
+    width: 60px;
+    height: 22px;
+}
+/* 순수 레이아웃 래퍼(2026-07-19 재통합: 카테고리 추가 에러가 main-error-toast 공용
+   슬롯으로 이동해, 여기는 더 이상 오버레이 relative 기준점이 필요 없다). */
+.category-footer {
+    margin-top: 12px;
 }
 .category-add-row {
-    margin-top: 12px;
     display: flex;
     flex-direction: column;
     gap: 6px;
 }
 .category-add-row .input {
     width: 100%;
-}
-#category-error {
-    margin-top: 8px;
 }
 
 .content {
@@ -202,12 +282,25 @@ button {
     font-weight: 700;
 }
 .avatar {
+    /* node 104:131 실측: 배경 component/avatar-bg(#1395e6, sky-500) — teal이 아니다.
+       내부 Icon/User(24x24, stroke-only)가 빠져 있던 결함도 함께 수정(2026-07-18,
+       아이콘 전수 체크리스트 대조 중 발견). */
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: var(--color-teal-500);
+    background: var(--color-sky-500);
     border: var(--border-base) solid var(--color-ink-900);
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.avatar .icon-user {
+    /* 실제 에셋 실측: stroke는 ink #1a1a1a 고정(배경색과 무관하게 항상 이 색) —
+       fill만 배경과 같은 색이라 "보이지 않는 면색"이었다는 문서 설명은 stroke가
+       아니라 fill 얘기다, currentColor로 배경색을 물려받으면 안 된다. */
+    width: 24px;
+    height: 24px;
+    color: var(--color-ink-900);
 }
 .content-body {
     padding: 16px;
@@ -228,6 +321,11 @@ button {
     flex-wrap: wrap;
 }
 .add-form-row .input {
+    height: 36px;
+}
+.add-form-row .btn {
+    /* node 939:355 실측(AddRowContainer 64px, FieldRow 36px) — 버튼 기본 height(44px)가
+       필드 행 높이(36px)를 넘어서 컨테이너를 밀어내던 결함(dev-pl 제보) 수정. */
     height: 36px;
 }
 #add-name {
@@ -261,26 +359,94 @@ button {
     margin-left: 8px;
 }
 
-.contact-table {
-    width: 100%;
-    border-collapse: collapse;
+/* 8행 초과 시 내부 스크롤 + 헤더 고정(2026-07-19 크로스브라우저 재수정):
+   1차(thead/tbody 각각 display:block)는 컬럼이 어긋나는 결함으로 폐기됐고,
+   2차(<thead th>에 position:sticky)는 Chromium에서는 완벽했지만 <table> 내부
+   <th>에 대한 position:sticky가 Safari/WebKit에서 안정적으로 지원되지 않는
+   잘 알려진 이슈라 실제 사용자 브라우저에서 헤더가 스크롤과 같이 움직이는
+   재현 보고를 받았다 — position:sticky 자체를 걷어내고, 헤더를 테이블 밖
+   별도 고정 div(.contact-table-header)로 완전히 분리했다(스크롤 컨테이너
+   바깥이라 sticky 없이도 항상 보임, 어떤 브라우저에서도 깨질 여지가 없다).
+   컬럼 폭은 .contact-table-wrap의 CSS 변수(--col-*-width)를 헤더 div와
+   tbody td가 그대로 공유해 절대 어긋나지 않는다. */
+.contact-table-wrap {
+    --col-name-width: 80px;
+    --col-phone-width: 128px;
+    --col-type-width: 80px;
+    --col-actions-width: 110px;
     background: var(--color-white);
     border: var(--border-heavy) solid var(--color-ink-900);
     border-radius: 14px;
     overflow: hidden;
 }
-.contact-table thead tr {
+.contact-table-header {
+    display: flex;
     background: var(--color-navy-700);
-}
-.contact-table thead th {
     color: var(--color-white);
     font-size: 11px;
     font-weight: 900;
-    text-align: left;
-    padding: 10px 16px;
 }
-.contact-table tbody tr {
-    border-bottom: 1px solid var(--color-border-divider-cool);
+.contact-table-header .cth-cell {
+    padding: 10px 16px;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.contact-table-header .cth-name {
+    width: var(--col-name-width);
+    flex: none;
+}
+.contact-table-header .cth-phone {
+    width: var(--col-phone-width);
+    flex: none;
+}
+.contact-table-header .cth-addr {
+    flex: 1 1 auto;
+}
+.contact-table-header .cth-type {
+    width: var(--col-type-width);
+    flex: none;
+}
+.contact-table-header .cth-actions {
+    width: var(--col-actions-width);
+    flex: none;
+}
+.contact-table-scroll {
+    /* 8행 실측(2026-07-18, Playwright로 헤더(36px)+8개 연락처 tr(46px×8) 실측) —
+       9행부터 이 영역 안에서만 스크롤된다(고정 헤더 높이 제외한 tbody 영역 기준). */
+    max-height: 368px;
+    overflow-y: auto;
+}
+.contact-table-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+.contact-table-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+.contact-table-scroll::-webkit-scrollbar-thumb {
+    background: var(--color-gray-450);
+    border-radius: 4px;
+}
+.contact-table-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-gray-450) transparent;
+}
+.contact-table {
+    /* 주의(2026-07-18 dev-pl 제보 — 빈 상태 카드 테두리 누락): border-collapse:collapse는
+       테이블 자체 border를 셀 보더와의 충돌 해소 규칙으로 다시 계산하고, 그 결과가
+       overflow:hidden+border-radius 클리핑과 상호작용해 3px ink 보더가 전혀 렌더링되지
+       않는 브라우저 렌더링 버그를 일으켰다(데이터 有/無 상태 모두 영향, 빈 상태는 행이
+       하나뿐이라 더 두드러져 보였을 뿐). 이제 테두리/radius는 위 래퍼(.contact-table-wrap)로
+       옮겼으니 이 버그 자체가 재발할 여지가 없다 — border-collapse:separate는 그대로 유지. */
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    /* 컬럼 폭 고정(2026-07-18, get_design_context(939:1442) 실측 + dev-pl 지시): 주소
+       길이에 따라 "종류"/"변경하기" 컬럼 위치가 행마다 흔들리던 문제 — table-layout:fixed +
+       컬럼별 고정폭(아래 nth-child 규칙)으로 해소. 주소(td.addr)만 명시 폭 없이 나머지
+       공간을 자동으로 차지한다. */
+    table-layout: fixed;
 }
 .contact-table tbody tr:nth-child(even) {
     background: var(--color-bg-row-alt);
@@ -288,6 +454,27 @@ button {
 .contact-table tbody td {
     padding: 10px 16px;
     font-size: 14px;
+    /* border-collapse:separate(위 320절 사유)에서는 tr에 준 border가 전혀
+       렌더링되지 않는다(스펙상 separate 모드는 row/row-group 보더를 무시하고
+       셀 보더만 그린다) — 행 구분선(624:1070 실측)은 td에 직접 줘야 실제로
+       보인다(2026-07-18). */
+    border-bottom: 1px solid var(--color-border-divider-cool);
+}
+/* 컬럼 폭(939:1442 실측): 이름 80 / 전화번호 128 / 종류(4번째 td, CatBadge에 별도
+   클래스가 없어 nth-child로 지정) 80 / 변경하기(td.actions, 버튼그룹 41x2+gap4≈90px가
+   여유 있게 들어가도록) 110. 주소는 명시폭 없이 나머지 공간 자동 차지. 위 헤더 div
+   (.cth-*)와 동일한 --col-*-width 변수를 참조해 폭이 항상 동기화된다(2026-07-19). */
+.contact-table td:nth-child(1):not(.empty-state-cell) {
+    width: var(--col-name-width);
+}
+.contact-table td:nth-child(2):not(.empty-state-cell) {
+    width: var(--col-phone-width);
+}
+.contact-table td:nth-child(4):not(.empty-state-cell) {
+    width: var(--col-type-width);
+}
+.contact-table td.actions {
+    width: var(--col-actions-width);
 }
 .contact-table td.name {
     font-weight: 700;
@@ -297,11 +484,27 @@ button {
 }
 .contact-table td.addr {
     color: var(--color-text-muted);
+    /* 주소가 매우 긴 경우(2026-07-18 실측 확인) 레이아웃이 깨지지 않도록 말줄임. */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
+/* 주의(2026-07-19, thead 제거 리팩토링 중 실측 발견): td 자체에 display:flex를 주면
+   table-layout:fixed가 "첫 번째 행" 기준으로 폭을 계산할 때 그 flex 셀 때문에 나머지
+   auto 폭 컬럼(주소)의 남은 공간 분배 계산이 어긋나(Chromium/WebKit 둘 다 재현 —
+   주소 컬럼이 remaining space를 다 못 받고 테이블 우측에 빈 공간이 남음) 컬럼이
+   틀어지는 결함을 냈다. td는 순수 table-cell로 두고, 내부 래퍼(.actions-inner)에만
+   display:flex를 줘서 회피한다(app.js가 버튼 2개를 이 래퍼로 감싼다). */
 .contact-table td.actions {
+    padding: 0;
+}
+.contact-table .actions-inner {
     display: flex;
-    gap: 4px;
+    align-items: center;
     justify-content: flex-end;
+    gap: 4px;
+    height: 100%;
+    padding: 10px 16px;
 }
 
 /* ── EmptyState (main-검색없음 501:4218 재사용, design-system.md Pixel/NoResult) ── */

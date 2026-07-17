@@ -79,3 +79,18 @@
   - `login-비밀번호재설정-성공`(`996:2575`, x=11900,y=0) — 2단계 카드 위에 Toast(Success, `263:38`, 로그인-알림창 936:1191과 동일한 오버레이 좌표 공식) 오버레이, 텍스트 "비밀번호가 변경되었습니다"(테스트 기준 정확 문자열) + 서브텍스트 "잠시 후 로그인 화면으로 이동합니다".
   - 3화면 모두 `get_screenshot`으로 자체 검증 완료(레이아웃/텍스트/버튼 일치, Amber CTA + Neutral 보조 버튼 배치 순서가 Join/login과 동일해 일관성 유지).
 - **상태**: 완료
+
+## 9. 프론트엔드 구현 결함 — `.banner` 전역 오버레이 미적용 (996:3165 근본원인 확장, 2026-07-18)
+
+- **경위**: main-오류배너(`996:3165`)의 배너가 문서 흐름에 밀려 들어가는 버그를 개별 화면 건으로 인지하고 dev-pl에 수정 지시했으나, 사용자가 회원가입 폼의 "이름은 1~5자여야 합니다"(연락처 추가 검증 오류, `add-error-banner`) 스크린샷을 추가로 제시해 같은 결함이 재현됨을 확인.
+- **근본원인(코드 직접 확인, 2026-07-18)**: `static/css/toasts.css`의 `.toast`(main-toast 전용)만 `position: absolute`로 구현돼 있고, 나머지 모든 배너가 공유하는 `.banner` 클래스(`static/css/toasts.css` L4-14)는 `margin-bottom: 16px`만 있을 뿐 위치 지정이 전혀 없어 일반 문서 흐름에 그대로 참여한다. `static/app.js`의 `setBanner()`가 이 `.banner` 클래스를 사용하는 지점은 `login-error-banner`/`login-success-banner`/`pwreset1-error-banner`/`pwreset2-error-banner`/`pwreset2-success-banner`/`add-error-banner`/`edit-error-banner`/`category-error`/`delete-category-error-banner`/`rename-category-error-banner` 전부(총 10곳) — 즉 이번에 발견된 건 996:3165 하나의 개별 버그가 아니라 **`.banner` 클래스 자체가 플로팅 오버레이 패턴(design-system.md 6절)을 구현하지 않은 전역 결함**이었다.
+- **필요 조치**: `.banner`에도 `.toast`와 동일한 절대 위치 오버레이 패턴(`position: absolute; left:0; right:0; top:...`)을 적용하되, 각 배너의 부모 컨테이너가 `position: relative`를 갖도록 하고 화면별로 이미 design-system.md/본 문서에 기록된 오버레이 좌표(예: main-오류배너 top:93px, login-알림창 등)를 그대로 따른다. **⚠ 정정(2026-07-18)**: 아래 처음 기록 시 "자동 소멸 타이밍은 변경하지 않는다"고 적었으나 이는 사용자 의도를 잘못 해석한 것이었다 — 사용자는 "(main-toast처럼) 잠시 후 사라지는 동작도 동일하게 구현해달라"는 뜻이었다. 현재 `.banner`(`setBanner`/`clearBanner`)는 자동 소멸 타이머가 전혀 없어 재제출 전까지 계속 남아있는데, `.toast`(`showToast`, `main-toast`)처럼 일정 시간 뒤 자동으로 사라지는 기능을 `.banner` 계열에도 추가해야 한다.
+- **범위**: 하네스 규칙(플로팅 오버레이 원칙)은 이미 design-system.md 6절/`.claude/agents/frontend-engineer.md`에 존재 — 이번 항목은 그 원칙이 프론트엔드 구현 전체에 누락 적용된 사실을 기록하는 프로젝트 결함 로그이며, 새 하네스 규칙 추가 대상이 아니다.
+- **상태**: 완료 (dev-pl 구현 + pytest 122건 GREEN + 메인 세션 스크린샷 재확인, 2026-07-18)
+
+## 10. 가입 직후 빈 상태(`1060:2014`) — CTA/카피 프론트엔드 불일치 (2026-07-18)
+
+- **경위**: 사용자가 라이브 앱 스크린샷 제시 — 현재 프론트엔드(`static/app.js` `renderEmptyState()`, 검색결과없음 분기 재사용)가 이 화면 전용 카피/CTA를 반영하지 않고 있었음.
+- **Figma 실측(`get_design_context`, 1060:2014 직접 조회, 2026-07-18)**: 제목 "아직 등록된 연락처가 없어요"(현재 코드: "아직 연락처가 없어요"), 서브텍스트 "첫 연락처를 추가해 목록을 채워보세요"(현재 코드: "첫 연락처를 추가해서 나만의 목록을 시작해 보세요"), CTA는 **버튼**("연락처 추가", ink 배경(`#1a1a1a`)+흰 텍스트+2px 하드 그림자+radius10, 99×40) — 현재 코드는 밑줄 텍스트 링크("위 폼에서 바로 추가하기")로 구현돼 있어 컴포넌트 유형 자체가 다르다.
+- **참고**: 아이콘(Pixel/NoResult)과 전체 레이아웃 구조는 검색결과없음 패턴과 동일해 그대로 재사용 가능 — 문구 3곳과 CTA 컴포넌트 유형(링크→버튼)만 이 화면 전용으로 분기해야 한다.
+- **상태**: 완료 (dev-pl 구현 + 메인 세션 스크린샷 재확인 — 제목/서브텍스트/버튼 CTA 전부 Figma와 일치, 2026-07-18)

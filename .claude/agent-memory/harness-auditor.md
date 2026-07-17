@@ -4,21 +4,6 @@
 
 ---
 
-## 2026-07-17 (38~39차) — graphic-assets.md "26절"→"33절" 절번호 오기 발견·정정·최종 재검증 (B 범위 주 + A범위 스팟체크)
-
-**결과: 위반 0건 확정(39차 기준).**
-
-- 38차에서 신규 절(392행 이후)의 근거 인용 "design-system.md 26절"(394/398/414행)이 존재하지 않는 절번호임을 발견(HIGH) — 실제로는 33절.
-- 39차 재검증: graphic-designer가 6곳(30/394/398/402/412/414행) 전부 "33절"로 정정 완료 확인. 파일 내 남은 "26절" 문자열 2곳(38/118행)은 전부 "0-26절"(Checkbox 리토피트, `design-system.md:541`)을 가리키는 별개의 정확한 참조로 확인, 오염 없음.
-- A범위(`design-systems.md` 로컬·전역 69줄) 완전 동일 재확인, 프로젝트 고유명·노드ID 하드코딩 재발 없음.
-- 그 외 절번호 인용(0-2, 0-20, 13절 P14, 23절 B×3, 32절) 스팟체크 — 전부 실존·부합 확인.
-
-### 패턴 메모
-- 절번호 오기 HIGH 발견 → 1라운드 만에 전수 정정 + 자체 판별까지 정확 완료된 모범 사례.
-- 이 문서(graphic-assets.md) 특성상 절번호 인용이 누적되므로, 새 절 인용 추가 시마다 존재 여부 재검증하는 습관이 계속 필요.
-
----
-
 ## 2026-07-17 (40차) — `.claude/agents/design-pl.md` 15번 신설("확정 요소 결함 수정은 9번 게이트 예외") + "하지 말 것" 신설 항목 감사 (A 범위)
 
 배경: design-pl.md에 "사용자가 확정 화면/컴포넌트 결함을 발견해 알려주면 9번(디자인 시스템 최종 승인) 게이트와 무관하게 즉시 착수, 마스터-인스턴스 대조 후 처리, design-qa 재검증은 예외 없이" 규칙 신설. 4가지 관점 요청받아 감사.
@@ -59,10 +44,10 @@
 
 **결과: 신규 HIGH 1건(재발 패턴), 신규 MEDIUM 2건(확인 필요), 기존 미해결 LOW 2건 재확인(40/41차 항목, 변화 없음). 40차 HIGH 1건·MEDIUM 1건은 해소 확인.**
 
-1. **[HIGH, B범위 — 43차 재검증 결과 부분 해소]** `docs/design/missing-screens.md`(17/25/33/41/49/56행)와 `docs/design/design-system.md:355`(0-17절)의 `화면정의서`/`PRD` 버전 인용 stale 건 — **43차에서 정정 완료 확인**(현재 v1.15/v1.11로 실제 파일과 일치). 단 `docs/design/graphic-assets.md:146`("값 출처" 문단, `01_..._v1.0.pdf`/`02_...pdf`/`03_...pdf` 인용)은 **43차 재확인 결과 여전히 미정정** — 아래 43차 항목 참고(이 프로젝트 최다 재발 패턴이 부분 미해결로 이월).
-2. **[MEDIUM, A범위 — 43차에서 확정 판단]** `.claude/agents/ui-designer.md`의 "흰색·검은색도 예외 없이 토큰을 쓴다" 원칙 예시(raw `#ffffff`/`#1a1a1a`) — 43차에서 확신도 상향, 최종 판단은 아래 43차 항목 참고.
-3. **[MEDIUM, B범위 — 43차 재확인 결과 미해소]** `docs/design/design-system.md` §40(BgPixels/ConfettiFooter "의도적 컨페티 패턴이라 변환 안 함" 결정)이 자산 소유 문서 `docs/design/graphic-assets.md`에 각주로 전파되지 않은 propagation 갭 — **43차 재확인 결과 여전히 각주 없음**, 미해소.
-4. **[검증 통과]** `docs/harness/design-team/token-architecture-guide.md` 6번 — 노드ID·hex·프로젝트 고유명 leak 없음, 기존 원칙과 충돌 없음.
+1. **[HIGH, B범위 — 43차 재검증 결과 부분 해소]** `docs/design/missing-screens.md`(17/25/33/41/49/56행)와 `docs/design/design-system.md:355`(0-17절)의 `화면정의서`/`PRD` 버전 인용 stale 건 — **43차에서 정정 완료 확인**(현재 v1.15/v1.11로 실제 파일과 일치). 단 `docs/design/graphic-assets.md:146`("값 출처" 문단, `01_..._v1.0.pdf`/`02_...pdf`/`03_...pdf` 인용)은 **43차 재확인 결과 여전히 미정정**(이 프로젝트 최다 재발 패턴이 부분 미해결로 이월).
+2. **[MEDIUM, A범위 — 43차에서 확정 판단]** `.claude/agents/ui-designer.md`의 "흰색·검은색도 예외 없이 토큰을 쓴다" 원칙 예시(raw `#ffffff`/`#1a1a1a`) — 43차에서 확신도 상향, 최종 판단은 43차 항목 참고.
+3. **[MEDIUM, B범위 — 43차 재확인 결과 미해소]** `docs/design/design-system.md` §40(BgPixels/ConfettiFooter "의도적 컨페티 패턴이라 변환 안 함" 결정)이 자산 소유 문서 `docs/design/graphic-assets.md`에 각주로 전파되지 않은 propagation 갭 — 미해소.
+4. **[검증 통과]** `docs/harness/design-team/token-architecture-guide.md` 6번 — 노드ID·hex·프로젝트 고유명 leak 없음.
 5. **[검증 통과]** `.claude/agents/design-qa.md`의 확장된 WCAG/치수 검증 항목 정합적 통합.
 6. **[검증 통과, 40차 HIGH 해소]** design-pl.md "18번 품질 게이트" 유령 참조 해소.
 7. **[검증 통과, 40차 MEDIUM 해소]** `figma-file-organization.md` 3-B번 4-1항에 게이트 예외 문구 정본 반영 확인.
@@ -83,19 +68,38 @@
 
 **결과: 42차 지적 4건 중 2건 완전 해소, 2건 미해소(그중 1건은 "정정했다"는 보고와 실제 파일 상태가 불일치). 신규 변경분은 검증 통과 4건, 확정 판단(leak 인정) 1건.**
 
-1. **[검증 통과 — 완전 해소]** `docs/design/missing-screens.md` 버전 인용(17/25/33/41/49/56행 등) — 전부 `화면정의서_v1.15.md`/`PRD_v1.11.md`로 정정 완료, 실제 파일(02=v1.15, 04=v1.11)과 정확히 일치. 11행에 갱신 경위 각주까지 있음.
+1. **[검증 통과 — 완전 해소]** `docs/design/missing-screens.md` 버전 인용 — 전부 `화면정의서_v1.15.md`/`PRD_v1.11.md`로 정정 완료, 실제 파일과 정확히 일치.
 2. **[검증 통과 — 완전 해소]** `docs/design/design-system.md:355`(0-17절) — `화면정의서_v1.15.md`로 정정 완료 확인.
-3. **[HIGH, 미해소 — "정정 지시했다"는 보고와 실제 파일 불일치]** `docs/design/graphic-assets.md:146` "값 출처" 문단이 **여전히** `docs/planning/01_연락처관리_웹서비스_구현요구사항_v1.0.pdf`, `02_...화면정의서...pdf`, `03_...기능정의서...pdf`를 인용한다 — 실제 현재 파일은 `01_..._v1.11.md`/`02_..._v1.15.md`/`03_..._v1.3.md`로 셋 다 버전·확장자(.md, pdf 아님) 모두 다르다. 같은 파일 416행(37차 라운드 "Primary 틸" 각주 정정)에서 "146행 이후 전체 재독"까지 했다고 기록돼 있음에도 이 문단 자체는 손대지 않은 것으로 확인 — 다른 주제(Primary 역할 표현)만 고치고 이 버전 인용은 재확인 대상에서 빠졌던 것으로 보인다. **이 프로젝트 최다 재발 패턴(6회 이상)이 이번에도 부분 미해결로 이월.**
-4. **[MEDIUM, 미해소]** `docs/design/graphic-assets.md`에 design-system.md §40-3(BgPixels/ConfettiFooter "의도적 컨페티 스캐터 패턴이라 변환하지 않음" 결정)을 가리키는 각주가 **여전히 없음** — BgPixels/ConfettiFooter 관련 절(418/450/501행 근처)을 전수 검색했으나 §40-3 인용·"변환 안 함" 결정 언급 0건.
-5. **[검증 통과, 신규]** design-system.md §42(interaction-designer 인터랙션 이관 기록: Toast 180ms/모달오픈 250ms/비밀번호재설정전환 300ms) — `docs/harness/design-team/motion-timing-guide.md` duration 기준(마이크로 100~200ms, 화면전환 200~400ms)과 자체 대조(§42-3)까지 정합적으로 수행돼 있고, 실제로도 세 값 모두 가이드 범위 안. easing·퍼포먼스 조건도 일치.
-6. **[검증 통과, 신규]** design-system.md §43(SummaryBox `941:3029` 신규 문서화) — §41-1/41-2 상호참조 실재, 컴포넌트 미승격 판단 근거 자기충족적, 다른 절과 모순 없음.
-7. **[검증 통과, 신규]** missing-screens.md 5/7번 항목 완료 갱신 — 노드ID(`1057:1626`/`1057:1709`, `1060:2014`/`1062:3866`) 서술 일관, 7번의 `242:4280`→`501:4218` 노드ID 정정 경위도 자기충족적으로 서술됨(모순 없음). 단, 이 파일은 B범위 문서라 노드ID 기재 자체는 문제 아님.
-8. **[MEDIUM, A범위 — 확정 판단: leak으로 판정]** `.claude/agents/ui-designer.md`의 "흰색·검은색도 예외 없이 토큰을 쓴다" 원칙이 예시로 든 raw `#ffffff`/`#1a1a1a`를 이번엔 확정 판단함 — **leak으로 본다**. 근거: (a) 이 hex 값이 이 프로젝트의 실제 등록 토큰(`color/gray/0`=`VariableID:95:10`=#FFFFFF, `color/ink/900`=`VariableID:95:9`=#1A1A1A)과 정확히 일치(design-system.md 237/449/475행 등에서 반복 확인됨). (b) `.claude/agent-memory/graphic-designer.md`의 2026-07-17 로그(BgPixels 컬러 오류 정정: "다이아몬드 40개+십자 64개 vector → 흰색 `#ffffff`(raw, unbound — 원본과 동일하게 토큰 미바인딩)")가 정확히 이 문장이 묘사하는 사고와 같은 사건이다 — 즉 일반적 업계 통념이 아니라 이 프로젝트에서 실제 있었던 특정 사고의 hex 값을 그대로 예시로 옮긴 것으로 보인다. "#1a1a1a"는 순수 검정(#000000)이 아니라 이 프로젝트가 고른 특정 근사 잉크색이라는 점도 우연이라 보기 어렵게 만드는 요인. → 조치 방향은 판단하지 않되(leak 여부만 확정), 일반화하려면 구체 hex 없이 "흰색/검은색 근사값"으로 서술하고 상세는 design-system.md 참고로 안내하는 기존 정답 패턴을 따르면 될 것으로 보임.
-9. **[재확인, 미해결, 41/42차와 동일]** design-system.md `## 36`이 `## 35`보다 앞선 물리적 순서 역전 — 변화 없음.
-10. **[재확인, 미해결, 37/42차와 동일]** design-system.md "## 25" 다음 "## 27"(26 없음) 결번 — 변화 없음.
+3. **[HIGH, 미해소 — "정정 지시했다"는 보고와 실제 파일 불일치]** `docs/design/graphic-assets.md:146` "값 출처" 문단이 **여전히** `01_..._v1.0.pdf`/`02_...pdf`/`03_...pdf`를 인용한다 — 실제 현재 파일은 `01_..._v1.11.md`/`02_..._v1.15.md`/`03_..._v1.3.md`(확장자도 다름). **이 프로젝트 최다 재발 패턴(6회 이상)이 이번에도 부분 미해결로 이월.**
+4. **[MEDIUM, 미해소]** `docs/design/graphic-assets.md`에 design-system.md §40-3(BgPixels/ConfettiFooter "변환하지 않음" 결정)을 가리키는 각주가 **여전히 없음**.
+5. **[검증 통과, 신규]** design-system.md §42(interaction-designer 인터랙션 이관 기록) — `motion-timing-guide.md` duration 기준과 자체 대조까지 정합적.
+6. **[검증 통과, 신규]** design-system.md §43(SummaryBox `941:3029` 신규 문서화) — 상호참조 실재, 다른 절과 모순 없음.
+7. **[검증 통과, 신규]** missing-screens.md 5/7번 항목 완료 갱신 — 노드ID 서술 일관, 정정 경위 자기충족적.
+8. **[MEDIUM, A범위 — 확정 판단: leak으로 판정]** `.claude/agents/ui-designer.md`의 raw `#ffffff`/`#1a1a1a` 예시 — 이 프로젝트 실제 등록 토큰 값과 정확히 일치 + 실제 사고(graphic-designer.md 2026-07-17 로그)와 매칭돼 leak으로 확정. 조치 방향은 판단 보류.
+9. **[재확인, 미해결, 41/42차와 동일]** design-system.md `## 36`이 `## 35`보다 앞선 물리적 순서 역전.
+10. **[재확인, 미해결, 37/42차와 동일]** design-system.md "## 25" 다음 "## 27"(26 없음) 결번.
 
 ### 패턴 메모
-- **"정정 지시했다/완료했다"는 보고를 그대로 믿지 않고 파일을 직접 대조해야 하는 사례가 이번에도 나왔다**(항목 3, 4) — 특히 항목 3은 "146행 이후 재독까지 했다"는 기록이 남아있음에도 실제로는 그 라운드가 다른 주제(Primary 역할 표현)만 고치고 넘어간 것으로, "이 문서를 다시 읽었다"가 "이 문서의 모든 문제를 다 고쳤다"를 보장하지 않는다는 교훈.
+- **"정정 지시했다/완료했다"는 보고를 그대로 믿지 않고 파일을 직접 대조해야 하는 사례가 이번에도 나왔다** — "이 문서를 다시 읽었다"가 "이 문서의 모든 문제를 다 고쳤다"를 보장하지 않는다는 교훈.
 - 버전 인용 스테일 패턴은 이제 부분 해소(missing-screens.md/design-system.md는 고쳐졌으나 graphic-assets.md는 여전히 남음) — 문서마다 소유자(agent)가 다르고 각자 다른 라운드에서 고쳐지다 보니 통일된 한 번의 스윕이 안 되는 구조적 문제로 보인다.
+
+---
+
+## 2026-07-18 (44차) — frontend-engineer.md 신규 3규칙(전역 focus 리셋/스크롤바/그림자 클리핑) + missing-screens.md 9/10번 신규 항목 + 카테고리 색상 로테이션(코드 전용) + "문서 따로 코드 따로" 전반 감사 (A+B 범위)
+
+배경: 마감 압박 속 메인 세션이 dev-pl/frontend-engineer에게 다수 프론트엔드 버그 수정을 지시하고 static/css/*.css·static/app.js를 직접 편집, 하네스·기획/디자인 문서 정합성 점검을 한동안 못한 상태에서 4가지 관점(A범위 신규 규칙, missing-screens 9/10번, 카테고리 색상 로테이션 문서화 여부, 그 외 code-doc 괴리) 요청받음.
+
+**결과: HIGH 2건(신규, B범위 — 코드와 SSOT 기획문서 정면 불일치, 이미 dev-pl.md에도 인지·기록돼 있으나 미해소), MEDIUM 2건(신규, B범위 — 문서화 갭/stale 서술), A범위(frontend-engineer.md 신규 3규칙)는 검증 통과.**
+
+1. **[HIGH, B범위, 이미 알려진 미해결 갭]** 사이드바 카테고리 nav 클릭 필터링 신규 기능(`static/app.js` `state.selectedCategoryId`/`renderCategoryNav`/`selectCategoryFilter`) — `docs/planning/02_연락처관리_웹서비스_화면정의서_v1.15.md` 255행이 "클릭 시 필터링 동작은 없습니다(표시 전용, §5 ④ 참고)"라고 명시적으로 반대로 서술하는데도 화면정의서는 아직 개정되지 않음. `.claude/agent-memory/dev-pl.md`(24/33행)에도 "사용자 결정으로 기능 확장 진행, 문서 개정은 planning 팀 후속 필요"로 이미 인지·기록돼 있으나 아직 실제 개정은 안 됨 — SSOT 문서와 라이브 코드가 정면으로 어긋난 채 남아있는 상태.
+2. **[HIGH, B범위, 신규 발견]** `docs/design/missing-screens.md` 9번(`.banner` 전역 오버레이 결함)·10번(1060:2014 CTA/카피 불일치) 두 항목 모두 **상태값이 "미완료"**로 남아있으나, `.claude/agent-memory/frontend-engineer.md`(2026-07-18 "누적 큐 마무리 라운드"/"남은 큐 3건" 항목)에는 두 건 모두 이미 구현 완료(`.banner` 10곳 전수 오버레이 전환 + 자동소멸 타이머, 빈 상태 카피 3곳+CTA 링크→버튼 교체)로 기록돼 있고 Playwright 스크린샷·pytest 122 passed로 검증까지 마쳤음이 확인됨(`dev-pl.md` 23행에도 동일 내용 교차 확인됨). missing-screens.md의 "미완료" 상태 표기가 실제 코드 상태를 반영하지 못하는 stale 값으로 보임 — 과거 반복된 "보고와 실제 파일 불일치" 패턴의 반대 방향(이번엔 코드가 앞서 있고 문서가 뒤처짐).
+3. **[MEDIUM, B범위, 문서화 갭 — 확인 필요]** 카테고리 색상 로테이션(`static/app.js` `CATEGORY_STYLE_ROTATION`, 사용자 지시 "베리에이션(균등 할당) 하면 되잖아"로 2026-07-18 코드에만 반영) — `docs/design/design-system.md`는 CatBadge/TypeSelector를 "Category=Friend/Family/Other/Company (4)" 고정 enum으로만 문서화하고 있고, 4종을 넘는 사용자 커스텀 카테고리명에 4색을 순환 배분한다는 이번 결정은 design-system.md 어디에도 기록이 없음 — 기존에 지적된 BgPixels/ConfettiFooter propagation 갭과 동일 유형의 "코드 전용 시각 결정, 문서 미반영" 사례. 문서화 필요 여부는 design-pl/design-systems 판단 필요.
+4. **[MEDIUM, B범위, 기존 stale 서술 — 확인 필요, 오늘 세션 발생 아닐 가능성 있음]** `docs/planning/02_..._v1.15.md`(및 old/v1.11~v1.14에도 동일하게 존재) 수정 모달 와이어프레임 절이 "TypeSelector는 CatBadge와 다른 별도 팔레트, 임의 통일 금지(브랜드 문서 2-3절)"라고 서술하나, 이 결정은 `docs/design/design-system.md` 0-9절(2026-07-14)로 이미 뒤집혀 TypeSelector Selected 상태가 CatBadge 토큰을 공유하도록 확정됨 — 화면정의서 쪽 문구가 이후 여러 버전(v1.11→v1.15)에 걸쳐 정정되지 않고 그대로 이월된 것으로 보임. 부수적으로 "브랜드 문서 2-3절"이라는 표현도 실제로는 `docs/design/confirmed/user-confirmed-final-design.md` 2-3절을 가리키는 것으로 보이나(brand-guide.md엔 그런 절 없음) "브랜드 문서"라는 이름 자체가 그 파일을 가리키는지 불명확 — 참조 표현의 모호성도 함께 확인 필요.
+5. **[검증 통과, A범위]** `.claude/agents/frontend-engineer.md` 신규 3규칙(전역 focus 리셋 우선/스크롤 영역 클릭+드래그 가능한 스타일드 스크롤바/overflow 컨테이너 그림자 클리핑 주의) — `docs/harness/design-team/component-state-guide.md`·`figma-file-organization.md` 등 다른 정본 문서와 직접 충돌하는 서술 없음(component-state-guide.md의 Focus 규칙은 Figma variant 설계 차원이라 이 코드 구현 규칙과 층위가 다름, 상충 아님). 노드ID·hex·프로젝트 고유 컴포넌트 목록 등 포터블 leak도 없음(예시로 든 `.btn`/`.input`은 범용 CSS 클래스명 수준).
+6. **[재확인, 미해결, 40~43차와 동일 계열]** `graphic-assets.md:146` 버전 인용 stale 건, `## 36`/`## 35` 순서 역전, "## 25"→"## 27" 결번 — 이번 라운드에서는 재조회하지 않아 변화 여부 미확인(범위 밖).
+
+### 패턴 메모
+- 오늘 처음으로 "문서가 코드보다 뒤처진" 방향의 stale 사례(항목 2)가 명확히 발견됨 — 지금까지는 주로 "버전 인용이 stale"이었는데, 이번엔 "구현 완료 여부 상태값" 자체가 stale한 새로운 하위유형. 다수 라운드가 연속으로 돌아가는 마감 압박 상황에서 완료 보고가 코드 커밋 쪽(agent-memory)에만 남고 설계 산출물 문서(missing-screens.md) 상태값 갱신이 별도 스텝으로 빠지기 쉬운 구조로 보인다.
+- 항목 1은 이미 dev-pl.md/frontend-engineer.md 양쪽에 "planning 팀 후속 개정 필요"로 스스로 인지·기록해둔 상태 — 새로 발견한 문제라기보다 "알고 있지만 아직 안 고쳐진" 미해결 큐로 분류.
 
 ---

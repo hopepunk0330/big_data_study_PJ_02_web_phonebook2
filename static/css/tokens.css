@@ -26,6 +26,9 @@
     --color-purple-900: #4b0d9c;
     --color-paleblue-50: #f5fafd;
     --color-paleblue-100: #d3ecfb;
+    /* Row Action Button(카테고리 관리 아이콘 버튼) Neutral 보더 전용 —
+       design-system.md 27절: color/ink/900(#1a1a1a)과 별개인 ink/800(#1c1f21) */
+    --component-row-action-button-border-neutral: #1c1f21;
     --color-gray-300: #cccccc;
     --color-gray-350: #bbbbbb;
     --color-gray-375: #aaaaaa;
@@ -33,7 +36,7 @@
     --color-gray-500: #777777;
     --color-gray-600: #5c6366;
     --color-gray-650: #555555;
-    --color-bg-page: #fff8ee;
+    --color-bg-page: #dcdedf;
 
     /* Semantic (design-system.md 1-2) */
     --color-text-muted-strong: var(--color-gray-650);
