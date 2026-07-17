@@ -1,0 +1,43 @@
+/* 연락처 관리 서비스 — 배너/토스트(SCR-900, design-system.md 5절 소프트 그림자)
+   .banner*(에러/성공 배너 공용) + .toast*(main-알림창 성공 토스트 플로팅). */
+
+.banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: var(--radius-none);
+    box-shadow: var(--shadow-raised);
+    margin-bottom: 16px;
+}
+.banner-error {
+    background: var(--color-bg-error);
+}
+.banner-success {
+    background: var(--color-bg-success);
+}
+.banner-icon {
+    flex-shrink: 0;
+}
+.icon-alert {
+    display: block;
+    width: 24px;
+    height: 24px;
+}
+.toast {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 20;
+}
+.toast .toast-title {
+    font-weight: 500;
+    font-size: 13px;
+}
+.toast .toast-subtitle {
+    font-size: 11px;
+    color: var(--color-gray-600);
+}

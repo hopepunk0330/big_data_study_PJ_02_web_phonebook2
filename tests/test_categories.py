@@ -231,19 +231,22 @@ def test_tc_e2e_scr003_03_rename_via_prompt_refreshes_all_related_views(page, ap
     api_request.post("/contacts", data=contact_payload(category_id, name="윤아"))
     _login_via_page(page, username)
 
-    page.once("dialog", lambda dialog: dialog.accept("베프"))
     page.get_by_role("listitem", name="친구").get_by_role("button", name="수정", exact=True).click()
+    page.get_by_role("heading", name="카테고리 이름 수정").wait_for()
+    page.get_by_label("이름").fill("베프")
+    page.get_by_role("button", name="저장", exact=True).click()
     page.locator("#category-nav").get_by_text("베프").wait_for()
     page.screenshot(path="docs/screenshot/category-04-이름변경완료.png")
 
 
-def test_tc_e2e_scr003_04_rename_prompt_cancel_no_api_call(page, api_request):
+def test_tc_e2e_scr003_04_rename_modal_cancel_no_api_call(page, api_request):
     username, _ = signup(api_request)
     _login_via_page(page, username)
     log = record_network(page)
 
-    page.once("dialog", lambda dialog: dialog.dismiss())
     page.get_by_role("listitem", name="친구").get_by_role("button", name="수정", exact=True).click()
+    page.get_by_role("heading", name="카테고리 이름 수정").wait_for()
+    page.get_by_role("button", name="취소", exact=True).click()
     page.wait_for_timeout(500)
     page.screenshot(path="docs/screenshot/category-05-이름변경취소유지.png")
     assert not any("/categories/" in entry and "PATCH" in entry for entry in log)
@@ -258,8 +261,9 @@ def test_tc_e2e_scr003_05_delete_unused_category_confirm_removes_it(page, api_re
     page.reload()
     page.get_by_role("button", name="로그아웃", exact=True).wait_for()
 
-    page.once("dialog", lambda dialog: dialog.accept())
     page.get_by_role("listitem", name=name).get_by_role("button", name="삭제", exact=True).click()
+    page.get_by_role("heading", name="카테고리 삭제").wait_for()
+    page.get_by_role("button", name="삭제하기", exact=True).click()
     page.wait_for_timeout(500)
     page.screenshot(path="docs/screenshot/category-06-미사용삭제완료.png")
     assert page.get_by_text(name).count() == 0
@@ -275,8 +279,12 @@ def test_tc_e2e_scr003_06_delete_in_use_category_confirm_shows_detail_not_remove
     api_request.post("/contacts", data=contact_payload(category_id))
     _login_via_page(page, username)
 
-    page.once("dialog", lambda dialog: dialog.accept())
     page.get_by_role("listitem", name="친구").get_by_role("button", name="삭제", exact=True).click()
+    page.get_by_role("heading", name="카테고리 삭제").wait_for()
+    page.get_by_role("button", name="삭제하기", exact=True).click()
+    # 서버가 409를 반환 — 모달이 에러를 표시하며 유지되는지, 배너로 대체되며 닫히는지는
+    # frontend-engineer 구현에 따라 달라질 수 있어 "2건" 텍스트가 화면 어딘가에
+    # 나타나는지만 유연하게 확인한다(다음 라운드에서 실제 동작에 맞춰 조정 가능).
     page.get_by_text("2건").wait_for()
     page.screenshot(path="docs/screenshot/category-07-사용중삭제거부.png")
     assert page.get_by_text("친구").count() >= 1
@@ -287,8 +295,9 @@ def test_tc_e2e_scr003_07_delete_confirm_cancel_no_change(page, api_request):
     _login_via_page(page, username)
     log = record_network(page)
 
-    page.once("dialog", lambda dialog: dialog.dismiss())
     page.get_by_role("listitem", name="친구").get_by_role("button", name="삭제", exact=True).click()
+    page.get_by_role("heading", name="카테고리 삭제").wait_for()
+    page.get_by_role("button", name="취소", exact=True).click()
     page.wait_for_timeout(500)
     page.screenshot(path="docs/screenshot/category-08-삭제취소유지.png")
     assert not any("/categories/" in entry and "DELETE" in entry for entry in log)

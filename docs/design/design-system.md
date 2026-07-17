@@ -352,7 +352,7 @@ design-qa 스팟체크에서 NeoInput/CornerInput이 동일한 `color/text-place
 
 **2) 라디오 버튼 — 미등록 판단**
 
-확정 8개 프레임(`248:11689` 하위) 전체를 `ELLIPSE` 타입 기준으로 전수 검색(32건 발견) — 전부 장식용 MemphisAccents 원, Avatar/유저 아이콘 원, `Icon/Alert` 원, TypeSelector 칩 내부 6×6 선택 dot이었고 "원형 보더+원형 채움 다이얼" 형태의 라디오 패턴은 0건. 화면정의서(`02_연락처관리_웹서비스_화면정의서_v1.5.md`) SCR-002 "종류"는 드롭다운(select)으로 명시("종류가 '입력'에서 '선택'으로 바뀐 이유" 절), 편집 모달 카테고리 선택은 TypeSelector(칩, `257:28`)가 이미 담당. 전체 화면 목록(SCR-001/002/003/004/900) 어디에도 단일 선택 그룹(라디오) 흐름 없음. **판단: 미등록(불필요)** — 근거 (a) 확정 프레임에 실물 0건 (b) SCR-002 종류는 Select/TypeSelector가 이미 커버 (c) 화면정의서 전체에 다른 단일선택 그룹 흐름 없음. 이후 실제로 라디오 그룹이 필요한 흐름이 생기면 그때 재검토.
+확정 8개 프레임(`248:11689` 하위) 전체를 `ELLIPSE` 타입 기준으로 전수 검색(32건 발견) — 전부 장식용 MemphisAccents 원, Avatar/유저 아이콘 원, `Icon/Alert` 원, TypeSelector 칩 내부 6×6 선택 dot이었고 "원형 보더+원형 채움 다이얼" 형태의 라디오 패턴은 0건. 화면정의서(`02_연락처관리_웹서비스_화면정의서_v1.15.md`) SCR-002 "종류"는 드롭다운(select)으로 명시("종류가 '입력'에서 '선택'으로 바뀐 이유" 절), 편집 모달 카테고리 선택은 TypeSelector(칩, `257:28`)가 이미 담당. 전체 화면 목록(SCR-001/002/003/004/900) 어디에도 단일 선택 그룹(라디오) 흐름 없음. **판단: 미등록(불필요)** — 근거 (a) 확정 프레임에 실물 0건 (b) SCR-002 종류는 Select/TypeSelector가 이미 커버 (c) 화면정의서 전체에 다른 단일선택 그룹 흐름 없음. 이후 실제로 라디오 그룹이 필요한 흐름이 생기면 그때 재검토.
 
 **3) Divider — 미등록 판단**
 
@@ -2119,3 +2119,54 @@ Contacts 페이지(`934:3`, main/main-알림창/main-검색없음/main-수정/ma
 ### 41-1. `941:1508`(연락처 삭제 모달) ButtonRow 인스턴스 재검증 — 이미 정상, 수정 불필요 (2026-07-17)
 
 "삭제하기"/"취소" 버튼 인스턴스(`941:3043`/`941:3045`) height=42/y=4로 어긋나 있다는 제보로 재확인했으나, 실측 결과 이미 둘 다 `height=44, y=4`로 ButtonRow(48px, paddingTop4/paddingBottom0)를 정확히 채우고 있었다 — 확정 원본(`501:4172`의 `501:4212`/`501:4215`, 동일 height=44/y=4)과 정확히 일치. `get_screenshot`으로도 빈 공간 없음을 확인해 변경 없이 종료.
+
+### 41-2. 42px vs 44px 상충 최종 확정 — 44px 확정, design-qa의 42px 보고는 오탐 (2026-07-17, 3차 재확인)
+
+design-qa("height=42px, HIGH 위반")와 design-systems 재확인 라운드(41-1절, "height=44px, 정상")가 정면 상충해 4번째로 재실측했다. **결론: 44px가 맞다.** 근거: ① `get_metadata`(`941:1508`) — 버튼 인스턴스 `941:3043`/`941:3045` 둘 다 `y=4, height=44`, 부모 `ButtonRow`(`941:3042`) `height=48`이라 4+44=48로 정확히 채움(잔여 여백 0). ② `get_design_context`(`941:3042`) — Tailwind 변환 결과도 `h-[44px]`, `pt-[4px]`(ButtonRow 자체 padding-top 4, padding-bottom 0)로 동일 확인, `layoutSizingVertical`상 버튼은 FIXED 44. ③ 확정 원본(`501:4172`) 대응 노드 `501:4212`/`501:4215`도 재실측 결과 동일하게 `y=4, height=44`, 부모 컨테이너 `501:4211` height=48 — 파일럿 인스턴스와 원본이 픽셀 단위로 일치. ④ `get_screenshot`(`941:1508`)으로 육안 확인 결과 버튼 하단과 카드 하단 사이 빈 여백 없이 꽉 채워져 보임 — 수치와 시각 결과 일치. **design-qa의 42px 보고 원인 추정**: 42px라는 값 자체가 실제 노드 속성 어디에도 나타나지 않아(44도, 48-4=44도 아님) 캐시된 스크린샷을 오래된 상태에서 봤거나, 다른 유사 컴포넌트(예: `44-2=42`가 아니라 별도 Style/State variant)를 착오로 같은 노드ID로 착각해 보고했을 가능성이 높다 — 파일 내 실제 42px 값을 가진 버튼 인스턴스는 이번 재조회 범위에서 발견되지 않았다. **최종 결론**: `941:1508`의 ButtonRow는 수정 불필요, 41-1절 판단이 맞고 design-qa의 42px 보고는 기각한다.
+
+## 42. 인터랙션 전환(모션) — interaction-designer 작업 이관 기록 (2026-07-17, 2개 라운드)
+
+**배경**: interaction-designer가 2026-07-17에 두 라운드에 걸쳐 화면 인터랙션 작업(상태 상속 확인 + 신규 전환 정의)을 진행했으나, 해당 세션에 Edit 도구가 지급되지 않아 이 문서에 직접 기록하지 못하고 `.claude/agent-memory/interaction-designer.md`에만 남겨두었다. design-systems가 그 기록을 이 절로 정식 이관한다(원본 확정 프레임은 두 라운드 모두 무수정, 읽기 전용 대조만 수행됨).
+
+### 42-1. 1차 라운드 — 신규 조립 화면 6종 인터랙션(Toast/모달 오픈/화면전환) + 버튼 State 상속 확인
+
+대상: Join-실패배너(`996:2713`)/Join-성공안내(`996:3014`)/main-오류배너(`996:3165`)의 Toast, 카테고리 삭제확인(`1001:1594`)/이름수정(`1002:1611`) 모달, 비밀번호재설정 1→2→성공(`995:303`→`996:376`→`996:2575`). 모두 같은 화면 페이지(Auth `934:2`/Contacts `934:3`) 안에서 작업.
+
+- **버튼 State 축 — 신규 정의 없이 "상속 확인"만**: 대상 화면의 모든 CTA(모달의 Coral 삭제/Amber 저장/Neutral 취소, 비밀번호 재설정 각 단계 제출 버튼)가 전부 `Button` 컴포넌트셋(`259:609`, `Style`×`State`, State 옵션 `Default/Hover/Press/Focus/Disabled/Loading` 기확정, 9절 참고)의 INSTANCE임을 확인 — 신규 variant 생성 없음.
+- **Toast 등장 트랜지션(신규 정의)**: 기존 파일 전체에 프로토타입 연결/모션이 전혀 없어 신규 정의. `Position`(slide-in-top, distance 8px) + `Opacity`(fade-in), **duration 180ms**, easing `EASE_IN_AND_OUT`. 대상: Toast 인스턴스 3개(`996:2856`/`996:3157`/`996:3264`). transform(translateY)+opacity만 사용, 리플로우 속성 없음.
+- **모달 오픈 트랜지션(신규 정의)**: `Scale`(96%→100%, scaleIn) + `Opacity`(fade-in), **duration 250ms**, easing `EASE_IN_AND_OUT`. 대상: 카테고리 삭제확인 Card(`1001:1600`)/이름수정 Card(`1002:1617`) + 배경 DimOverlay(`1001:1595`/`1002:1612`, Opacity fade-in만 동일 250ms로 통일 — 두 겹 애니메이션 타이밍 불일치로 산만해지는 걸 피함).
+- **비밀번호 재설정 단계 전환(신규 정의, 화면 간 이동)**: `SMART_ANIMATE`, **duration 300ms**, easing `EASE_IN_AND_OUT`. 연결: 1단계 제출버튼(`995:342`)→2단계(`996:376`), 2단계 제출버튼(`996:408`)→성공(`996:2575`). 성공 화면은 종단이라 후속 전환 없음.
+- **API 함정(향후 재사용 참고)**: `applyAnimationStyle(styleId, presetData)`의 `presetData`는 `{ duration, props: { type, direction, distance, easing, ... } }`처럼 `props` 한 겹으로 감싸야 한다 — `type`/`direction`/`easing` 등을 최상위에 바로 넣으면 "Unrecognized key" 에러.
+- 검증: 각 스크립트 실행 후 `animationStyles`/`reactions` 배열 재확인 + `get_screenshot`으로 Join-실패배너/카테고리 삭제 모달 정적 상태(리스팅 깨짐 없음) 확인.
+
+### 42-2. 2차 라운드 — 신규 조립 화면 2종 추가 확인(Toast 상속 확인 + CTA 버튼 인스턴스 여부 확인)
+
+대상: main-카테고리삭제거부배너 409(`1057:1626`)의 Toast, main-데이터없음(가입직후)(`1060:2014`)의 CTA 버튼("연락처 추가"). 확정 원본 미접촉.
+
+- **Toast(`1057:1709`, mainComponent Type=Error `263:46`) — 이미 1차 패턴을 상속 중이라 신규 적용 불필요**: 확인 결과 42-1절과 완전히 동일한 값(Position slide-in-top/distance8/180ms/EASE_IN_AND_OUT + Opacity fade-in/180ms/EASE_IN_AND_OUT)이 같은 mainComponent(`263:46`)로부터 이미 적용돼 있었다. **해프닝**: 사전 확인 없이 동일 설정을 한 번 더 적용해 중복 엔트리(4개)가 생겼음을 발견 → 방금 추가한 2개(`AnimationPresetId:1061:3866`/`3867`)만 제거해 원래 2개 엔트리로 원상복구, 재확인 완료. 앞으로 적용 전 기존 설정 여부를 먼저 읽어야 한다는 교훈이 남았다.
+- **CTA 버튼(`1060:2096`) — INSTANCE 아님, 구조적 갭 발견**: `type`이 FRAME이고 자식이 텍스트 노드 1개뿐, `mainComponent` 자체가 없다. `Button` 컴포넌트셋(`259:609`)의 인스턴스가 아니라 시각적으로만 흉내 낸 raw 목업이라 Press/Hover/Focus/Disabled 등 어떤 State도 상속하지 않았다(노드 이름에 "raw, unregistered gap"이라고 스스로 표시돼 있었음). **후속 확인(이 이관 라운드에서 재조회)**: 이후 ui-designer가 실제 `Button`(`259:609`, Style=Amber) INSTANCE로 교체를 완료해 `1062:3866`으로 갱신됨을 확인 — 이제 Press 등 State가 정상 상속된다.
+
+### 42-3. motion-timing-guide 기준 대조
+
+`docs/harness/design-team/motion-timing-guide.md` 1절(마이크로 인터랙션 100~200ms, 화면 전환 200~400ms) 기준으로 검산:
+- Toast 등장 180ms → 마이크로 인터랙션 범위(100~200ms) 안 — PASS.
+- 모달 오픈 250ms → 화면 전환 범위(200~400ms) 안 — PASS.
+- 비밀번호 재설정 단계 전환 300ms → 화면 전환 범위(200~400ms) 안 — PASS.
+- easing 전부 `EASE_IN_AND_OUT` → 가이드 2절(급발진/급정지 없는 ease-in-out 계열) 충족 — PASS.
+- 세 전환 모두 transform(Position/Scale)+Opacity만 사용, width/height/색상 직접 애니메이션 없음 → 가이드 5절(퍼포먼스) 충족 — PASS.
+
+## 43. `SummaryBox`(`941:3029`) 문서화 갭 처리 — design-scanner 재검증 발견분 (2026-07-18)
+
+design-scanner 재검증에서 `SummaryBox`(연락처 삭제 모달 안의 요약 정보 테이블)가 이 문서/`docs/design/graphic-assets.md` 어디에도 서술돼 있지 않다는 갭이 지적됐다(41-1/41-2절은 이 노드가 속한 ButtonRow의 치수 버그만 다뤘을 뿐 SummaryBox 자체는 언급이 없었음). `get_design_context`/`get_metadata`로 실측만 하고 원본은 전혀 수정하지 않았다.
+
+**용도**: 연락처 삭제 확인 모달(`941:1508`, "main-삭제" 화면, DeleteModal Card 안)에서 "이 연락처를 삭제하는 게 맞는지" 사용자가 확인할 수 있도록, 삭제 대상 연락처의 핵심 정보(이름/전화번호/주소/종류)를 라벨-값 쌍으로 요약해 보여주는 정보 박스다. WarningBox(경고 문구) 아래, ButtonRow(삭제하기/취소 버튼) 위에 위치한다.
+
+**구조 실측**(`941:3029`, 392×118, 화면조립 FRAME — 컴포넌트 인스턴스 아님):
+- 컨테이너: 배경 `#F9F7F3`, 보더 1px `#EDE6D8`(solid), VERTICAL auto-layout, `gap 4px`, padding `top12/right14/bottom14/left14`.
+- 자식 `SummaryRow` 4개(`941:3030`/`941:3033`/`941:3036`/`941:3039`, 각 20px 높이, HORIZONTAL, `items-center`, 폭은 콘텐츠에 hug) — 이름/전화번호/주소/종류 순서.
+- 각 Row는 라벨+값 텍스트 페어 2개로 구성:
+  - 라벨(`941:3031` 등): "Inter Black" 10px, uppercase, `letterSpacing 0.8px`, `lineHeight 15px`, **고정 폭 56px**(값 텍스트 폭이 달라도 라벨 컬럼이 항상 정렬되도록 예약된 폭 — CatRow(39절)의 라벨 래퍼와 동일한 정렬 관례), 색상 `color/ink-900`(#1A1A1A) 상속.
+  - 값(`941:3032` 등): "Noto Sans KR Regular" 13px, `lineHeight 20px`, `whitespace-nowrap`, 색상 동일하게 `color/ink-900` 상속(라벨과 값이 시각적으로 달라 보이는 건 폰트/굵기/트래킹 차이일 뿐 색상 자체는 동일함을 확인).
+- 텍스트 내용(이름/전화번호/주소/종류의 값)은 이 화면 조립본에 하드코딩된 예시 데이터("윤아"/"010-1234-5678"/"서울시 마포구"/"친구")다.
+
+**컴포넌트 등록 여부 — 등록하지 않음(판단 근거)**: 이 요소는 연락처 삭제 모달(`941:1508`) 1곳에만 존재하고, 파일 전체에서 유사한 "라벨-값 요약 테이블" 패턴이 반복 사용되는 다른 화면을 찾지 못했다 — 재사용 빈도가 낮아 2-6번(선제적 기본 구성) 기준에도 못 미친다고 판단해 별도 COMPONENT로 승격하지 않았다. 색상/spacing 값은 전부 기존 확정 토큰(`color/ink-900` 등)과 8pt 그리드 배수(gap4/padding12·14, 라벨폭56)를 따르고 있어 신규 토큰도 필요 없다. 향후 다른 화면에 동일한 "요약 정보 박스" 패턴이 필요해지면, 이 구조(고정폭 라벨 컬럼 + 값, VERTICAL gap4, padding12/14)를 참고해 그때 컴포넌트로 승격을 검토한다.

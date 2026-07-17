@@ -1,0 +1,164 @@
+/* 연락처 관리 서비스 — 입력 컴포넌트(NeoInput/CornerInput/Checkbox/TypeSelector)
+   design-system.md 5절/9절. .input*, .field, 검색창, 비밀번호 표시 토글,
+   로그인 체크박스, TypeSelector 칩을 모은다. */
+
+.input {
+    height: 44px;
+    border: var(--border-base) solid var(--color-ink-900);
+    border-radius: var(--radius-10);
+    padding: 8px 14px;
+    font-size: 14px;
+    background: var(--color-white);
+    box-shadow: var(--shadow-hard-2);
+    color: var(--color-ink-900);
+}
+.input::placeholder {
+    color: var(--color-text-placeholder-input);
+}
+.input:disabled {
+    background: var(--color-gray-350);
+    border-color: var(--color-gray-600);
+}
+.input-compact {
+    height: 36px;
+}
+select.input {
+    box-shadow: var(--shadow-hard-2);
+}
+
+/* ── CornerInput(각진 인증/모달 전용 입력창, radius0) ─────────────────── */
+.input-corner {
+    display: block;
+    width: 392px;
+    max-width: 100%;
+    height: 44px;
+    border: var(--border-base) solid var(--color-ink-900);
+    border-radius: var(--radius-none);
+    padding: 12px 16px;
+    font-size: 13px;
+    background: var(--color-white);
+    color: var(--color-ink-900);
+}
+.input-corner::placeholder {
+    color: var(--color-text-placeholder-input);
+}
+
+/* ── Field(라벨+입력창 묶음) ───────────────────────────────────────────── */
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 20px;
+}
+.field label {
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* ── 비밀번호 표시/숨김 토글(Pixel/Eye·Pixel/EyeOff, design-system.md 9절) ── */
+.password-wrap {
+    position: relative;
+}
+.password-wrap .input {
+    width: 100%;
+    padding-right: 46px;
+}
+.password-toggle {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    height: auto;
+    color: var(--color-ink-900);
+}
+.icon-eye {
+    display: block;
+    width: 14px;
+    height: 10px;
+}
+
+/* ── 로그인 상태 유지 체크박스 + 검색 입력 ─────────────────────────────── */
+.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.search-row {
+    display: flex;
+    gap: 8px;
+}
+.search-input-wrap {
+    flex: 1;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: var(--color-white);
+    border: var(--border-base) solid var(--color-ink-900);
+    border-radius: var(--radius-10);
+    box-shadow: var(--shadow-hard-2);
+}
+.search-icon {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    color: var(--color-sky-500);
+}
+.search-field {
+    flex: 1;
+    height: 100%;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 0;
+    font-size: 14px;
+    color: var(--color-ink-900);
+}
+.search-field::placeholder {
+    color: var(--color-text-placeholder-input);
+}
+
+/* ── TypeSelector (연락처 수정 모달 "종류" 칩) ─────────────────────────── */
+.type-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+.type-chip {
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: var(--border-base) solid var(--color-gray-300);
+    background: var(--color-white);
+    color: var(--color-text-muted-subtle);
+    font-size: 12px;
+    font-weight: 700;
+}
+.type-chip.selected.cat-friend {
+    border-color: var(--cat-friend-border);
+    background: var(--cat-friend-bg);
+    color: var(--cat-friend-text);
+}
+.type-chip.selected.cat-family {
+    border-color: var(--cat-family-border);
+    background: var(--cat-family-bg);
+    color: var(--cat-family-text);
+}
+.type-chip.selected.cat-other {
+    border-color: var(--cat-other-border);
+    background: var(--cat-other-bg);
+    color: var(--cat-other-text);
+}
+.type-chip.selected.cat-company {
+    border-color: var(--cat-company-border);
+    background: var(--cat-company-bg);
+    color: var(--cat-company-text);
+}

@@ -1,0 +1,194 @@
+/* 연락처 관리 서비스 — 카드 셸(Card component, Type=Auth/Modal) 공통
+   design-system.md 5절. .card*, 인증 화면(SCR-001/004) 카드 레이아웃과
+   배경 장식(BgPixels/DashedEllipse/ConfettiFooter), 카테고리 모달의
+   카드 셸 폭 변형(.modal-category)을 모은다. */
+
+.card {
+    background: var(--color-white);
+    border: var(--border-base) solid var(--color-ink-900);
+    border-radius: var(--radius-none);
+    box-shadow: var(--shadow-hard-6);
+    overflow: hidden;
+    position: relative;
+}
+.card-accent-top {
+    height: 8px;
+    background: var(--color-amber-600);
+    border-bottom: var(--border-base) solid var(--color-ink-900);
+}
+.card-accent-bottom {
+    height: 8px;
+    background: var(--color-sky-500);
+    border-top: var(--border-base) solid var(--color-ink-900);
+}
+.card-body {
+    padding: 32px 32px 20px;
+    position: relative;
+}
+
+/* ── Auth screen (SCR-001/SCR-004) ────────────────────────────────────── */
+.auth-page {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-sky-500);
+    padding: 40px 16px;
+    overflow: hidden;
+}
+.auth-card {
+    position: relative;
+    z-index: 1;
+    width: 420px;
+    max-width: 100%;
+}
+.auth-card-title {
+    margin: 0 0 20px;
+    font-family: "Noto Sans KR", sans-serif;
+    font-weight: 900;
+    font-size: 18px;
+    color: var(--color-ink-900);
+}
+.row-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    font-size: 12px;
+}
+.link {
+    color: var(--color-navy-700);
+    font-weight: 700;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 16px 0;
+    color: rgba(26, 26, 26, 0.35);
+    font-size: 11px;
+}
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    height: 2px;
+    background: rgba(26, 26, 26, 0.1);
+}
+.auth-card form {
+    display: flex;
+    flex-direction: column;
+}
+.auth-card form .btn {
+    width: 100%;
+    margin-bottom: 0;
+}
+.auth-card form > * + * {
+    margin-top: 12px;
+}
+
+/* ── Auth 배경 장식(BgPixels/DashedEllipse/ConfettiFooter, graphic-assets.md
+     "Auth 배경 장식 코드 구현용 좌표·색상 스펙 확정" 절 근거, login 936:1042 실측)
+     좌표는 login 1개 프레임을 실측해 모든 .auth-page 화면에 공용 재사용한다. ── */
+.bg-pixels {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+.px-diamond,
+.px-cross,
+.px-star,
+.px-ellipse {
+    position: absolute;
+}
+.px-diamond::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--px-size);
+    height: var(--px-size);
+    background: var(--color-white);
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+.px-cross {
+    width: var(--px-size);
+    height: var(--px-size);
+}
+.px-cross::before,
+.px-cross::after {
+    content: "";
+    position: absolute;
+    background: var(--color-white);
+}
+.px-cross::before {
+    top: 35%;
+    left: 0;
+    width: 100%;
+    height: 30%;
+}
+.px-cross::after {
+    top: 0;
+    left: 35%;
+    width: 30%;
+    height: 100%;
+}
+.px-star {
+    color: var(--color-amber-600);
+}
+.px-star-icon {
+    display: block;
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+}
+.px-ellipse {
+    border: 2px dashed var(--color-amber-600);
+    border-radius: 50%;
+    opacity: 0.4;
+}
+.confetti-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 12px;
+}
+.confetti-diamond {
+    width: 5.6px;
+    height: 5.6px;
+    border-radius: 1px;
+    background: var(--color-ink-900);
+    opacity: 0.25;
+    transform: rotate(45deg);
+}
+.confetti-star {
+    width: 8px;
+    height: 8px;
+    color: var(--color-ink-900);
+    opacity: 0.25;
+}
+
+/* ── Modal 카드 셸(폭 변형) ────────────────────────────────────────────── */
+.modal {
+    width: 480px;
+    max-width: calc(100% - 32px);
+}
+
+/* 카테고리 삭제/이름수정 모달(CategoryDeleteModal/CategoryRenameModal,
+   근거: 카테고리 삭제 확인 1001:1594 / 카테고리 이름 수정 1002:1611) —
+   실측 폭 460px(기존 .modal의 480px와 다른 컨텍스트별 인스턴스 리사이즈). */
+.modal-category {
+    width: 460px;
+}
+.modal-category .modal-body {
+    padding: 28px 32px;
+}
+.modal-category .modal-header {
+    margin-bottom: 20px;
+}

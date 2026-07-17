@@ -4,6 +4,11 @@
 
 ## 작업 로그
 
+### 2026-07-17 — `941:1508` ButtonRow 42px vs 44px 상충 3차 재확인·최종 확정 (41-2절)
+- design-qa("42px, HIGH")와 design-systems 이전 재확인(41-1절, "44px, 정상")이 상충해 재실측. `get_metadata`(`941:1508`) — 버튼 `941:3043`/`941:3045` 둘 다 y=4/height=44, 부모 ButtonRow(`941:3042`) height=48로 정확히 채움(잔여 0). `get_design_context`(`941:3042`) Tailwind 변환도 `h-[44px]`/`pt-[4px]` 일치. 확정 원본(`501:4172`)의 `501:4212`/`501:4215`도 동일 y=4/height=44, 부모 `501:4211` height=48로 픽셀 단위 일치. `get_screenshot`(`941:1508`) 육안 확인도 빈 여백 없음.
+- **최종 결론: 44px 확정, design-qa의 42px 보고는 기각.** 42px 값 자체가 어느 노드 속성에도 나타나지 않아 캐시된/오래된 스크린샷 또는 다른 노드 착오로 추정.
+- `docs/design/design-system.md` 신규 41-2절 Edit로 추가(Write 미사용). 확정 원본은 읽기 전용 대조만.
+
 ### 2026-07-17 — Auth(`934:2`) opacity 틴트 anti-pattern 근본 수정 + 비밀번호 토글 아이콘 갭 정정 (신규 40절)
 - 사용자 근본원인 지목: "1a1a1a를 투명도로 시안했었는데 내 스타일은 텍스트에 투명도 안 씀 — 합성 hex로 컬러칩 만들어" → `token-architecture-guide.md` 6번 원칙 실전 적용.
 - 934:2 전수 스캔(node-opacity 199건 + paint-opacity 15건). paint-opacity 15건은 전부 Divider Line(stroke ink10%)/"or"텍스트(fill ink35%) 패턴(5프레임). 935:33 사용자가 점선원으로 표시한 위치는 `DashedEllipse-0/1/2`(24건, stroke amber/600 + node-opacity40%)로 확인 — 이전 다이아몬드/십자/별 스캔이 ELLIPSE 타입을 놓쳤던 것.
@@ -42,10 +47,4 @@
 - `docs/design/design-system.md` 신규 35절(35-1~35-8) + 34-10절 + 5절/7-2절 각주 Edit로 추가(원문 삭제 없음). Figma NeoBtn ComponentSet(`259:126`) description + 스펙 시트 캡션(`342:5`) 갱신. Write 미사용. 확정 원본은 읽기 전용만.
 - **⚠ 발견(정정 아님, 보고만)**: 이 메모리 로그 최상단에 이미 있던 "36절(Contacts 화면 QA)" 항목이 실제 `docs/design/design-system.md`에는 존재하지 않았다(파일 실제 마지막 섹션은 34절이었음) — 과거 문서 손상 이력과 같은 유형의 유실 가능성이 있어 보인다. 이번 라운드에서 복구 시도는 하지 않았다(내용을 정확히 재구성할 근거 부족, 잘못 재구성하면 오히려 오염 위험) — design-pl/사용자 확인 필요.
 
-### 2026-07-17 — Contacts 화면(`934:3`) 그림자 잘림 QA 수정 + NeoBtn/Button Style=Coral 텍스트·보더 정정(36절)
-- 사용자 제보 ①그림자 잘림 ②텍스트 컬러 다름을 진단. `934:3`은 확정 원본이 아니라 34절 SCREENS 조립 산출물이라 정상 수정 진행.
-- 그림자 잘림: 마스터 정상(DROP_SHADOW 토큰 바인딩 이상 없음), 원인은 화면조립 auto-layout 컨테이너 17개(AddCategory/CategoryManage/SearchRow/FieldRow/AddRowContainer×3화면 + ButtonRow×2화면)가 그림자 있는 버튼과 flush로 hug하면서 기본값 `clipsContent=true`가 그림자를 잘라낸 것 — 전부 `false`로 정정. `get_screenshot`으로 바운딩박스가 정확히 2px(하드 그림자 오프셋)만큼 확장되고 잘림 없이 렌더링됨을 확인.
-- 텍스트 컬러: 최초엔 "WCAG 미달(흰 텍스트 on Coral/Sky 3.0~3.24:1)이라 ink 유지가 맞다"고 판단했으나, 동시 진행 중이던 35절(design-qa 후속)이 정확히 같은 NeoBtn Style=Sky를 반대 원칙(확정 원본 픽셀 우선, WCAG 갭은 TODO)으로 이미 정정 완료한 상태임을 재확인 과정에서 발견 — 충돌. 35절 원칙을 따르기로 하고 최초 판단을 철회, **Coral도 Sky/Navy와 동일하게 정정**: NeoBtn(12 variant)+Button(6 variant) Style=Coral의 Disabled 제외 전 State에 2px INSIDE `color/ink/900` 보더 추가 + 텍스트 `color/text-inverse`(흰색) 리바인딩(Disabled는 기존 `color/border-disabled`/`color/text-disabled` 유지). WCAG 약 3.01:1은 Sky(35-7절)와 동일하게 7-2절 TODO로 기록, 개선 여부는 사용자 판단 필요.
-- 자체 재대조: 18개 노드 전부 strokeWeight/strokeAlign/boundVariable 재조회 일치 확인, Focus FocusRing과 좌표 충돌 없음 스크린샷 확인.
-- `docs/design/design-system.md` 신규 36절(36-1~36-3, 36-2는 위 충돌 발견 후 Coral 정정 반영으로 재작성) + 5절/7-2절 각주 Edit로 추가(Write 미사용, 동시 편집 충돌 여러 차례 발생해 매번 재Read 후 재시도). Figma NeoBtn/Button description + 스펙 시트 캡션(`342:5`/`343:52`) 갱신. 확정 원본(`501:2505` 하위)은 읽기 전용 대조만.
 

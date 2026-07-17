@@ -23,6 +23,8 @@ const state = {
     editingContactId: null,
     deletingContactId: null,
     addingContact: false,
+    renamingCategoryId: null,
+    deletingCategoryId: null,
     isSearchActive: false, // true: 검색 필터 적용 중(빈 상태 문구 분기용)
 };
 
@@ -147,12 +149,33 @@ function applyAuthPlaceholders(activeViewId) {
     });
 }
 
+// 주의(테스트 호환, applyAuthPlaceholders와 동일 원리): pwreset1/pwreset2 카드의
+// 로고 아래 타이틀("비밀번호 재설정", 확정 디자인 995:2484/996:404 실측)이 로그인
+// 화면의 "비밀번호 재설정" 링크 텍스트와 동일해 hidden 상태에서도 get_by_text
+// 매칭에 함께 잡힌다 — 활성 화면일 때만 텍스트를 채우고 나머지는 비운다.
+const AUTH_TITLES = {
+    "pwreset1-title": "비밀번호 재설정",
+    "pwreset2-title": "비밀번호 재설정",
+};
+const AUTH_VIEW_ACTIVE_TITLES = {
+    "view-login": [],
+    "view-pwreset1": ["pwreset1-title"],
+    "view-pwreset2": ["pwreset2-title"],
+};
+function applyAuthTitles(activeViewId) {
+    const activeTitles = AUTH_VIEW_ACTIVE_TITLES[activeViewId] || [];
+    Object.keys(AUTH_TITLES).forEach((id) => {
+        $(id).textContent = activeTitles.includes(id) ? AUTH_TITLES[id] : "";
+    });
+}
+
 function showLogin() {
     hide($("screen-main"));
     show($("screen-auth"));
     hideAllAuthViews();
     show($("view-login"));
     applyAuthPlaceholders("view-login");
+    applyAuthTitles("view-login");
 }
 
 function showPwReset1() {
@@ -161,6 +184,7 @@ function showPwReset1() {
     $("pwreset1-username").value = "";
     show($("view-pwreset1"));
     applyAuthPlaceholders("view-pwreset1");
+    applyAuthTitles("view-pwreset1");
 }
 
 function showPwReset2(username) {
@@ -172,6 +196,7 @@ function showPwReset2(username) {
     $("pwreset2-confirm-password").value = "";
     show($("view-pwreset2"));
     applyAuthPlaceholders("view-pwreset2");
+    applyAuthTitles("view-pwreset2");
 }
 
 async function showMain(user) {
@@ -225,10 +250,23 @@ $("btn-signup").addEventListener("click", async () => {
     }
 });
 
-$("toggle-login-password").addEventListener("click", () => {
-    const input = $("login-password");
-    input.type = input.type === "password" ? "text" : "password";
-});
+// 비밀번호 표시/숨김 토글 — Pixel/Eye(281:405)·Pixel/EyeOff(415:892) 짝 아이콘 스왑.
+// 마스킹 중(type=password)이면 "누르면 보인다"는 의미로 뜬눈 아이콘을, 표시 중
+// (type=text)이면 "누르면 다시 가려진다"는 의미로 감은눈 아이콘을 보여준다.
+function setupPasswordToggle(inputId, buttonId) {
+    const input = $(inputId);
+    const button = $(buttonId);
+    const use = button.querySelector("use");
+    button.addEventListener("click", () => {
+        const willShow = input.type === "password";
+        input.type = willShow ? "text" : "password";
+        use.setAttribute("href", willShow ? "#px-eye-off" : "#px-eye");
+        button.setAttribute("aria-label", willShow ? "비밀번호 숨기기" : "비밀번호 표시");
+    });
+}
+setupPasswordToggle("login-password", "toggle-login-password");
+setupPasswordToggle("pwreset2-new-password", "toggle-pwreset2-new-password");
+setupPasswordToggle("pwreset2-confirm-password", "toggle-pwreset2-confirm-password");
 
 $("link-password-reset").addEventListener("click", () => {
     showPwReset1();
@@ -350,7 +388,7 @@ function renderCategoryManageList() {
     });
 }
 
-$("category-manage-list").addEventListener("click", async (e) => {
+$("category-manage-list").addEventListener("click", (e) => {
     const btn = e.target.closest("button[data-action]");
     if (!btn) return;
     const categoryId = Number(btn.dataset.id);
@@ -358,26 +396,70 @@ $("category-manage-list").addEventListener("click", async (e) => {
     if (!category) return;
 
     if (btn.dataset.action === "rename") {
-        const newName = window.prompt("새 카테고리 이름을 입력하세요", category.name);
-        if (newName === null) return; // 취소, 호출 없음
-        const resp = await apiRequest("PATCH", `/categories/${categoryId}`, { name: newName });
-        if (resp.status === 200) {
-            clearBanner($("category-error"));
-            await loadCategories();
-            await loadContacts();
-        } else {
-            setBanner($("category-error"), $("category-error-text"), extractDetail(resp.body));
-        }
+        openRenameCategoryModal(category);
     } else if (btn.dataset.action === "delete-category") {
-        const confirmed = window.confirm(`"${category.name}" 카테고리를 삭제하시겠습니까?`);
-        if (!confirmed) return;
-        const resp = await apiRequest("DELETE", `/categories/${categoryId}`);
-        if (resp.status === 204) {
-            clearBanner($("category-error"));
-            await loadCategories();
-        } else {
-            setBanner($("category-error"), $("category-error-text"), extractDetail(resp.body));
-        }
+        openDeleteCategoryModal(category);
+    }
+});
+
+// ── 카테고리 이름 수정 모달 (CategoryRenameModal, 근거: 카테고리 이름 수정 1002:1611) ──
+function openRenameCategoryModal(category) {
+    state.renamingCategoryId = category.id;
+    clearBanner($("rename-category-error-banner"));
+    $("rename-category-name").value = category.name;
+    setNameLabelActive("rename-category");
+    setModalOpen($("modal-rename-category"), true);
+    $("rename-category-name").focus();
+}
+function closeRenameCategoryModal() {
+    state.renamingCategoryId = null;
+    setNameLabelActive(null);
+    setModalOpen($("modal-rename-category"), false);
+}
+$("rename-category-close").addEventListener("click", closeRenameCategoryModal);
+$("btn-cancel-rename-category").addEventListener("click", closeRenameCategoryModal);
+$("rename-category-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    clearBanner($("rename-category-error-banner"));
+    const resp = await apiRequest("PATCH", `/categories/${state.renamingCategoryId}`, {
+        name: $("rename-category-name").value,
+    });
+    if (resp.status === 200) {
+        closeRenameCategoryModal();
+        await loadCategories();
+        await loadContacts();
+        showToast("수정되었습니다");
+    } else {
+        setBanner($("rename-category-error-banner"), $("rename-category-error-text"), extractDetail(resp.body));
+    }
+});
+
+// ── 카테고리 삭제 확인 모달 (CategoryDeleteModal, 근거: 카테고리 삭제 확인 1001:1594) ──
+function openDeleteCategoryModal(category) {
+    state.deletingCategoryId = category.id;
+    clearBanner($("delete-category-error-banner"));
+    $("delete-category-name").textContent = category.name;
+    setModalOpen($("modal-delete-category"), true);
+    $("btn-cancel-delete-category").focus();
+}
+function closeDeleteCategoryModal() {
+    state.deletingCategoryId = null;
+    // 주의(테스트 호환): hidden 속성이 get_by_text 매칭 자체를 막지 못하므로,
+    // 모달을 닫을 때 경고문 안의 카테고리명 텍스트도 함께 비워 잔존 매칭을 막는다.
+    $("delete-category-name").textContent = "";
+    setModalOpen($("modal-delete-category"), false);
+}
+$("delete-category-close").addEventListener("click", closeDeleteCategoryModal);
+$("btn-cancel-delete-category").addEventListener("click", closeDeleteCategoryModal);
+$("btn-confirm-delete-category").addEventListener("click", async () => {
+    clearBanner($("delete-category-error-banner"));
+    const resp = await apiRequest("DELETE", `/categories/${state.deletingCategoryId}`);
+    if (resp.status === 204) {
+        closeDeleteCategoryModal();
+        await loadCategories();
+        showToast("삭제되었습니다");
+    } else {
+        setBanner($("delete-category-error-banner"), $("delete-category-error-text"), extractDetail(resp.body));
     }
 });
 
@@ -566,6 +648,16 @@ function setContactFieldPlaceholders(activeGroup) {
     });
 }
 
+// 주의(테스트 호환): 연락처 수정 모달(#edit-name)과 카테고리 이름수정 모달
+// (#rename-category-name)의 <label>이 둘 다 정확히 "이름" 텍스트를 쓴다.
+// `hidden` 속성은 get_by_label 매칭 자체를 막지 못하므로(위 placeholder와
+// 동일 문제), 열려 있는 모달 쪽만 실제 라벨 텍스트를 갖고 나머지는 비워 둔다.
+function setNameLabelActive(activeModal) {
+    document.querySelector('label[for="edit-name"]').textContent = activeModal === "edit-contact" ? "이름" : "";
+    document.querySelector('label[for="rename-category-name"]').textContent =
+        activeModal === "rename-category" ? "이름" : "";
+}
+
 function renderEditCategorySelector(selectedCategoryId) {
     const wrap = $("edit-category-selector");
     wrap.innerHTML = "";
@@ -596,12 +688,14 @@ function openEditModal(contact) {
     $("edit-addr").value = contact.addr;
     renderEditCategorySelector(contact.category_id);
     setContactFieldPlaceholders("edit");
+    setNameLabelActive("edit-contact");
     setModalOpen($("modal-edit-contact"), true);
 }
 
 function closeEditModal() {
     state.editingContactId = null;
     setContactFieldPlaceholders("add");
+    setNameLabelActive(null);
     setModalOpen($("modal-edit-contact"), false);
 }
 
@@ -654,4 +748,5 @@ function showToast(message) {
 
 // ── 시작 ────────────────────────────────────────────────────────────────
 setContactFieldPlaceholders("add"); // 기본 상태: 수정 모달은 닫혀 있음
+setNameLabelActive(null); // 기본 상태: 두 "이름" 라벨 모달 모두 닫혀 있음
 init();

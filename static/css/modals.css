@@ -1,0 +1,107 @@
+/* 연락처 관리 서비스 — 모달(ContactModal/ConfirmModal/CategoryDeleteModal/
+   CategoryRenameModal) 오버레이·헤더·바디·경고박스. 카드 셸 자체(폭 등)는
+   cards.css(.modal/.modal-category)를 참고, 여기는 내부 구조/부품만 담당. */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 26, 26, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+.modal-body {
+    padding: 24px;
+}
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+.modal-header h2 {
+    font-size: 16px;
+    margin: 0;
+}
+.icon-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-none);
+    border: var(--border-base) solid var(--color-ink-900);
+    background: var(--color-white);
+    box-shadow: var(--shadow-hard-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-ink-900);
+}
+.icon-close {
+    display: block;
+    width: 10px;
+    height: 10px;
+}
+.modal form .field label {
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 700;
+    font-size: 12px;
+}
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+.modal-actions .btn {
+    flex: 1;
+}
+.contact-summary-box {
+    background: #f9f7f3;
+    border: 1px solid #ede6d8;
+    border-radius: var(--radius-none);
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    font-size: 13px;
+}
+.contact-summary-box .summary-name {
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+.warning-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: rgba(255, 90, 118, 0.08);
+    border: 1px solid var(--color-coral-500);
+    border-radius: 6px;
+    padding: 17px;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+.warning-box-icon {
+    flex-shrink: 0;
+}
+.icon-warning {
+    display: block;
+    width: 16px;
+    height: 16px;
+}
+.warning-box-text {
+    margin: 0;
+}
+
+/* 카테고리 이름 수정 모달의 "이름" 필드는 marginBottom 없이 CornerInput
+   컨텍스트용 마이크로 라벨(Inter Black, 대문자)을 쓴다 — .field 공통 스타일과
+   다른 부분만 여기서 오버라이드. */
+#modal-rename-category .field {
+    margin-bottom: 0;
+}
+#modal-rename-category .field label {
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}

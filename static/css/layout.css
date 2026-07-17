@@ -1,0 +1,420 @@
+/* 연락처 관리 서비스 — 전역 리셋 + 레이아웃(SCR-002/003 본문·사이드바·테이블)
+   + Logo(브랜드 로고) + CatBadge + EmptyState. 딱 맞는 컴포넌트 파일이 없는
+   요소를 모아둔다(tokens/buttons/inputs/cards/modals/toasts 참고). */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Noto Sans KR", -apple-system, sans-serif;
+    color: var(--color-ink-900);
+    background: var(--color-bg-page);
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+/* ── Logo(심볼+워드마크, design-system.md 7절/confirmed 7절) ─────────────
+   심볼은 코랄 원 + 2px ink 스트로크 + 내부 흰 PxStar(빈 원이 아니다, 항상
+   별을 품는다). 워드마크 색은 배경에 따라 반전(흰 배경=ink, 브랜드색 배경=흰색)
+   — 사이드바(스카이블루 배경)에서는 .sidebar .brand-row .brand-name로 반전. ── */
+.brand-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+.brand-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--color-coral-500);
+    border: var(--border-base) solid var(--color-ink-900);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-white);
+    flex-shrink: 0;
+}
+.brand-badge-star {
+    width: 12px;
+    height: 12px;
+    display: block;
+    fill: currentColor;
+}
+.brand-name {
+    font-family: "Baloo 2", sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.55px;
+}
+
+/* ── Main management screen (SCR-002/003) ─────────────────────────────── */
+.main-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 32px;
+}
+.app-shell {
+    display: flex;
+    width: 1024px;
+    max-width: 100%;
+    min-height: 560px;
+    border: var(--border-base) solid var(--color-ink-900);
+    border-radius: var(--radius-16);
+    overflow: hidden;
+}
+.sidebar {
+    width: 208px;
+    flex-shrink: 0;
+    background: var(--color-sky-500);
+    border-right: var(--border-heavy) solid var(--color-ink-900);
+    padding: 16px;
+    color: var(--color-white);
+}
+.sidebar .brand-row .brand-name {
+    color: var(--color-white);
+}
+.section-label {
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin: 16px 0 8px;
+}
+.nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-radius: var(--radius-10);
+    border: var(--border-base) solid var(--color-ink-900);
+    background: rgba(255, 255, 255, 0.18);
+    font-weight: 700;
+    font-size: 14px;
+}
+.nav-item.active {
+    background: var(--color-navy-700);
+    box-shadow: var(--shadow-hard-2);
+}
+.count-pill {
+    background: var(--color-amber-500);
+    border: var(--border-base) solid var(--color-ink-900);
+    border-radius: 999px;
+    min-width: 20px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 900;
+    color: var(--color-ink-900);
+    text-align: center;
+}
+.nav-item.active .count-pill {
+    background: var(--color-white);
+    box-shadow: var(--shadow-hard-1);
+}
+.manage-list {
+    list-style: none;
+    margin: 0;
+    padding: 8px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-top: var(--border-base) solid rgba(26, 26, 26, 0.3);
+}
+.manage-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+}
+.manage-list li .cat-name {
+    width: 76px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.manage-list li .actions {
+    display: flex;
+    gap: 4px;
+}
+.category-add-row {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.category-add-row .input {
+    width: 100%;
+}
+#category-error {
+    margin-top: 8px;
+}
+
+.content {
+    flex: 1;
+    background: var(--color-paleblue-50);
+    display: flex;
+    flex-direction: column;
+}
+.content-header {
+    background: var(--color-white);
+    border-bottom: var(--border-heavy) solid var(--color-ink-900);
+    padding: 12px 20px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.content-header h1 {
+    font-size: 16px;
+    margin: 0;
+}
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.user-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 700;
+}
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--color-teal-500);
+    border: var(--border-base) solid var(--color-ink-900);
+    display: inline-block;
+}
+.content-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+}
+.add-form-card {
+    background: var(--color-white);
+    border: var(--border-base) solid var(--color-ink-900);
+    border-radius: 8px;
+    padding: 14px;
+}
+.add-form-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.add-form-row .input {
+    height: 36px;
+}
+#add-name {
+    width: 112px;
+}
+#add-phone {
+    width: 144px;
+}
+#add-addr {
+    flex: 1;
+    min-width: 120px;
+}
+#add-category {
+    width: 103px;
+}
+.list-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px;
+}
+.list-meta .total-badge {
+    background: var(--color-coral-500);
+    color: var(--color-white);
+    border: var(--border-base) solid var(--color-ink-900);
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 900;
+    box-shadow: var(--shadow-hard-1);
+    margin-left: 8px;
+}
+
+.contact-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--color-white);
+    border: var(--border-heavy) solid var(--color-ink-900);
+    border-radius: 14px;
+    overflow: hidden;
+}
+.contact-table thead tr {
+    background: var(--color-navy-700);
+}
+.contact-table thead th {
+    color: var(--color-white);
+    font-size: 11px;
+    font-weight: 900;
+    text-align: left;
+    padding: 10px 16px;
+}
+.contact-table tbody tr {
+    border-bottom: 1px solid var(--color-border-divider-cool);
+}
+.contact-table tbody tr:nth-child(even) {
+    background: var(--color-bg-row-alt);
+}
+.contact-table tbody td {
+    padding: 10px 16px;
+    font-size: 14px;
+}
+.contact-table td.name {
+    font-weight: 700;
+}
+.contact-table td.phone {
+    color: var(--color-text-muted-strong);
+}
+.contact-table td.addr {
+    color: var(--color-text-muted);
+}
+.contact-table td.actions {
+    display: flex;
+    gap: 4px;
+    justify-content: flex-end;
+}
+
+/* ── EmptyState (main-검색없음 501:4218 재사용, design-system.md Pixel/NoResult) ── */
+.contact-table td.empty-state-cell {
+    padding: 0;
+}
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 60px 0 52px;
+}
+.empty-state-icon {
+    width: 40px;
+    height: 44px;
+    flex-shrink: 0;
+}
+.empty-state-icon .body {
+    fill: var(--color-sky-500);
+}
+.empty-state-icon .crack {
+    fill: var(--color-coral-500);
+}
+.empty-state-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+}
+.empty-state-title {
+    margin: 0;
+    font-weight: 900;
+    font-size: 15px;
+    line-height: 22px;
+    color: var(--color-ink-900);
+}
+.empty-state-subtitle {
+    margin: 0;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--color-text-muted-subtle);
+}
+.empty-state-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 22px;
+    border-radius: var(--radius-10);
+    border: var(--border-base) solid var(--color-ink-900);
+    background: var(--color-ink-900);
+    color: var(--color-white);
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: var(--shadow-hard-2);
+}
+
+/* ── CatBadge ──────────────────────────────────────────────────────────── */
+.cat-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 7px;
+    border-radius: 8px;
+    border: 1px solid;
+    font-size: 11px;
+    font-weight: 600;
+}
+.cat-badge .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+.cat-friend {
+    background: var(--cat-friend-bg);
+    border-color: var(--cat-friend-border);
+    color: var(--cat-friend-text);
+}
+.cat-friend .dot {
+    background: var(--cat-friend-border);
+}
+.cat-family {
+    background: var(--cat-family-bg);
+    border-color: var(--cat-family-border);
+    color: var(--cat-family-text);
+}
+.cat-family .dot {
+    background: var(--cat-family-border);
+}
+.cat-other {
+    background: var(--cat-other-bg);
+    border-color: var(--cat-other-border);
+    color: var(--cat-other-text);
+}
+.cat-other .dot {
+    background: var(--cat-other-border);
+}
+.cat-company {
+    background: var(--cat-company-bg);
+    border-color: var(--cat-company-border);
+    color: var(--cat-company-text);
+}
+.cat-company .dot {
+    background: var(--cat-company-border);
+}
+.cat-default {
+    background: #f1f1f1;
+    border-color: var(--color-gray-450);
+    color: var(--color-ink-900);
+}
+.cat-default .dot {
+    background: var(--color-gray-450);
+}

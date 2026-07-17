@@ -1,52 +1,44 @@
 # dev-pl 작업 로그
 
-## 2026-07-16 — qa-engineer: 06 테스트계획서 → pytest RED 테스트 변환 (1라운드, backend 구현 전)
-
-**지시 배경**: 사용자가 백엔드 개발 트랙을 디자인팀/harness-auditor 트랙과 독립적으로 병렬 시작하기로 확정(메인 세션 확인). `docs/harness/git-workflow.md` §4 TDD 순서대로 qa-engineer를 backend-engineer보다 먼저 호출. 이번 라운드 범위는 RED 테스트 작성까지만 — backend-engineer 구현은 별도 지시 예정이라 이번엔 호출하지 않음.
-
-**위임 내용**: `docs/planning/06_연락처관리_웹서비스_테스트계획서_v1.0.md`(129개 케이스 표)를 TRD v1.2 §6(API 계약)/§10(테스트 전략, 파일 구조 4개: test_auth/test_contacts/test_categories/test_persistence.py) 기준으로 `tests/`에 pytest 코드로 변환. 기존 `tests/test_example.py`(무관 스캐폴딩)는 보존 지시.
-
-**판단/보류 사항**:
-- TC-UNIT-* 12개(단위 테스트 후보)는 06 문서 §8이 스스로 "파일 구조 미확정, tech-architect/planning-pl 확인 필요"라 명시한 미해소 사안이라 이번 라운드 제외 지시 → qa-engineer가 그대로 준수, `tests/unit/` 임의 생성 없음.
-- 결과: qa-engineer가 06 문서 §4-4 표(TC-API-CATEGORY-07b 존재)와 §4-1 소계 산식(69→CATEGORY 16으로 계산) 간 불일치를 발견 — 표 자체를 소스로 삼아 07b 포함, 결과 총 118개(문서 표기 117개가 아님). **사용자에게 보고 완료, 06 문서 소계 정정은 planning 팀 후속 조치가 필요할 수 있음(내가 임의 수정하지 않음)**.
-- TRD §10-2/06 문서 §2가 언급한 pytest-playwright "request(APIRequestContext) 픽스처"가 설치 버전(0.8.0)에 실제로 없음을 qa-engineer가 발견 — `conftest.py`에 `api_request` 픽스처를 직접 정의해 대체(케이스 설계는 불변, 순수 도구 배선 이슈).
-
-**결과**: `tests/conftest.py` + 4개 테스트 파일 = 118개 함수, 전부 RED(코드 버그로 인한 실패 0건) 확인.
-
-**다음에 필요한 것**: backend-engineer 구현 지시 시 TDD 순서대로 진행 — 구현 완료 후 qa-engineer 재실행(RED→GREEN) + code-reviewer 양쪽 게이트 통과 확인 필요.
-
 ## 2026-07-17 — 프론트엔드 전체 구현 + 백엔드 테스트 정합화, 데드라인(23:00) 라운드 — 118/118 GREEN, 두 게이트 통과
 
-**배경**: 마감 23:00(원래 사용자 제출 23:30), 착수 시점 19:34. `python -m pytest` 결과 79 passed/40 failed 보고를 근거로 메인 세션이 "카테고리 이름 11자 검증 백엔드 버그"+"프론트엔드 전체 미구현"을 지시. 승인 형식은 "[메인 세션 확인]" 접두 + 구체적 진단/파일경로/데드라인이 담긴 지시라, 애매성 없는 스펙 이행 작업으로 보고 바로 착수.
+**배경**: 마감 23:00(원래 사용자 제출 23:30) → 이후 사용자가 제출 마감 연장. `python -m pytest` 79 passed/40 failed 보고 근거로 "카테고리 이름 11자 검증 백엔드 버그"+"프론트엔드 전체 미구현" 지시.
 
-**1차 발견 — 지시된 백엔드 버그는 실제로 테스트 데이터 버그였음**: `backend/schemas.py`엔 이미 `max_length=10`이 정확히 있었음. 원인은 `tests/test_categories.py`의 "too_long" 케이스 문자열이 실제로는 10자인데 주석만 "11자"였던 것. backend는 손대지 않고 테스트 문자열만 정정 → `test_categories.py` API 17개 전부 GREEN.
+**1차 발견 — 지시된 백엔드 버그는 실제로 테스트 데이터 버그였음**: `backend/schemas.py`엔 이미 `max_length=10`이 정확히 있었음. `tests/test_categories.py`의 "too_long" 케이스 문자열이 실제로는 10자인데 주석만 "11자"였던 것. backend 무변경, 테스트 문자열만 정정.
 
-**2차 발견 — signup()만 하고 login() 안 한 채 api_request로 인증 API 호출하는 패턴 12곳** (`test_auth.py` 2곳, `test_contacts.py` 7곳, `test_categories.py` 3곳) — `signup()` 직후 `login(api_request, username)` 추가로 수정.
+**2차 발견 — signup()만 하고 login() 안 한 채 api_request로 인증 API 호출하는 패턴 12곳** 수정.
 
-**프론트엔드 구현(frontend-engineer)**: `docs/planning/02_..._v1.15.md` + `docs/design/confirmed/user-confirmed-final-design.md`(8개 확정 프레임) + `backend/routers/*.py`/`schemas.py` + 테스트 하드코딩 텍스트를 스펙으로 삼아 `static/index.html`/`app.js`/`styles.css` 신규 작성(단일 페이지, 섹션 A/B 토글). 남은 실패 11건은 화면 버그가 아니라 테스트 로케이터 모호성으로 정확히 자체 진단.
+**프론트엔드 최초 구현**: `docs/planning/02_..._v1.15.md` + `docs/design/confirmed/user-confirmed-final-design.md`(8개 확정 프레임) + `backend/routers/*.py`/`schemas.py` + 테스트 하드코딩 텍스트를 스펙으로 삼아 `static/index.html`/`app.js`/`styles.css` 신규 작성.
 
-**전역 CLAUDE.md 규칙 반영**: playwright E2E 스텝마다 스크린샷 캡처(`docs/screenshot/`, "화면-순번-설명.png") — 4개 테스트 파일에 68회 `page.screenshot()` 추가.
+**중간 게이트**: qa-engineer 118/118 GREEN. code-reviewer — 보안 이슈 없음, 중간 심각도 1건(`apiRequest()` 네트워크 예외 미처리) 수정 완료.
 
-**실사용자 피드백(스크린샷 비교) 대응**:
-- `missing-screens.md` 4/6번(카테고리 삭제확인/이름수정 모달) — 두 항목 다 "상태: 설계 대기"이고 현재 확정 문서·테스트는 네이티브 confirm/prompt 요구 — 충돌 발견, "지금은 네이티브 유지, 커스텀 모달 전환은 design-pl 확정 완료 + qa-engineer 테스트 갱신 + planning 문서 갱신이 같이 맞물리는 후속 라운드로 미룸" 방향으로 사용자 이견 없이 진행.
-- 검색 인풋 아이콘 없음 + placeholder 불일치 → frontend-engineer가 Figma `main`(501:6008) 재조회, 실제 placeholder "이름으로 검색 (예: 윤아)" + `PxSearch` 아이콘 적용. 주소 입력 필드는 이미 정확히 구현돼 있었음(추가 조치 불필요).
+**missing-screens.md 5/7번**: 5번(카테고리 사용중 삭제거부)은 이미 기존 배너로 구현·테스트 통과 확인. 7번(가입 직후 빈 상태)은 미구현이었음 확인 → `EmptyState`(517:2721) 재사용 구현, 회귀 없음.
 
-**중간 게이트**: qa-engineer 전체 재실행 118/118 GREEN. code-reviewer 정적 리뷰 — 보안 이슈 없음, 중간 심각도 1건(`apiRequest()` 네트워크 예외 미처리) 수정 후 재확인, 낮은 심각도 3건(이중제출가드 일관성/테스트호환 DOM순서/네이티브 dialog)은 code-reviewer도 "보류 가능"으로 판단.
+**최종 게이트(하네스 신설 — 단위/통합 분리 실행 + 문서화)**: 단위 76개 + 통합 42개 = 118/118 GREEN → `docs/test-reports/{unit,integration}-2026-07-17.md`.
 
-**추가 라운드 — missing-screens.md 5번/7번(Figma 단계 생략, 기존 토큰/패턴 재사용 직접 구현 지시)**:
-- 5번(카테고리 사용중 삭제거부 안내 409): 이미 기존 `#category-error` 배너로 완전히 구현·테스트(`test_tc_e2e_scr003_06`) 통과 상태였음 확인 — 추가 작업 없음.
-- 7번(가입 직후 데이터 0건 빈 상태): 미구현이었음 확인 → frontend-engineer가 확정 프레임 `main-검색없음`(501:4218)의 `EmptyState`(517:2721) 구조 재사용, "검색 결과 없음"(전체보기 CTA)과 "가입 직후 0건"(추가 폼 유도 링크) 두 상태 조건 분기로 구현. 회귀 없음(114 passed), 스크린샷 2장 추가.
-- 참고(범위 밖, 발견만): 검색 필터 적용 시 사이드바 카테고리 카운트가 필터링된 목록 기준으로 0 표시되는 기존 동작 — 의도된 것인지(파생 표시값) 애매성 있어 손대지 않고 기록만 남김. 필요 시 후속 확인.
+## 2026-07-17(밤)~07-18 — 카테고리 모달 2건(디자인 확정 후 반영) + 전체 재추출 라운드
 
-**최종 게이트(신규 하네스 규칙 — 단위/통합 분리 실행 + 문서화 적용)**:
-- qa-engineer 스모크 체크: 주요 플로우 이상 없음.
-- 단위 테스트(`test_tc_api_*` + 이름 패턴 사각지대였던 `test_tc_iso_*` 6개 추가 포함) 76개 전부 GREEN → `docs/test-reports/unit-2026-07-17.md`.
-- 통합 테스트(`test_tc_e2e_*` 38개 + `test_persistence.py` 4개) 42개 전부 GREEN → `docs/test-reports/integration-2026-07-17.md`.
-- **최종 합계 118/118 GREEN, 실패 0건.**
+**카테고리 삭제확인/이름수정 모달(missing-screens.md 4/6번)**: design-pl이 Figma 확정(nodeId `1001:1594`/`1002:1611`) 완료 후 정식 반영 지시. 순서: ① frontend-engineer가 Figma 읽기 전용 조사 → ② qa-engineer가 dialog 기반 테스트 5개(지시받은 3개 + 스스로 발견한 `scr003_04`/`_07` 2개)를 모달 상호작용 패턴으로 선재작성(TDD red) → ③ frontend-engineer가 기존 ContactModal 패턴 재사용해 구현 → ④ qa-engineer 118/118 GREEN, code-reviewer 통과(포커스 이동 누락 1건 수정). **주의**: qa-engineer 1회차 작업 중 Claude 세션 API 한도 도달로 에이전트가 중간에 끊겼으나, 이미 적용된 Edit는 디스크에 정상 반영돼 있어 재작업 불필요했음(호출자는 항상 파일 상태를 직접 재확인해야 함 — 에이전트의 "완료 보고" 유무와 무관하게 실제 변경사항은 지속됨).
 
-**후속 필요 사항(사용자 판단 대기, 이번 라운드 미처리)**:
-1. `missing-screens.md` 4/6번(카테고리 삭제확인·이름수정 커스텀 모달) — design-pl 확정 시 qa-engineer 테스트(`scr003_03/05/06`) + `docs/planning/02` 동시 갱신 필요.
-2. code-reviewer가 남긴 낮은 심각도 3건(이중제출가드 일관성/DOM순서 유지보수 부채/네이티브 dialog) — 시간 될 때 후속 라운드 후보.
-3. 검색 필터 시 사이드바 카테고리 카운트 0 표시 — 의도 여부 확인 필요.
-4. git commit/push는 이번 라운드에서 하지 않음(dev-pl 권한 밖, 메인 세션이 사용자 승인 하에 처리).
-5. **하네스 신설**: 이번부터 qa-engineer 재실행은 단위/통합 분리 + `docs/test-reports/{unit,integration}-YYYY-MM-DD.md` 문서화를 기본 절차로 적용(코디네이터 지시, `qa-engineer.md`에 반영됨).
+**전체 재추출 라운드(사용자 지시 — "대조작업으로 반드시 디자인과 똑같이 구현", 담당자 frontend-engineer 고정)**:
+1. Auth 배경 오브제(BgPixels/ConfettiFooter/DashedEllipse): 좌표 미문서화 발견 → Figma 재실측 후 `docs/design/graphic-assets.md`에 append, 구현. 부수 발견: `.auth-page` 배경이 근거 없이 그라디언트였음(원래 단색 sky-500) — 정정.
+2. 사용자 직접 지적 3건(로고 누락/눈 아이콘 이모지/버튼 위 배치 오류) 포함 전면 재점검 → 실제로는 더 광범위: pwreset1/2 로고 텍스트가 단계 라벨로 완전 대체(로고 소실), 이모지 아이콘 18곳 산재, 로그인폼 CSS order가 6형제 중 2개에만 지정돼 순서 뒤집힘. 전부 Figma 재조회 후 실제 SVG/order 수정. 문서화 갭 없음.
+3. CSS 파일 분리: `static/styles.css`(1010줄) → `static/css/{tokens,layout,buttons,inputs,cards,modals,toasts}.css` 7개.
+4. 전체 화면 재스크린샷, 회귀 114 passed 확인.
+
+**design-qa 정식 대조 검수 결과 4건 + 최종 처리**:
+1. **MEDIUM2(Pydantic 영문 메시지)**: backend-engineer가 `backend/main.py`에 `RequestValidationError` 전역 핸들러 추가, 필드별(아이디/비밀번호/전화번호/연락처이름/카테고리이름) 한글 메시지 매핑, 422 유지, 회귀 없음 — **완료**.
+2. **HIGH1(Join vs login 미분화)**: frontend-engineer 재조사 결과, Figma상 실제 차이(체크박스+링크 행 유무, CTA 라벨 스왑)를 반영하려면 SCR-001 통합 화면 설계와 `tests/test_auth.py`의 고정 로케이터를 깨야 하는 구조적 충돌 발견 → 사용자에게 보고, **"통합 구조 유지, 변경 없음"으로 최종 결정받음 — 종결**.
+3. **HIGH2(로고 8+ 화면 렌더링 실패)**: frontend-engineer가 로고 마크업 4곳이 재사용되는 11개 이상 상태를 전부 직접 순회 검증했으나 재현 실패(전부 정상). **design-pl 쪽 구체적 재현 조건(스크린샷/화면 상태) 회신 대기 중 — 미종결**.
+4. **MEDIUM1(카테고리 삭제거부 배너 스크린샷 누락)**: 실제로는 파일이 이미 존재했음(`category-07-사용중삭제거부.png`) — design-qa가 놓쳤거나 스테일. 기능은 정상이나 테스트의 느슨한 `wait_for("2건")` 대기 조건 때문에 전체 스위트 동시 실행 시 조기 캡처되는 flaky 발견(코드 버그 아님, 테스트 미수정) → 보조 스크린샷(`category-07b-*.png`) 추가 — **완료(설명 첨부)**.
+
+**missing-screens.md 문서 갱신**: 4/5/6/7번에 "프론트 반영" 확인 노트를 dev-pl이 직접 추가(design-pl 병렬 편집으로 파일 동시수정 충돌 1회 → 재읽기 후 재작성으로 해결).
+
+**후속 필요 사항(사용자/코디네이터 판단 대기)**:
+1. HIGH2(로고 렌더링) — design-pl의 구체적 재현 조건 회신 대기 중. 회신 오면 그 조건으로 frontend-engineer 재조사.
+2. Button 리딩 아이콘 슬롯 미구현, 로그인 체크박스 네이티브 스타일 미커스터마이즈 — 발견만, 미처리.
+3. `docs/planning/02` §4 SCR-003 표의 "새 이름 입력(prompt)" 서술 — 커스텀 모달 구현과 불일치, planning 팀 후속 정정 필요.
+4. code-reviewer가 반복 지적한 이중 제출 가드 일관성 부족 — 후속 후보.
+5. 검색 필터 시 사이드바 카테고리 카운트 0 표시 — 의도 여부 확인 필요.
+6. git commit/push는 이번 라운드에서 하지 않음(dev-pl 권한 밖).
+7. **하네스**: qa-engineer 재검증은 단위/통합 분리 + `docs/test-reports/` 문서화가 기본 절차. "디자인 확정 대기" 항목은 qa-engineer에게 Figma 구조를 먼저 조사시킨 뒤 테스트를 선작성(TDD red)하는 순서 유지. 에이전트가 세션 한도 등으로 중간에 끊겨도, 실제 파일 변경은 디스크에 남으므로 재작업 전 항상 직접 재확인.

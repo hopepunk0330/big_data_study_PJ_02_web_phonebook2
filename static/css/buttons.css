@@ -1,0 +1,77 @@
+/* 연락처 관리 서비스 — 버튼(NeoBtn/Button, design-system.md 5절/9절)
+   .btn*(모든 버튼 스타일 변형) + Row Action Button(테이블/카테고리 목록의
+   수정·삭제 소형 아웃라인 버튼). */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 44px;
+    padding: 8px 16px;
+    border-radius: var(--radius-10);
+    border: var(--border-base) solid var(--color-ink-900);
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: var(--shadow-hard-2);
+    background: var(--color-white);
+    color: var(--color-ink-900);
+}
+.btn:disabled {
+    background: var(--color-gray-350);
+    border-color: var(--color-gray-600);
+    color: var(--color-text-muted-strong);
+    box-shadow: none;
+    cursor: not-allowed;
+}
+.btn-amber {
+    background: var(--color-amber-600);
+    color: var(--color-ink-900);
+}
+.btn-sky {
+    background: var(--color-sky-500);
+    color: var(--color-white);
+}
+.btn-navy {
+    background: var(--color-navy-700);
+    color: var(--color-white);
+}
+.btn-coral {
+    background: var(--color-coral-500);
+    color: var(--color-white);
+}
+.btn-neutral {
+    background: var(--color-white);
+    color: var(--color-ink-900);
+}
+.btn-ink {
+    background: var(--color-ink-900);
+    color: var(--color-white);
+    height: auto;
+    padding: 6px 12px;
+    box-shadow: none;
+    font-size: 12px;
+}
+.btn-compact {
+    height: 36px;
+    padding: 8px 14px;
+}
+.btn-small {
+    height: auto;
+    padding: 5px 11px;
+    font-size: 10px;
+    border-radius: 8px;
+    box-shadow: none;
+}
+
+/* ── Row action buttons (수정/삭제 in tables/lists) ───────────────────── */
+.row-action.edit {
+    background: var(--color-white);
+    border: 1px solid var(--color-teal-500);
+    color: var(--color-teal-500);
+}
+.row-action.danger {
+    background: var(--color-white);
+    border: 1px solid var(--color-coral-500);
+    color: var(--color-coral-500);
+}

@@ -4,9 +4,89 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>연락처 관리 서비스</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <!-- 컴포넌트별 CSS 분리(2026-07-18 재작업 라운드) — 토큰이 가장 먼저,
+         나머지는 화면과 무관하게 컴포넌트 성격별로 분리해 컴포넌트 하나를
+         디자인과 대조/수정할 때 그 파일만 열어보면 되게 한다. -->
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/buttons.css">
+    <link rel="stylesheet" href="/static/css/inputs.css">
+    <link rel="stylesheet" href="/static/css/cards.css">
+    <link rel="stylesheet" href="/static/css/modals.css">
+    <link rel="stylesheet" href="/static/css/toasts.css">
 </head>
 <body>
+
+    <!-- Pixel/* 아이콘 심볼 모음(design-system.md 4절/9절 Icons 인벤토리 근거,
+         Figma 원본 노드를 get_design_context/curl로 재조회해 path를 그대로 옮김).
+         단색 아이콘은 fill/stroke="currentColor"로 사용처 CSS color에 색을 위임하고
+         (로고 심볼 코랄 원 안 별과 동일한 재사용 패턴), 고정 2색 아이콘(Icon/Alert,
+         Pixel/Warning)은 심볼 내부에 토큰 var(--color-*)를 직접 박아 항상 같은 배색으로
+         렌더링한다("배너 종류는 아이콘이 아니라 배경색으로만 구분한다", 9절). -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+        <symbol id="px-star" viewBox="0 0 10 10">
+            <rect x="4" y="0" width="2" height="2" fill="currentColor" />
+            <rect x="0" y="2" width="2" height="2" fill="currentColor" />
+            <rect x="8" y="2" width="2" height="2" fill="currentColor" />
+            <rect x="1" y="4" width="8" height="2" fill="currentColor" />
+            <rect x="0" y="6" width="4" height="2" fill="currentColor" />
+            <rect x="6" y="6" width="4" height="2" fill="currentColor" />
+            <rect x="1" y="8" width="2" height="2" fill="currentColor" />
+            <rect x="7" y="8" width="2" height="2" fill="currentColor" />
+        </symbol>
+
+        <!-- Pixel/Eye(281:405, 14x10) — 비밀번호 표시 상태 토글 아이콘. -->
+        <symbol id="px-eye" viewBox="0 0 14 10">
+            <path d="M14 4H0V6H14V4Z" fill="currentColor" />
+            <path d="M4 2H2V4H4V2Z" fill="currentColor" />
+            <path d="M8 2H6V4H8V2Z" fill="currentColor" />
+            <path d="M8 6H6V8H8V6Z" fill="currentColor" />
+            <path d="M7 6H5V8H7V6Z" fill="currentColor" />
+            <path d="M9 6H7V8H9V6Z" fill="currentColor" />
+            <path d="M9 2H7V4H9V2Z" fill="currentColor" />
+            <path d="M8 1H6V3H8V1Z" fill="currentColor" />
+            <path d="M8 7H6V9H8V7Z" fill="currentColor" />
+            <path d="M7 2H5V4H7V2Z" fill="currentColor" />
+            <path d="M12 2H10V4H12V2Z" fill="currentColor" />
+            <path d="M4 6H2V8H4V6Z" fill="currentColor" />
+            <path d="M6 4H4V6H6V4Z" fill="currentColor" />
+            <path d="M12 6H10V8H12V6Z" fill="currentColor" />
+        </symbol>
+
+        <!-- Pixel/EyeOff(415:892, 14x10) — 비밀번호 숨김 상태 토글 아이콘(Pixel/Eye 짝). -->
+        <symbol id="px-eye-off" viewBox="0 0 14 10">
+            <rect x="0" y="4" width="14" height="2" fill="currentColor" />
+            <rect x="2" y="6" width="2" height="2" fill="currentColor" />
+            <rect x="10" y="6" width="2" height="2" fill="currentColor" />
+        </symbol>
+
+        <!-- Pixel/Close(255:107, 10x10) — 모달 닫기(X) 아이콘. -->
+        <symbol id="px-close" viewBox="0 0 10 10">
+            <path d="M1 1L9 9M9 1L1 9" stroke="currentColor" stroke-width="2" stroke-linecap="square" fill="none" />
+        </symbol>
+
+        <!-- Pixel/Warning(255:120, 16x16) — 삭제 경고 박스 전용, 코랄+흰색 고정 배색. -->
+        <symbol id="px-warning" viewBox="0 0 16 16">
+            <path d="M7 0H9V2H7V0Z" fill="var(--color-coral-500)" />
+            <path d="M5 2H11V4H5V2Z" fill="var(--color-coral-500)" />
+            <path d="M3 4H13V6H3V4Z" fill="var(--color-coral-500)" />
+            <path d="M1 6H15V8H1V6Z" fill="var(--color-coral-500)" />
+            <path d="M0 8H16V10H0V8Z" fill="var(--color-coral-500)" />
+            <path d="M1 10H15V12H1V10Z" fill="var(--color-coral-500)" />
+            <path d="M3 12H13V14H3V12Z" fill="var(--color-coral-500)" />
+            <path d="M5 14H7V16H5V14Z" fill="var(--color-coral-500)" />
+            <path d="M9 14H11V16H9V14Z" fill="var(--color-coral-500)" />
+            <path d="M7 6H9V10H7V6Z" fill="var(--color-white)" />
+            <path d="M7 11H9V13H7V11Z" fill="var(--color-white)" />
+        </symbol>
+
+        <!-- Icon/Alert(96:41, 24x24) — 성공 토스트/에러 배너 공용, 색은 배경으로만 구분. -->
+        <symbol id="icon-alert" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" fill="var(--color-amber-600)" stroke="var(--color-ink-900)" stroke-width="3" />
+            <rect x="10.75" y="7" width="2.5" height="7" rx="1.25" fill="var(--color-ink-900)" />
+            <circle cx="12" cy="17.25" r="1.25" fill="var(--color-ink-900)" />
+        </symbol>
+    </svg>
 
     <!-- ══════════════════════════════════════════════════════════════
          섹션 A — 로그인/회원가입 (SCR-001) + 비밀번호 재설정 (SCR-004)
@@ -15,20 +95,39 @@
 
         <!-- SCR-001 로그인/회원가입 -->
         <div id="view-login" class="auth-page">
+            <div class="bg-pixels" aria-hidden="true">
+                <span class="px-diamond" style="left:6.6%;top:8%;--px-size:14px;opacity:.4"></span>
+                <span class="px-star" style="left:22%;top:5%;width:14px;height:14px;opacity:.4"><svg class="px-star-icon" viewBox="0 0 10 10"><use href="#px-star"></use></svg></span>
+                <span class="px-cross" style="left:40%;top:12%;--px-size:12px;opacity:.3"></span>
+                <span class="px-diamond" style="left:60.5%;top:7%;--px-size:9.8px;opacity:.35"></span>
+                <span class="px-star" style="left:80%;top:4%;width:18px;height:18px;opacity:.3"><svg class="px-star-icon" viewBox="0 0 10 10"><use href="#px-star"></use></svg></span>
+                <span class="px-cross" style="left:88%;top:18%;--px-size:14px;opacity:.25"></span>
+                <span class="px-star" style="left:3%;top:38%;width:16px;height:16px;opacity:.35"><svg class="px-star-icon" viewBox="0 0 10 10"><use href="#px-star"></use></svg></span>
+                <span class="px-diamond" style="left:92.6%;top:50%;--px-size:12.6px;opacity:.4"></span>
+                <span class="px-cross" style="left:7%;top:62%;--px-size:10px;opacity:.3"></span>
+                <span class="px-star" style="left:85%;top:72%;width:14px;height:14px;opacity:.35"><svg class="px-star-icon" viewBox="0 0 10 10"><use href="#px-star"></use></svg></span>
+                <span class="px-diamond" style="left:18.5%;top:80%;--px-size:11.2px;opacity:.35"></span>
+                <span class="px-star" style="left:50%;top:88%;width:12px;height:12px;opacity:.25"><svg class="px-star-icon" viewBox="0 0 10 10"><use href="#px-star"></use></svg></span>
+                <span class="px-cross" style="left:72%;top:82%;--px-size:12px;opacity:.25"></span>
+                <span class="px-diamond" style="left:88.4%;top:92%;--px-size:8.4px;opacity:.4"></span>
+                <span class="px-ellipse" style="left:26.4%;top:37.4%;width:22px;height:22px"></span>
+                <span class="px-ellipse" style="left:70.8%;top:64.2%;width:40px;height:40px"></span>
+                <span class="px-ellipse" style="left:76.5%;top:32.7%;width:22px;height:22px"></span>
+            </div>
             <div class="card auth-card">
                 <div class="card-accent-top"></div>
                 <div class="card-body">
                     <div class="brand-row">
-                        <span class="brand-badge"></span>
+                        <span class="brand-badge"><svg class="brand-badge-star" viewBox="0 0 10 10" aria-hidden="true"><use href="#px-star"></use></svg></span>
                         <span class="brand-name">yourbook.</span>
                     </div>
 
                     <div id="login-error-banner" class="banner banner-error" hidden>
-                        <span class="banner-icon">⚠</span>
+                        <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
                         <span id="login-error-text"></span>
                     </div>
                     <div id="login-success-banner" class="banner banner-success" hidden>
-                        <span class="banner-icon">✓</span>
+                        <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
                         <span id="login-success-text"></span>
                     </div>
 
@@ -36,15 +135,23 @@
                         <!-- 주의(테스트 호환): "아이디" placeholder("영문 소문자·숫자 4~20자")가
                              "비밀번호" placeholder("4~20자")를 부분 문자열로 포함해, Playwright의
                              get_by_placeholder("4~20자").first가 DOM 순서로 모호성을 해소한다.
-                             비밀번호 입력을 DOM상 먼저 두고 CSS order로 시각 순서만 되돌리며,
-                             tabindex로 키보드 포커스 순서(아이디→비밀번호)는 그대로 지킨다. -->
+                             비밀번호 입력을 DOM상 먼저 두고 CSS order로 시각 순서만 되돌린다.
+                             확정 디자인(login 936:1042) 실측 순서 그대로 재현하려면 이 형제
+                             6개 전부에 order를 명시해야 한다 — 일부만 지정하면 order 미지정
+                             요소(기본값 0)가 맨 앞으로 튀어오르는 회귀가 생긴다(2026-07-18
+                             사용자 제보로 발견). 시각 순서: 아이디(1)→비밀번호(2)→
+                             로그인상태유지+비밀번호재설정 행(3)→로그인 버튼(4)→구분선(5)→
+                             회원가입 버튼(6). tabindex로 키보드 포커스 순서(아이디→비밀번호)는
+                             그대로 지킨다. -->
                         <div class="field" style="order:2">
                             <label for="login-password">비밀번호</label>
                             <div class="password-wrap">
                                 <input class="input" type="password" id="login-password"
                                        placeholder="4~20자" autocomplete="current-password" tabindex="2">
                                 <button type="button" class="password-toggle" id="toggle-login-password"
-                                        aria-label="비밀번호 표시" tabindex="3">👁</button>
+                                        aria-label="비밀번호 표시" tabindex="3">
+                                    <svg class="icon-eye" viewBox="0 0 14 10" aria-hidden="true"><use href="#px-eye"></use></svg>
+                                </button>
                             </div>
                         </div>
                         <div class="field" style="order:1">
@@ -52,16 +159,23 @@
                             <input class="input" type="text" id="login-username"
                                    placeholder="영문 소문자·숫자 4~20자" autocomplete="username" tabindex="1">
                         </div>
-                        <div class="row-between">
+                        <div class="row-between" style="order:3">
                             <label class="checkbox">
                                 <input type="checkbox" id="remember-me"> 로그인 상태 유지
                             </label>
                             <span class="link" id="link-password-reset" tabindex="0">비밀번호 재설정</span>
                         </div>
-                        <button type="submit" class="btn btn-amber" id="btn-login">로그인</button>
-                        <div class="divider"><span>or</span></div>
-                        <button type="button" class="btn btn-neutral" id="btn-signup">회원가입</button>
+                        <button type="submit" class="btn btn-amber" id="btn-login" style="order:4">로그인</button>
+                        <div class="divider" style="order:5"><span>or</span></div>
+                        <button type="button" class="btn btn-neutral" id="btn-signup" style="order:6">회원가입</button>
                     </form>
+                    <div class="confetti-footer" aria-hidden="true">
+                        <span class="confetti-diamond"></span>
+                        <span class="confetti-star"><svg class="px-star-icon" viewBox="0 0 10 10"><use href="#px-star"></use></svg></span>
+                        <span class="confetti-diamond"></span>
+                        <span class="confetti-star"><svg class="px-star-icon" viewBox="0 0 10 10"><use href="#px-star"></use></svg></span>
+                        <span class="confetti-diamond"></span>
+                    </div>
                 </div>
                 <div class="card-accent-bottom"></div>
             </div>
@@ -69,19 +183,45 @@
 
         <!-- SCR-004 1단계: 아이디 확인 -->
         <div id="view-pwreset1" class="auth-page" hidden>
+            <div class="bg-pixels" aria-hidden="true">
+                <span class="px-diamond" style="left:6.6%;top:8%;--px-size:14px;opacity:.4"></span>
+                <span class="px-star" style="left:22%;top:5%;width:14px;height:14px;opacity:.4"><svg class="px-star-icon" viewBox="0 0 10 10"><use href="#px-star"></use></svg></span>
+                <span class="px-cross" style="left:40%;top:12%;--px-size:12px;opacity:.3"></span>
+                <span class="px-diamond" style="left:60.5%;top:7%;--px-size:9.8px;opacity:.35"></span>
+                <span class="px-star" style="left:80%;top:4%;width:18px;height:18px;opacity:.3"><svg class="px-star-icon" viewBox="0 0 10 10"><use href="#px-star"></use></svg></span>
+                <span class="px-cross" style="left:88%;top:18%;--px-size:14px;opacity:.25"></span>
+                <span class="px-star" style="left:3%;top:38%;width:16px;height:16px;opacity:.35"><svg class="px-star-icon" viewBox="0 0 10 10"><use href="#px-star"></use></svg></span>
+                <span class="px-diamond" style="left:92.6%;top:50%;--px-size:12.6px;opacity:.4"></span>
+                <span class="px-cross" style="left:7%;top:62%;--px-size:10px;opacity:.3"></span>
+                <span class="px-star" style="left:85%;top:72%;width:14px;height:14px;opacity:.35"><svg class="px-star-icon" viewBox="0 0 10 10"><use href="#px-star"></use></svg></span>
+                <span class="px-diamond" style="left:18.5%;top:80%;--px-size:11.2px;opacity:.35"></span>
+                <span class="px-star" style="left:50%;top:88%;width:12px;height:12px;opacity:.25"><svg class="px-star-icon" viewBox="0 0 10 10"><use href="#px-star"></use></svg></span>
+                <span class="px-cross" style="left:72%;top:82%;--px-size:12px;opacity:.25"></span>
+                <span class="px-diamond" style="left:88.4%;top:92%;--px-size:8.4px;opacity:.4"></span>
+                <span class="px-ellipse" style="left:26.4%;top:37.4%;width:22px;height:22px"></span>
+                <span class="px-ellipse" style="left:70.8%;top:64.2%;width:40px;height:40px"></span>
+                <span class="px-ellipse" style="left:76.5%;top:32.7%;width:22px;height:22px"></span>
+            </div>
             <div class="card auth-card">
                 <div class="card-accent-top"></div>
                 <div class="card-body">
-                    <!-- 주의(테스트 호환): 로그인 화면의 "비밀번호 재설정" 링크 텍스트와
-                         겹치면 hidden 상태에서도 get_by_text 매칭 대상에 포함돼 모호해진다.
-                         SCR-004 1단계 와이어프레임의 단계 라벨("1단계: 아이디 확인")을 그대로 쓴다. -->
+                    <!-- 확정 디자인(login-비밀번호재설정-1단계 995:303)은 Logo(심볼+"yourbook."
+                         워드마크)를 그대로 유지하고, 그 아래 별도 타이틀 텍스트("비밀번호 재설정",
+                         Noto Sans KR Black 18px)를 추가한다 — 로고 자체를 단계 라벨로 바꿔치기하지
+                         않는다(2026-07-18 사용자 제보: "로고가 없다"의 실제 원인 중 하나 —
+                         브랜드 로고가 이 화면에서 완전히 다른 문구로 대체돼 있었음).
+                         주의(테스트 호환): 이 타이틀과 로그인 화면의 "비밀번호 재설정" 링크가
+                         똑같은 문자열이라 hidden 상태에서도 get_by_text 매칭에 함께 잡힌다 —
+                         AUTH_PLACEHOLDERS와 동일한 패턴으로 활성 화면일 때만 텍스트를 채운다
+                         (app.js applyAuthTitles 참고), 기본은 빈 문자열. -->
                     <div class="brand-row">
-                        <span class="brand-badge"></span>
-                        <span class="brand-name">아이디 확인</span>
+                        <span class="brand-badge"><svg class="brand-badge-star" viewBox="0 0 10 10" aria-hidden="true"><use href="#px-star"></use></svg></span>
+                        <span class="brand-name">yourbook.</span>
                     </div>
+                    <p class="auth-card-title" id="pwreset1-title"></p>
 
                     <div id="pwreset1-error-banner" class="banner banner-error" hidden>
-                        <span class="banner-icon">⚠</span>
+                        <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
                         <span id="pwreset1-error-text"></span>
                     </div>
 
@@ -94,6 +234,13 @@
                         <button type="submit" class="btn btn-amber" id="btn-pwreset1-confirm">확인</button>
                         <button type="button" class="btn btn-neutral" id="btn-pwreset1-back">로그인으로 돌아가기</button>
                     </form>
+                    <div class="confetti-footer" aria-hidden="true">
+                        <span class="confetti-diamond"></span>
+                        <span class="confetti-star"><svg class="px-star-icon" viewBox="0 0 10 10"><use href="#px-star"></use></svg></span>
+                        <span class="confetti-diamond"></span>
+                        <span class="confetti-star"><svg class="px-star-icon" viewBox="0 0 10 10"><use href="#px-star"></use></svg></span>
+                        <span class="confetti-diamond"></span>
+                    </div>
                 </div>
                 <div class="card-accent-bottom"></div>
             </div>
@@ -101,20 +248,41 @@
 
         <!-- SCR-004 2단계: 새 비밀번호 설정 -->
         <div id="view-pwreset2" class="auth-page" hidden>
+            <div class="bg-pixels" aria-hidden="true">
+                <span class="px-diamond" style="left:6.6%;top:8%;--px-size:14px;opacity:.4"></span>
+                <span class="px-star" style="left:22%;top:5%;width:14px;height:14px;opacity:.4"><svg class="px-star-icon" viewBox="0 0 10 10"><use href="#px-star"></use></svg></span>
+                <span class="px-cross" style="left:40%;top:12%;--px-size:12px;opacity:.3"></span>
+                <span class="px-diamond" style="left:60.5%;top:7%;--px-size:9.8px;opacity:.35"></span>
+                <span class="px-star" style="left:80%;top:4%;width:18px;height:18px;opacity:.3"><svg class="px-star-icon" viewBox="0 0 10 10"><use href="#px-star"></use></svg></span>
+                <span class="px-cross" style="left:88%;top:18%;--px-size:14px;opacity:.25"></span>
+                <span class="px-star" style="left:3%;top:38%;width:16px;height:16px;opacity:.35"><svg class="px-star-icon" viewBox="0 0 10 10"><use href="#px-star"></use></svg></span>
+                <span class="px-diamond" style="left:92.6%;top:50%;--px-size:12.6px;opacity:.4"></span>
+                <span class="px-cross" style="left:7%;top:62%;--px-size:10px;opacity:.3"></span>
+                <span class="px-star" style="left:85%;top:72%;width:14px;height:14px;opacity:.35"><svg class="px-star-icon" viewBox="0 0 10 10"><use href="#px-star"></use></svg></span>
+                <span class="px-diamond" style="left:18.5%;top:80%;--px-size:11.2px;opacity:.35"></span>
+                <span class="px-star" style="left:50%;top:88%;width:12px;height:12px;opacity:.25"><svg class="px-star-icon" viewBox="0 0 10 10"><use href="#px-star"></use></svg></span>
+                <span class="px-cross" style="left:72%;top:82%;--px-size:12px;opacity:.25"></span>
+                <span class="px-diamond" style="left:88.4%;top:92%;--px-size:8.4px;opacity:.4"></span>
+                <span class="px-ellipse" style="left:26.4%;top:37.4%;width:22px;height:22px"></span>
+                <span class="px-ellipse" style="left:70.8%;top:64.2%;width:40px;height:40px"></span>
+                <span class="px-ellipse" style="left:76.5%;top:32.7%;width:22px;height:22px"></span>
+            </div>
             <div class="card auth-card">
                 <div class="card-accent-top"></div>
                 <div class="card-body">
+                    <!-- pwreset1과 동일 원칙(로고는 항상 유지, 단계 라벨은 별도 타이틀로) -->
                     <div class="brand-row">
-                        <span class="brand-badge"></span>
-                        <span class="brand-name">새 비밀번호 설정</span>
+                        <span class="brand-badge"><svg class="brand-badge-star" viewBox="0 0 10 10" aria-hidden="true"><use href="#px-star"></use></svg></span>
+                        <span class="brand-name">yourbook.</span>
                     </div>
+                    <p class="auth-card-title" id="pwreset2-title"></p>
 
                     <div id="pwreset2-error-banner" class="banner banner-error" hidden>
-                        <span class="banner-icon">⚠</span>
+                        <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
                         <span id="pwreset2-error-text"></span>
                     </div>
                     <div id="pwreset2-success-banner" class="banner banner-success" hidden>
-                        <span class="banner-icon">✓</span>
+                        <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
                         <span id="pwreset2-success-text"></span>
                     </div>
 
@@ -123,15 +291,34 @@
                     <form id="pwreset2-form">
                         <div class="field">
                             <label for="pwreset2-new-password">새 비밀번호</label>
-                            <input class="input" type="password" id="pwreset2-new-password" placeholder="4~20자">
+                            <div class="password-wrap">
+                                <input class="input" type="password" id="pwreset2-new-password" placeholder="4~20자">
+                                <button type="button" class="password-toggle" id="toggle-pwreset2-new-password"
+                                        aria-label="비밀번호 표시">
+                                    <svg class="icon-eye" viewBox="0 0 14 10" aria-hidden="true"><use href="#px-eye"></use></svg>
+                                </button>
+                            </div>
                         </div>
                         <div class="field">
                             <label for="pwreset2-confirm-password">새 비밀번호 확인</label>
-                            <input class="input" type="password" id="pwreset2-confirm-password"
-                                   placeholder="위와 동일하게 입력">
+                            <div class="password-wrap">
+                                <input class="input" type="password" id="pwreset2-confirm-password"
+                                       placeholder="위와 동일하게 입력">
+                                <button type="button" class="password-toggle" id="toggle-pwreset2-confirm-password"
+                                        aria-label="비밀번호 표시">
+                                    <svg class="icon-eye" viewBox="0 0 14 10" aria-hidden="true"><use href="#px-eye"></use></svg>
+                                </button>
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-amber" id="btn-pwreset2-submit">비밀번호 변경</button>
                     </form>
+                    <div class="confetti-footer" aria-hidden="true">
+                        <span class="confetti-diamond"></span>
+                        <span class="confetti-star"><svg class="px-star-icon" viewBox="0 0 10 10"><use href="#px-star"></use></svg></span>
+                        <span class="confetti-diamond"></span>
+                        <span class="confetti-star"><svg class="px-star-icon" viewBox="0 0 10 10"><use href="#px-star"></use></svg></span>
+                        <span class="confetti-diamond"></span>
+                    </div>
                 </div>
                 <div class="card-accent-bottom"></div>
             </div>
@@ -165,7 +352,7 @@
 
                     <div class="content-body">
                         <div id="main-toast" class="toast banner banner-success" hidden>
-                            <span class="banner-icon">✓</span>
+                            <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
                             <div>
                                 <div class="toast-title" id="main-toast-text"></div>
                                 <div class="toast-subtitle">방금 · 잠시 후 사라짐</div>
@@ -197,7 +384,7 @@
 
                         <div class="add-form-card">
                             <div id="add-error-banner" class="banner banner-error" hidden>
-                                <span class="banner-icon">⚠</span>
+                                <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
                                 <span id="add-error-text"></span>
                             </div>
                             <form id="add-contact-form" class="add-form-row">
@@ -234,7 +421,7 @@
                 <!-- SCR-003 사이드바: 카테고리 nav + 카테고리 관리 -->
                 <aside class="sidebar" id="sidebar" style="order:1">
                     <div class="brand-row">
-                        <span class="brand-badge"></span>
+                        <span class="brand-badge"><svg class="brand-badge-star" viewBox="0 0 10 10" aria-hidden="true"><use href="#px-star"></use></svg></span>
                         <span class="brand-name">yourbook.</span>
                     </div>
 
@@ -245,7 +432,7 @@
                     <ul class="manage-list" id="category-manage-list"></ul>
 
                     <div id="category-error" class="banner banner-error" hidden>
-                        <span class="banner-icon">⚠</span>
+                        <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
                         <span id="category-error-text"></span>
                     </div>
 
@@ -265,10 +452,12 @@
                 <div class="modal-body">
                     <div class="modal-header">
                         <h2>연락처 수정</h2>
-                        <button type="button" class="icon-btn" id="edit-close">✕</button>
+                        <button type="button" class="icon-btn" id="edit-close">
+                            <svg class="icon-close" viewBox="0 0 10 10" aria-hidden="true"><use href="#px-close"></use></svg>
+                        </button>
                     </div>
                     <div id="edit-error-banner" class="banner banner-error" hidden>
-                        <span class="banner-icon">⚠</span>
+                        <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
                         <span id="edit-error-text"></span>
                     </div>
                     <form id="edit-contact-form">
@@ -291,6 +480,64 @@
                         <div class="modal-actions">
                             <button type="submit" class="btn btn-sky" id="btn-save-edit">저장</button>
                             <button type="button" class="btn btn-neutral" id="btn-cancel-edit">취소</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- 카테고리 삭제 확인 모달 (CategoryDeleteModal, 근거: 카테고리 삭제 확인 1001:1594) -->
+        <div id="modal-delete-category" class="modal-overlay" hidden>
+            <div class="card modal modal-category">
+                <div class="card-accent-top"></div>
+                <div class="modal-body">
+                    <div class="modal-header">
+                        <h2>카테고리 삭제</h2>
+                        <button type="button" class="icon-btn" id="delete-category-close">
+                            <svg class="icon-close" viewBox="0 0 10 10" aria-hidden="true"><use href="#px-close"></use></svg>
+                        </button>
+                    </div>
+                    <div class="warning-box">
+                        <span class="warning-box-icon" aria-hidden="true"><svg class="icon-warning" viewBox="0 0 16 16"><use href="#px-warning"></use></svg></span>
+                        <p class="warning-box-text">
+                            <strong id="delete-category-name"></strong> 카테고리를 삭제하시겠습니까? 이 카테고리를 사용 중인 연락처가 있으면 삭제할 수 없습니다.
+                        </p>
+                    </div>
+                    <div id="delete-category-error-banner" class="banner banner-error" hidden>
+                        <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
+                        <span id="delete-category-error-text"></span>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-coral" id="btn-confirm-delete-category">삭제하기</button>
+                        <button type="button" class="btn btn-neutral" id="btn-cancel-delete-category">취소</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 카테고리 이름 수정 모달 (CategoryRenameModal, 근거: 카테고리 이름 수정 1002:1611) -->
+        <div id="modal-rename-category" class="modal-overlay" hidden>
+            <div class="card modal modal-category">
+                <div class="card-accent-top"></div>
+                <div class="modal-body">
+                    <div class="modal-header">
+                        <h2>카테고리 이름 수정</h2>
+                        <button type="button" class="icon-btn" id="rename-category-close">
+                            <svg class="icon-close" viewBox="0 0 10 10" aria-hidden="true"><use href="#px-close"></use></svg>
+                        </button>
+                    </div>
+                    <div id="rename-category-error-banner" class="banner banner-error" hidden>
+                        <span class="banner-icon"><svg class="icon-alert" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-alert"></use></svg></span>
+                        <span id="rename-category-error-text"></span>
+                    </div>
+                    <form id="rename-category-form">
+                        <div class="field">
+                            <label for="rename-category-name">이름</label>
+                            <input class="input-corner" id="rename-category-name" maxlength="10">
+                        </div>
+                        <div class="modal-actions">
+                            <button type="submit" class="btn btn-amber" id="btn-save-rename-category">저장</button>
+                            <button type="button" class="btn btn-neutral" id="btn-cancel-rename-category">취소</button>
                         </div>
                     </form>
                 </div>
