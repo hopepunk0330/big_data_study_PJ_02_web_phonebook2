@@ -8,8 +8,7 @@
   "portsAttributes": {
     "8000": {
       "label": "연락처 관리 웹앱",
-      "onAutoForward": "openBrowser",
-      "visibility": "public"
+      "onAutoForward": "openBrowser"
     }
   },
   "postCreateCommand": "bash .devcontainer/setup.sh",
