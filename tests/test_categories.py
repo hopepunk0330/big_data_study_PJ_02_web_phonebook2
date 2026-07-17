@@ -17,6 +17,7 @@ from conftest import (
     called,
     contact_payload,
     get_category_id,
+    login,
     record_network,
     signup,
     signup_and_login,
@@ -86,7 +87,7 @@ def test_tc_api_category_06_create_duplicate_name(api_request):
 def test_tc_api_category_07_name_empty_and_too_long(api_request):
     signup_and_login(api_request)
     resp_empty = api_request.post("/categories", data={"name": ""})
-    resp_too_long = api_request.post("/categories", data={"name": "가나다라마바사아자차"})  # 11자
+    resp_too_long = api_request.post("/categories", data={"name": "가나다라마바사아자차카"})  # 11자
     assert_not_server_error(resp_empty)
     assert_not_server_error(resp_too_long)
     assert resp_empty.status == 422
@@ -207,8 +208,10 @@ def test_tc_e2e_scr003_01_add_category_refreshes_list_and_dropdown(page, api_req
     _login_via_page(page, username)
     name = unique_category_name("동호회")
     page.get_by_placeholder("새 카테고리").fill(name)
+    page.screenshot(path="docs/screenshot/category-01-카테고리입력.png")
     page.get_by_role("button", name="추가", exact=True).nth(1).click()
-    page.get_by_text(name).wait_for()
+    page.locator("#category-nav").get_by_text(name).wait_for()
+    page.screenshot(path="docs/screenshot/category-02-추가완료.png")
 
 
 def test_tc_e2e_scr003_02_add_duplicate_name_shows_detail(page, api_request):
@@ -217,18 +220,21 @@ def test_tc_e2e_scr003_02_add_duplicate_name_shows_detail(page, api_request):
     page.get_by_placeholder("새 카테고리").fill("친구")
     page.get_by_role("button", name="추가", exact=True).nth(1).click()
     page.wait_for_timeout(500)
+    page.screenshot(path="docs/screenshot/category-03-중복추가유지.png")
     assert page.get_by_text("친구").count() >= 1  # detail(409) 표시, 목록엔 여전히 "친구" 1개뿐
 
 
 def test_tc_e2e_scr003_03_rename_via_prompt_refreshes_all_related_views(page, api_request):
     username, _ = signup(api_request)
+    login(api_request, username)
     category_id = get_category_id(api_request, "친구")
     api_request.post("/contacts", data=contact_payload(category_id, name="윤아"))
     _login_via_page(page, username)
 
     page.once("dialog", lambda dialog: dialog.accept("베프"))
     page.get_by_role("listitem", name="친구").get_by_role("button", name="수정", exact=True).click()
-    page.get_by_text("베프").wait_for()
+    page.locator("#category-nav").get_by_text("베프").wait_for()
+    page.screenshot(path="docs/screenshot/category-04-이름변경완료.png")
 
 
 def test_tc_e2e_scr003_04_rename_prompt_cancel_no_api_call(page, api_request):
@@ -239,11 +245,13 @@ def test_tc_e2e_scr003_04_rename_prompt_cancel_no_api_call(page, api_request):
     page.once("dialog", lambda dialog: dialog.dismiss())
     page.get_by_role("listitem", name="친구").get_by_role("button", name="수정", exact=True).click()
     page.wait_for_timeout(500)
+    page.screenshot(path="docs/screenshot/category-05-이름변경취소유지.png")
     assert not any("/categories/" in entry and "PATCH" in entry for entry in log)
 
 
 def test_tc_e2e_scr003_05_delete_unused_category_confirm_removes_it(page, api_request):
     username, _ = signup(api_request)
+    login(api_request, username)
     _login_via_page(page, username)
     name = unique_category_name("동호회")
     api_request.post("/categories", data={"name": name})
@@ -253,6 +261,7 @@ def test_tc_e2e_scr003_05_delete_unused_category_confirm_removes_it(page, api_re
     page.once("dialog", lambda dialog: dialog.accept())
     page.get_by_role("listitem", name=name).get_by_role("button", name="삭제", exact=True).click()
     page.wait_for_timeout(500)
+    page.screenshot(path="docs/screenshot/category-06-미사용삭제완료.png")
     assert page.get_by_text(name).count() == 0
 
 
@@ -260,6 +269,7 @@ def test_tc_e2e_scr003_06_delete_in_use_category_confirm_shows_detail_not_remove
     page, api_request
 ):
     username, _ = signup(api_request)
+    login(api_request, username)
     category_id = get_category_id(api_request, "친구")
     api_request.post("/contacts", data=contact_payload(category_id))
     api_request.post("/contacts", data=contact_payload(category_id))
@@ -268,6 +278,7 @@ def test_tc_e2e_scr003_06_delete_in_use_category_confirm_shows_detail_not_remove
     page.once("dialog", lambda dialog: dialog.accept())
     page.get_by_role("listitem", name="친구").get_by_role("button", name="삭제", exact=True).click()
     page.get_by_text("2건").wait_for()
+    page.screenshot(path="docs/screenshot/category-07-사용중삭제거부.png")
     assert page.get_by_text("친구").count() >= 1
 
 
@@ -279,8 +290,9 @@ def test_tc_e2e_scr003_07_delete_confirm_cancel_no_change(page, api_request):
     page.once("dialog", lambda dialog: dialog.dismiss())
     page.get_by_role("listitem", name="친구").get_by_role("button", name="삭제", exact=True).click()
     page.wait_for_timeout(500)
+    page.screenshot(path="docs/screenshot/category-08-삭제취소유지.png")
     assert not any("/categories/" in entry and "DELETE" in entry for entry in log)
-    assert page.get_by_text("친구").is_visible()
+    assert page.locator("#category-manage-list").get_by_text("친구").is_visible()
 
 
 def test_tc_e2e_scr003_08_session_expiry_forces_login_screen(page, api_request):
@@ -289,6 +301,8 @@ def test_tc_e2e_scr003_08_session_expiry_forces_login_screen(page, api_request):
     page.context.request.post("/auth/logout")  # 세션 만료 유도
 
     page.get_by_placeholder("새 카테고리").fill(unique_category_name())
+    page.screenshot(path="docs/screenshot/category-09-세션만료후입력.png")
     page.get_by_role("button", name="추가", exact=True).nth(1).click()
 
     page.get_by_role("button", name="로그인", exact=True).wait_for()
+    page.screenshot(path="docs/screenshot/category-10-로그인화면복귀.png")

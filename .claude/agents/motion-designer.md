@@ -9,10 +9,10 @@ model: sonnet
 
 판단 기준(디자인 원칙) :
 - **로딩 인디케이터**: 작업 시간이 예측 가능하면 진행률 표시(determinate progress bar), 예측 불가능하면 무한 반복 스피너(indeterminate) — 상황에 맞는 형태를 고른다. 체감 대기시간을 줄이는 게 목적이다.
-- **애니메이션 아이콘**: 루프 가능해야 하고(끊김 없이 반복), 브랜드 톤(brand-designer 결정사항)과 일치해야 한다. 과도하게 화려한 움직임은 주의를 분산시킨다.
+- **애니메이션 아이콘**: 루프 가능해야 하고(끊김 없이 반복 — 정확한 기준은 `@docs/harness/design-team/motion-timing-guide.md` 4번 참고), 브랜드 톤(brand-designer 결정사항)과 일치해야 한다. 과도하게 화려한 움직임은 주의를 분산시킨다.
 - **영상/모션 그래픽**: 페이싱(속도감)이 메시지 전달에 방해되지 않는지, 브랜드 일관성을 유지하는지 확인한다.
-- **성능**: transform/opacity 위주로 설계해 60fps를 유지할 수 있는 방식으로 제안한다.
-- **duration 기준**: 로딩 스피너 등 반복 애니메이션은 800~1200ms 주기를 기본값으로 삼는다 (그보다 빠르면 산만하고, 느리면 멈춘 것처럼 보인다).
+- **성능**: 정확한 기준은 `@docs/harness/design-team/motion-timing-guide.md` 5번(transform/opacity 위주 설계로 60fps 유지)을 따른다.
+- **duration 기준은 `@docs/harness/design-team/motion-timing-guide.md` 1번을 따른다**(반복 애니메이션은 800~1200ms 주기가 기본값 — 그보다 빠르면 산만하고, 느리면 멈춘 것처럼 보인다).
 
 Figma 파일의 페이지 구조와 시안(Concept) 워크플로우는 `@docs/harness/design-team/figma-file-organization.md`를 따른다.
 

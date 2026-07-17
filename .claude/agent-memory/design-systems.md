@@ -4,36 +4,48 @@
 
 ## 작업 로그
 
-### 2026-07-16 — Component Specs 스펙 시트 리셋 4/4(마지막) 배치 — NeoSelect/Checkbox + 페이지 겹침 재배치 + 문서 최종 정리 (순수 검증+동기화, 창작 판단 없음)
-- **NeoSelect(`387:13`, 스펙 시트 `388:746`)**: 실제 4 variant(Content=Placeholder/Selected × State=Default/Open) vs 스펙 시트 4셀 — 일치, 셀 변경 없음. Open State 이중 그림자 방지 판단(13절 P4: 트리거는 그림자 없음, options-panel만 `Elevation/Raised`)이 그대로 유지돼 있음을 재확인(변경 없음). 내부 auto-layout 컨테이너 6개(HeaderRow/Spacer/LabelCell×4)가 `clipsContent=true`로 남아있던 것을 발견해 `false`로 정정. 설명 텍스트에 13절 P4(Shadow/Hard-2 적용 범위) 반영이 누락돼 있어 갱신.
-- **Checkbox(`474:899`, 스펙 시트 `475:762`)**: 실제 4 variant(State=Default/Checked/Focus/Disabled) vs 스펙 시트 4셀 — 일치, 셀 변경 없음. 체크마크(`474:888`) stroke가 `color/ink/900`에 정상 바인딩돼 있음을 재확인(13절 P12에서 이미 정정 완료, 변경 없음). 스펙 시트 인스턴스 4개 중 3개가 `clipsContent=true`였던 것을 `false`로 정정. 설명 텍스트가 "체크마크 색은 후속 검토 필요"라는 stale 문구를 갖고 있어(이미 P12로 해소된 사안) 최신 상태(Disabled 색 토큰 공식 포함)로 갱신.
-- **페이지 전체 겹침 재검사**: 13개 스펙 시트 루트 프레임 x/y/width/height 전수 재조회 결과 겹침 0건(이전 배치들이 이미 순서대로 40~189px 간격 유지). 다만 이번 배치에서 NeoSelect 설명 텍스트가 길어지며 루트가 `primaryAxisSizingMode: FIXED`(560 고정, auto-hug 아님)라 실제 콘텐츠가 선언된 높이를 39px 넘어서고 있던 것을 발견 — `AUTO`로 전환해 560→612로 정확히 hug시켰고, 그 결과 다음 시트(Checkbox)와 6px 겹치게 돼 Checkbox를 60px 아래로 재배치해 겹침 0건 유지.
-- **문서 최종 정리**: `docs/design/design-system.md`에 0절 인트로(구 확정 디자인 섹션 `248:11689` 완전 삭제 사실 정정, 14-1절 참조) + 8절 Legacy 표 뒤 신규 문단(14-2/14-3절 발견 요약, 활성 레거시 컴포넌트 0개 결론) + 신규 15절(4배치 요약 표, NeoSelect/Checkbox 상세 결과, 페이지 겹침 재배치 결과) + 5절 NeoSelect/Checkbox 행에 15-2절 각주 추가. 전부 Edit로만 수정(Write 미사용), 최종 줄 수 1021→1064(도구 목록 지침 이후 Edit 전용 정책 준수, 손상 없음).
-- **배치 2/3 로그 유실 관련 투명성**: `.claude/agent-memory/design-systems.md` 5개 캡 정책상 배치 2/3(Row Action Button/Table Row Action/Sidebar Nav Item/TypeSelector, NeoInput/CornerInput/Link/Contact Row)의 세부 로그가 이후 다른 라운드 로그에 밀려 사라져 있었다 — 이번 15절 작성 시 라이브 Figma 상태 재조회로 "현재 정합 상태"만 확인·기록했고, 당시 무엇을 구체적으로 고쳤는지는 재구성하지 않고 유실을 그대로 명시했다.
+### 2026-07-17 — Auth(`934:2`) opacity 틴트 anti-pattern 근본 수정 + 비밀번호 토글 아이콘 갭 정정 (신규 40절)
+- 사용자 근본원인 지목: "1a1a1a를 투명도로 시안했었는데 내 스타일은 텍스트에 투명도 안 씀 — 합성 hex로 컬러칩 만들어" → `token-architecture-guide.md` 6번 원칙 실전 적용.
+- 934:2 전수 스캔(node-opacity 199건 + paint-opacity 15건). paint-opacity 15건은 전부 Divider Line(stroke ink10%)/"or"텍스트(fill ink35%) 패턴(5프레임). 935:33 사용자가 점선원으로 표시한 위치는 `DashedEllipse-0/1/2`(24건, stroke amber/600 + node-opacity40%)로 확인 — 이전 다이아몬드/십자/별 스캔이 ELLIPSE 타입을 놓쳤던 것.
+- 확정 원본(`501:5108` Tailwind `rgba(26,26,26,0.1)`/`rgba(26,26,26,0.35)`, `501:4940`의 Ellipse 1/2/3 좌표)과 대조해 opacity 값·위치 일치 확인.
+- 신규 Primitive 3개(`color/gray/180` #E8E8E8, `color/gray/375` #AFAFAF, `color/amber-tint-40-on-sky` #71AC9C) + Semantic 3개(`border-divider-subtle`/`text-divider-label`/`border-decorative-accent`) 생성, 39개 노드(Line10+or텍스트5+DashedEllipse24) 리바인딩 + opacity 전부 1.0으로 정정. 스팟체크 3건 + 전체 재스캔(잔여 0건) 확인.
+- BgPixels/ConfettiFooter 184건(node-opacity, 별 아이콘 반복 스캐터 장식)은 "의미있는 색상 역할이 아니라 랜덤 스캐터 장식"으로 판단해 변환 제외 — 근거 문서화(0-17절 라디오/디바이더 판단과 동일 원리).
+- Contacts(`934:3`) 8프레임 확인 — 전부 흰 배경, sky/500 블루 배경 자체가 없어 이번 anti-pattern과 무관 확인, 무수정.
+- 비밀번호 토글 아이콘 검증: Join/login/login-알림창/Join-실패배너/Join-성공안내 5곳은 `Pixel/Eye`(`281:405`) 정상. **login-비밀번호재설정-2단계(`996:376`)의 Field-NewPassword/Field-ConfirmPassword 2곳은 토글 자체가 없던 갭** — 기존 배치(ABSOLUTE, x320/y35, 14×10) 그대로 복제해 신규 인스턴스 추가, 스크린샷 확인.
+- FOUNDATIONS Colors 페이지(`95:2`)에 신규 Primitive 3개 + Semantic 3개 스와치를 기존 카드(clone) 서식대로 즉시 추가(Primitives Row 32→35, Semantic Row 27→30), `get_screenshot` 겹침 없음 확인.
+- `docs/design/design-system.md` 신규 40절(40-1~40-9) Edit로 추가(Write 미사용). 확정 원본(`501:2505` 하위)은 읽기 전용 대조만.
 
-### 2026-07-16 — design-qa 감사 HIGH 1건/MEDIUM 1건 처리 — 순수 재검증/정리, 창작 판단 없음, design-prompter 생략
-- **HIGH — Checkbox 체크마크(`474:888`) 색상 재확인**: design-qa가 스크린샷 3가지 크롭 판독만으로 "밝은/흰색 톤"이라고 다시 HIGH 보고했으나, `use_figma` raw script로 재조회한 결과 stroke `#1a1a1a`, `boundVariables.strokes[0]`이 `VariableID:95:9`(`color/ink/900`)를 정확히 가리키고 있었다 — 35차(13절 P12)에서 이미 정정·확인됐고 15-2절에서도 재확인된 값 그대로, 변경 없음. `node.screenshot({scale:20})` 고배율 inline 렌더로도 진한 검정 체크마크를 육안 확인 — 파란 배경(`color/sky/500`) 위 작은 아이콘의 동시대비 착시로 인한 재발 오탐으로 결론. State=Checked 마스터(`474:896`)의 다른 속성(strokes=[], children=[Box `474:886`, Label `474:887`])도 함께 재확인, 이상 없음.
-- **MEDIUM — TempVerify 스크래치 정리**: Table Row 페이지(`103:3`)의 화면 밖(x=9000,y=5000) 프레임 `TempVerify`(`549:984`)와 그 안 COMPONENT 4개(NeoBtn variant와 이름이 완전히 동일한 "Style=Amber/Neutral, Size=Default, State=Default/Focus")를 삭제했다. 삭제 전 파일 전체(29개 페이지) INSTANCE 전수 검색으로 참조 0건 확인(Detach 불필요) → `frame.remove()`로 프레임+4개 컴포넌트 일괄 삭제 → `get_metadata`로 `103:3`에서 사라졌고 나머지 정식 컴포넌트(Row Action Button/Table Row Action/Contact Row)는 무손상임을 재확인.
-- `docs/design/design-system.md`는 15절 끝에 "2026-07-16 추가 정리" 문단(HIGH 재확인 결과는 15-2절 Checkbox 서술 바로 뒤, MEDIUM 삭제 사실은 15절 맨 끝) 2곳 Edit로 추가. Write 미사용. `501:2505`(신규 확정 디자인)는 이번에도 무열람.
+### 2026-07-17 — `CategoryManage` 붙어있음 긴급 재작업 — 38-1절 진단 정정(신규 39절)
+- 38-1절에서 "부모 FIXED232px 유령공간"으로 진단·정정했으나 사용자가 재확인해도 여전히 "붙어있다"고 지적 — 재조사 결과 그 진단은 다른(세로) 레이어 문제였고, 실제 증상은 `CatRows`(`937:1180`)의 자식 `CatRow`(라벨+수정/삭제 버튼 한 줄, 예 `937:1181`) **가로 구조**에 있었다.
+- 확정 원본(`501:6079`, 168px폭)은 라벨을 FIXED 100×20 `Text` 래퍼로, 버튼 2개를 FIXED 60×22 `Container` 래퍼(내부 gap4)로 감싼 뒤 이 두 래퍼 사이에 CatRow의 itemSpacing 8을 적용해 168px로 hug된다. 화면조립본은 래퍼 없이 텍스트+버튼2개가 직접 3자식으로 물려 텍스트가 글자폭(23px)만큼만 hug되어 총 95px에 그쳤다 — itemSpacing 숫자(8)는 같았지만 라벨의 "예약 공간"이 없어 버튼이 왼쪽에 붙어 보이고 오른쪽에 여백만 남는 구조 결함.
+- 3개 `CategoryManage`(`937:1178`/`939:1547`/`939:1992`) × 4개 `CatRow` = 12곳 전부에 동일하게 Text(100×20)/Container(60×22,gap4) 래퍼를 신설·이관해 168px로 정정. 색상·아이콘·인스턴스 자체는 무수정.
+- 자체 재대조: 12개 CatRow 전부 width168/래퍼폭100·60/내부gap4/버튼x좌표(0,32) 확정 원본과 일치 확인. `get_screenshot` 3블록 재확인 — 라벨 좌측/버튼 우측 분리, 더 이상 붙어 보이지 않음.
+- 미해결로 남김(이번 범위 밖, 증상과 무관 판단): 제목/행라벨 텍스트 lineHeight AUTO(원본은 13.5/20 고정값), `CatRows` 자체 AUTO hug(114) vs 원본 FIXED(118, 4px 여유).
+- `docs/design/design-system.md` 신규 39절 Edit로 추가(Write 미사용). 확정 원본(`501:2505` 하위)은 읽기 전용 대조만.
 
-### 2026-07-16 — 미사용 변수 32개 + 텍스트 스타일 6개 `[미사용] ` 접두어 라벨링 (사용자 승인 실행 콜, 37차 조사 확정 목록 기반)
-- 37차 조사에서 alias 체인까지 검증해 "진짜 미사용"으로 확정한 변수 32개(Component Tokens 11 / Spacing 5 / Semantic Colors 7 / Primitives 9)와 로컬 텍스트 스타일 6개를 정확한 ID로 지정해 이름 앞에 `[미사용] `만 추가(값/scopes/codeSyntax/description/바인딩 전부 무수정, 순수 rename).
-- 텍스트 스타일은 지시서 ID(`S:...48`)가 트레일링 콤마 없는 형식이라 첫 시도 6건 전부 "not found"로 실패(atomic이라 파일 무변경) → `getLocalTextStylesAsync()`로 실제 ID 형식(`S:...48,`)을 확인해 재시도, 성공.
-- FOUNDATIONS Colors(`95:2`)/Spacing(`95:4`) 페이지를 전수 텍스트 검색해 대응 스와치 캡션이 있는 변수만 골라 동일 라벨링(25건: primitive 7 name라인, semantic 4 name라인만, semantic 2+component token 4는 alias 대상도 32개 목록에 포함돼 name+alias 라인 둘 다, spacing 2). 부분 문자열 오검색(`row-action-button-border-neutral`, `text-link-navy` 등 이름은 겹치지만 다른 변수)은 정확히 식별해 제외. 캡션 없는 25개 변수는 그대로 둠.
-- **검증**: Variables 패널은 캔버스 노드가 아니라 `get_screenshot` 불가 — raw script 재조회로 38개 전부 `[미사용] ` 접두어 확인(`varAllOk`/`styleAllOk` 둘 다 true). 캔버스 노드인 스와치 캡션 25건은 `get_screenshot`(inline base64)으로 시각 확인(예: `436:160` border-divider-warm 스와치 정상 렌더링).
-- `docs/design/design-system.md` 신규 17절 Edit로 추가(배경/변경 내역/검증 결과 전부 기록). Write 미사용. `old-사용하지말것`(`242:2330`)·확정 디자인 8개 프레임(`501:2505`)은 전 과정 무열람.
+### 2026-07-17 — QA 트랙 A: 흰색 컬러 토큰 미등록 감사 + Contacts Table(`939:1442`) 높이 불일치 정정 (37절)
+- **흰색 토큰**: `docs/design/design-system.md`/Figma 변수 확인 결과 `color/gray/0`(`VariableID:95:10`, #FFFFFF)가 이미 Primitives에 등록돼 있고 Colors 페이지 스와치도 이미 존재 — 신규 프리미티브 생성 없음. 사용자 지적은 "토큰이 raw hex로 안 쓰이고 있다"는 뜻으로 확인.
+- 색상 인벤토리 스캔(FOUNDATIONS 5페이지+Component Specs+COMPONENTS 12페이지+Auth/Contacts)으로 raw 미바인딩 #FFFFFF 184개 발견해 전부 `color/gray/0`로 리바인딩(`setBoundVariableForPaint`). 페이지별 건수는 design-system.md 37-1절 표 참고. 파일럿/old-사용하지말것/UI-design은 스캔 제외.
+- 1차 스캔 중 실수로 `❌ 폐기 — NeoBtn Amber/Teal`(`784:940`, 레거시 해제된 컨테이너) 배경까지 리바인딩했다가 즉시 raw hex로 재동결(폐기 산출물은 재토큰화 금지 규칙) — 이후 legacy/폐기 서브트리 가드 추가해 재발 방지.
+- **Table 높이**: `939:1442`(Contacts `934:3` main 화면)가 `layoutSizingVertical=FILL`+`primaryAxisSizingMode=FIXED(352px)`로 Body 남은 공간을 강제로 채우고 있었는데, 실제 콘텐츠(헤더39+행6×47=321px)와 31px 차이 나는 유령 공간이 있었음. 확정 원본은 hug 방식(327px, 유령공간 없음)이라 이 원칙을 따라 `HUG`+`AUTO`로 정정 → 321px로 자동 조정. 동일 구조의 `939:1597`(main-알림창)도 함께 정정, `939:2042`(main-검색없음, EmptyState)는 원래 문제 없어 원상태로 되돌림.
+- `get_screenshot`으로 Colors/Typography/Spacing/Elevation/Auth/Contacts 전부 재확인 — 색상 시각적 변화 없음(바인딩만 전환), Table은 유령 공간 없이 렌더링됨.
+- `docs/design/design-system.md` 신규 37절(37-1~37-3) Edit로 추가(Write 미사용). 확정 원본(`501:2505`/`248:11689`)은 읽기 전용 대조만.
 
-### 2026-07-16 — NeoBtn Style=Amber/Teal 레거시 해제 — Stage2 오기록 정정 (메인 세션 확정 디자인 정밀 대조 후속)
-- 메인 세션이 확정 디자인 8프레임(`501:2505`)을 직접 대조해 NeoBtn 실사용 색상이 ink/coral/navy/sky 4개뿐임을 확인 — 0-20절 "Stage2 NeoBtn Amber 리바인딩" 기록이 오류였고, 실제 Amber(#ffce2c) 사용처는 Button(`259:609`)뿐임이 드러남.
-- 표준 절차 그대로 수행: ① NeoBtn(`259:126`) 60 variant 중 Style=Amber/Teal 24개 노드 ID 확정 → ② 파일 전체 29페이지 전수 검색, 24개를 참조하는 INSTANCE 24개 전부 `Component Specs`(`342:2`) 스펙 시트 셀 안에서만 발견(확정 8프레임 내부 0건, 정지 조건 미해당) → ③ 24개 detach(시각 보존) → 재검색 0건 확인 → ④ 24개 COMPONENT를 표준 절차(새 FRAME 생성+자식 이동+원본 remove)로 전환, Button 페이지에 `❌ 폐기 — NeoBtn Amber/Teal (확정 디자인 근거 없음, 2026-07-16 정정)`(`784:940`) 컨테이너로 이전 보존.
-- 결과: NeoBtn 60→36 variant, Style 옵션 `["Coral","Neutral","Sky","Navy"]` 4개만 남음(재조회 확인). `Spec — NeoBtn`(`342:3`) 스펙 시트에서 Amber/Teal Row 4개 제거(2-5번 규칙), 설명 텍스트 갱신, `get_screenshot`으로 36칸 정상 렌더링 확인.
-- Button(`259:609`)의 Amber는 전혀 건드리지 않음. 헤더 "로그아웃" NeoBtn ink 배경+amber 보더 이례값(0-20절 기존 기록)은 이번 범위 밖이라 재확인만 하고 무수정.
-- `docs/design/design-system.md`에 신규 0-25절 Edit로 추가(정정 배경/4색상표/절차/결과/스펙시트 갱신), 5절 NeoBtn 행과 7-2절 TODO(Amber Hover/Press 블렌드 재계산 대상 Button으로 축소) 갱신. Write 미사용. 확정 디자인 8프레임은 이번에도 무열람(메인 세션이 이미 실측 완료).
+### 2026-07-17 — NeoBtn Style=Sky/Navy 텍스트색·보더 결함 정정 (design-qa 감사 후속, 34절 완성도 보완, 35절)
+- 확정 원본 재실측(Sky `501:6423`, Navy `501:6358`): 둘 다 2px ink `INSIDE` 보더+흰 텍스트. 마스터(`712:2`/`712:4`)와 대조 결과 Sky 텍스트가 `color/ink-900`(검정)에 잘못 바인딩, Sky/Navy 둘 다 보더 누락 확인.
+- Sky 텍스트: 마스터뿐 아니라 동일 결함이 전파된 Hover/Press/Focus/Loading까지 5 State 전부 기존 토큰 `color/text-inverse`(`VariableID:219:2`, Navy가 이미 쓰던 것)로 리바인딩. Disabled(이미 `color/text-disabled`로 정상)는 무수정.
+- 보더: Sky/Navy 12개 variant(Default~Loading) 전부에 2px INSIDE 보더 추가 — Default/Hover/Press/Focus/Loading 10개는 `color/ink/900`, Disabled 2개는 기존 Neutral Disabled 패턴을 따라 `color/border-disabled`. Focus의 기존 FocusRing(외측 3px)과 좌표 충돌 없음 확인.
+- padding/gap/font는 확정 원본과 다르지만(Sky 14/6·gap6·Bold14, Navy 12/6·gap4·Black12 vs 마스터 16/8·gap6·Bold14), Coral/Neutral Default도 마스터와 동일 값임을 재확인해 "NeoBtn Size=Default 공유 공식"으로 판단, 변경하지 않음(7-2절 기존 "다른 패턴" TODO로 계속 이월).
+- WCAG 대비 직접 계산: Sky(#1395e6)+흰 텍스트(14px Bold) 약 3.25:1, 확정 원본에 이미 존재하는 조합이라 이번엔 변경 안 함(7-1절 6번과 동일 계열 TODO 기록).
+- 자체 재대조: 12개 variant strokes/boundVariable, 5개 텍스트 fill 전부 재조회 일치 확인. 인스턴스 전파 확인(사이드바 "새 카테고리 추가" `937:1436`, 본문 "연락처 추가" `939:1434` 모두 마스터 정정 자동 반영).
+- 34-1/34-2/34-9절에 "login 회원가입 코랄 배지(`501:5138`/`501:5139`)는 이번 슬롯 메커니즘 대상 아님" 각주(34-10절) 추가.
+- `docs/design/design-system.md` 신규 35절(35-1~35-8) + 34-10절 + 5절/7-2절 각주 Edit로 추가(원문 삭제 없음). Figma NeoBtn ComponentSet(`259:126`) description + 스펙 시트 캡션(`342:5`) 갱신. Write 미사용. 확정 원본은 읽기 전용만.
+- **⚠ 발견(정정 아님, 보고만)**: 이 메모리 로그 최상단에 이미 있던 "36절(Contacts 화면 QA)" 항목이 실제 `docs/design/design-system.md`에는 존재하지 않았다(파일 실제 마지막 섹션은 34절이었음) — 과거 문서 손상 이력과 같은 유형의 유실 가능성이 있어 보인다. 이번 라운드에서 복구 시도는 하지 않았다(내용을 정확히 재구성할 근거 부족, 잘못 재구성하면 오히려 오염 위험) — design-pl/사용자 확인 필요.
 
-### 2026-07-16 — NeoBtn Style=Ink 추가 — 헤더 "로그아웃" 버튼 별개 스타일 완성 (메인 세션 main 5프레임 재실측 후속, 사용자 승인 실행)
-- 메인 세션이 main 계열 5개 확정 프레임(main/main-수정/main-삭제/main-검색없음/main-알림창)에서 헤더 "로그아웃" NeoBtn을 재실측한 결과 기존 4색과 다른 별개 스타일(ink #1a1a1a 배경, 무보더, 흰 텍스트, radius8, 79×25=Size Compact) 확인 → Style=Ink(Size=Compact 전용) 신규 추가, State 6개(Default/Hover/Press/Focus/Disabled/Loading) 이번에 전부 완성(TODO로 미룸 없음).
-- 배경=`color/ink/900`, 텍스트=`color/text-inverse`, Disabled=`color/bg-disabled`+`color/text-disabled`, Focus=대응 상태 clone+FocusRing 자식(strokeWeight3/cornerRadius14.5)+2겹 DROP_SHADOW(9-1절 공식 그대로). **판단 필요했던 예외 1건**: Hover/Press 블렌드 공식("ink 쪽으로 블렌드")이 베이스가 이미 ink라 no-op이 되는 문제 발견 → 강도(12%/24%)는 유지하고 방향만 흰색 쪽으로 대체(다크 UI 상호작용 밝아짐 관례), raw unbound 값으로 저장(#353535/#515151), design-system.md 18절에 근거 문서화.
-- **실측 중 발견한 함정**: NeoBtn의 TEXT 컴포넌트 프로퍼티(Label)가 Style별 독립값이 아니라 ComponentSet 전체가 공유하는 단일값임을 처음 확인 — Ink Default 텍스트를 "로그아웃"으로 직접 설정했더니 Coral/Neutral/Sky/Navy 마스터 표시 텍스트가 전부 동시에 "로그아웃"으로 바뀌는 부작용 발생, 즉시 발견해 "검색"으로 원복(전 Style 정상 복구 확인). 최종적으로 Ink도 마스터는 공유 기본값 "검색" 유지, 실사용 "로그아웃"은 화면 인스턴스 오버라이드로 처리(ui-designer 몫).
-- WCAG 전 State 계산: Default/Focus/Loading 17.78:1, Hover 12.17:1, Press 7.94:1 — 전부 PASS. Disabled 3.88:1은 0-24절 기존 전사 공통값과 동일(신규 이슈 아님, 사용자 기승인 완화 결정 승계).
-- 스펙 시트: `Spec — NeoBtn`(`342:3`)에 "Ink / Compact" Row(`792:801`, 6칸) 신규 추가(Neutral/Compact Row clone 후 instance.swapComponent), 설명 텍스트 갱신, clipsContent 전부 false 확인. `get_screenshot`으로 42칸 전체 잘림·겹침 없음 확인.
-- 결과: NeoBtn(`259:126`) 36→42 variant, Style 옵션 5개(Coral/Neutral/Sky/Navy/Ink). `docs/design/design-system.md` 신규 18절 + 5절 NeoBtn 행 Edit로 갱신(Write 미사용). 확정 디자인 8개 프레임은 이번에도 무열람(메인 세션이 실측 완료해 전달).
+### 2026-07-17 — Contacts 화면(`934:3`) 그림자 잘림 QA 수정 + NeoBtn/Button Style=Coral 텍스트·보더 정정(36절)
+- 사용자 제보 ①그림자 잘림 ②텍스트 컬러 다름을 진단. `934:3`은 확정 원본이 아니라 34절 SCREENS 조립 산출물이라 정상 수정 진행.
+- 그림자 잘림: 마스터 정상(DROP_SHADOW 토큰 바인딩 이상 없음), 원인은 화면조립 auto-layout 컨테이너 17개(AddCategory/CategoryManage/SearchRow/FieldRow/AddRowContainer×3화면 + ButtonRow×2화면)가 그림자 있는 버튼과 flush로 hug하면서 기본값 `clipsContent=true`가 그림자를 잘라낸 것 — 전부 `false`로 정정. `get_screenshot`으로 바운딩박스가 정확히 2px(하드 그림자 오프셋)만큼 확장되고 잘림 없이 렌더링됨을 확인.
+- 텍스트 컬러: 최초엔 "WCAG 미달(흰 텍스트 on Coral/Sky 3.0~3.24:1)이라 ink 유지가 맞다"고 판단했으나, 동시 진행 중이던 35절(design-qa 후속)이 정확히 같은 NeoBtn Style=Sky를 반대 원칙(확정 원본 픽셀 우선, WCAG 갭은 TODO)으로 이미 정정 완료한 상태임을 재확인 과정에서 발견 — 충돌. 35절 원칙을 따르기로 하고 최초 판단을 철회, **Coral도 Sky/Navy와 동일하게 정정**: NeoBtn(12 variant)+Button(6 variant) Style=Coral의 Disabled 제외 전 State에 2px INSIDE `color/ink/900` 보더 추가 + 텍스트 `color/text-inverse`(흰색) 리바인딩(Disabled는 기존 `color/border-disabled`/`color/text-disabled` 유지). WCAG 약 3.01:1은 Sky(35-7절)와 동일하게 7-2절 TODO로 기록, 개선 여부는 사용자 판단 필요.
+- 자체 재대조: 18개 노드 전부 strokeWeight/strokeAlign/boundVariable 재조회 일치 확인, Focus FocusRing과 좌표 충돌 없음 스크린샷 확인.
+- `docs/design/design-system.md` 신규 36절(36-1~36-3, 36-2는 위 충돌 발견 후 Coral 정정 반영으로 재작성) + 5절/7-2절 각주 Edit로 추가(Write 미사용, 동시 편집 충돌 여러 차례 발생해 매번 재Read 후 재시도). Figma NeoBtn/Button description + 스펙 시트 캡션(`342:5`/`343:52`) 갱신. 확정 원본(`501:2505` 하위)은 읽기 전용 대조만.
+

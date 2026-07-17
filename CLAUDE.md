@@ -16,6 +16,11 @@
 - 내 명시적 허락 없이 원격 저장소로 push 하지 않습니다
 - secrets 폴더와 .env 파일은 절대 수정하지 않는다.
 
+## Git 리모트/브랜치 관례
+- 리모트가 두 개다: `assignment`(실제 과제 제출용 저장소) / `origin`(JY_Harness, 사용자의 개인 하네스·템플릿 저장소 — 여러 프로젝트에서 재사용하는 `.claude/agents/**`·`docs/harness/**` 자산을 추적).
+- 두 리모트 모두 **main에 바로 push하지 않고 기능 브랜치로 push한 뒤 PR로 머지**하는 방식을 쓴다(예: 백엔드 작업은 `feat/backend` 브랜치 → PR #1 → main 머지).
+- `.claude/agents/**`·`docs/harness/**`(하네스 파일)을 수정하면, assignment 제출과 별개로 **origin(JY_Harness)에도 기능 브랜치로 push**해서 개인 하네스 저장소에 반영한다 — 하네스 변경은 두 리모트 모두에 반영하는 게 기본 패턴이다.
+
 ## 행동 지침
 - 안드레 카파시 행동지침에 아래 문서를 따른다. @docs/karpathy_skills.md
 

@@ -2,10 +2,305 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>연락처 관리</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>연락처 관리 서비스</title>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-    <h1>연락처 관리</h1>
-    <p>화면 구현 예정 (frontend-engineer 작업 범위)</p>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         섹션 A — 로그인/회원가입 (SCR-001) + 비밀번호 재설정 (SCR-004)
+         ══════════════════════════════════════════════════════════════ -->
+    <section id="screen-auth">
+
+        <!-- SCR-001 로그인/회원가입 -->
+        <div id="view-login" class="auth-page">
+            <div class="card auth-card">
+                <div class="card-accent-top"></div>
+                <div class="card-body">
+                    <div class="brand-row">
+                        <span class="brand-badge"></span>
+                        <span class="brand-name">yourbook.</span>
+                    </div>
+
+                    <div id="login-error-banner" class="banner banner-error" hidden>
+                        <span class="banner-icon">⚠</span>
+                        <span id="login-error-text"></span>
+                    </div>
+                    <div id="login-success-banner" class="banner banner-success" hidden>
+                        <span class="banner-icon">✓</span>
+                        <span id="login-success-text"></span>
+                    </div>
+
+                    <form id="login-form">
+                        <!-- 주의(테스트 호환): "아이디" placeholder("영문 소문자·숫자 4~20자")가
+                             "비밀번호" placeholder("4~20자")를 부분 문자열로 포함해, Playwright의
+                             get_by_placeholder("4~20자").first가 DOM 순서로 모호성을 해소한다.
+                             비밀번호 입력을 DOM상 먼저 두고 CSS order로 시각 순서만 되돌리며,
+                             tabindex로 키보드 포커스 순서(아이디→비밀번호)는 그대로 지킨다. -->
+                        <div class="field" style="order:2">
+                            <label for="login-password">비밀번호</label>
+                            <div class="password-wrap">
+                                <input class="input" type="password" id="login-password"
+                                       placeholder="4~20자" autocomplete="current-password" tabindex="2">
+                                <button type="button" class="password-toggle" id="toggle-login-password"
+                                        aria-label="비밀번호 표시" tabindex="3">👁</button>
+                            </div>
+                        </div>
+                        <div class="field" style="order:1">
+                            <label for="login-username">아이디</label>
+                            <input class="input" type="text" id="login-username"
+                                   placeholder="영문 소문자·숫자 4~20자" autocomplete="username" tabindex="1">
+                        </div>
+                        <div class="row-between">
+                            <label class="checkbox">
+                                <input type="checkbox" id="remember-me"> 로그인 상태 유지
+                            </label>
+                            <span class="link" id="link-password-reset" tabindex="0">비밀번호 재설정</span>
+                        </div>
+                        <button type="submit" class="btn btn-amber" id="btn-login">로그인</button>
+                        <div class="divider"><span>or</span></div>
+                        <button type="button" class="btn btn-neutral" id="btn-signup">회원가입</button>
+                    </form>
+                </div>
+                <div class="card-accent-bottom"></div>
+            </div>
+        </div>
+
+        <!-- SCR-004 1단계: 아이디 확인 -->
+        <div id="view-pwreset1" class="auth-page" hidden>
+            <div class="card auth-card">
+                <div class="card-accent-top"></div>
+                <div class="card-body">
+                    <!-- 주의(테스트 호환): 로그인 화면의 "비밀번호 재설정" 링크 텍스트와
+                         겹치면 hidden 상태에서도 get_by_text 매칭 대상에 포함돼 모호해진다.
+                         SCR-004 1단계 와이어프레임의 단계 라벨("1단계: 아이디 확인")을 그대로 쓴다. -->
+                    <div class="brand-row">
+                        <span class="brand-badge"></span>
+                        <span class="brand-name">아이디 확인</span>
+                    </div>
+
+                    <div id="pwreset1-error-banner" class="banner banner-error" hidden>
+                        <span class="banner-icon">⚠</span>
+                        <span id="pwreset1-error-text"></span>
+                    </div>
+
+                    <form id="pwreset1-form">
+                        <div class="field">
+                            <label for="pwreset1-username">아이디</label>
+                            <input class="input" type="text" id="pwreset1-username"
+                                   placeholder="가입 시 사용한 아이디">
+                        </div>
+                        <button type="submit" class="btn btn-amber" id="btn-pwreset1-confirm">확인</button>
+                        <button type="button" class="btn btn-neutral" id="btn-pwreset1-back">로그인으로 돌아가기</button>
+                    </form>
+                </div>
+                <div class="card-accent-bottom"></div>
+            </div>
+        </div>
+
+        <!-- SCR-004 2단계: 새 비밀번호 설정 -->
+        <div id="view-pwreset2" class="auth-page" hidden>
+            <div class="card auth-card">
+                <div class="card-accent-top"></div>
+                <div class="card-body">
+                    <div class="brand-row">
+                        <span class="brand-badge"></span>
+                        <span class="brand-name">새 비밀번호 설정</span>
+                    </div>
+
+                    <div id="pwreset2-error-banner" class="banner banner-error" hidden>
+                        <span class="banner-icon">⚠</span>
+                        <span id="pwreset2-error-text"></span>
+                    </div>
+                    <div id="pwreset2-success-banner" class="banner banner-success" hidden>
+                        <span class="banner-icon">✓</span>
+                        <span id="pwreset2-success-text"></span>
+                    </div>
+
+                    <p>아이디: <strong id="pwreset2-username"></strong> (확인됨)</p>
+
+                    <form id="pwreset2-form">
+                        <div class="field">
+                            <label for="pwreset2-new-password">새 비밀번호</label>
+                            <input class="input" type="password" id="pwreset2-new-password" placeholder="4~20자">
+                        </div>
+                        <div class="field">
+                            <label for="pwreset2-confirm-password">새 비밀번호 확인</label>
+                            <input class="input" type="password" id="pwreset2-confirm-password"
+                                   placeholder="위와 동일하게 입력">
+                        </div>
+                        <button type="submit" class="btn btn-amber" id="btn-pwreset2-submit">비밀번호 변경</button>
+                    </form>
+                </div>
+                <div class="card-accent-bottom"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         섹션 B — 관리 화면: SCR-002(연락처) + SCR-003(카테고리)
+         ══════════════════════════════════════════════════════════════ -->
+    <section id="screen-main" hidden>
+        <div class="main-page">
+            <!-- 주의(테스트 호환): 연락처 추가 버튼과 카테고리 추가 버튼이 둘 다
+                 정확히 "추가" 텍스트라, get_by_role("button", name="추가", exact=True)
+                 를 색인 없이 쓰는 테스트(연락처)와 .nth(1)로 쓰는 테스트(카테고리)가
+                 공존한다 — 본문(연락처, nth 0)을 DOM상 사이드바(카테고리, nth 1)보다
+                 앞에 두어야 두 그룹의 기대치가 동시에 맞는다. 시각적 배치(사이드바
+                 좌/본문 우)는 CSS order로 그대로 유지한다(app-shell display:flex). -->
+            <div class="app-shell">
+                <!-- SCR-002 본문: 연락처 목록 -->
+                <main class="content" id="main-content" style="order:2">
+                    <header class="content-header">
+                        <h1>연락처 목록</h1>
+                        <div class="header-right">
+                            <div class="user-chip">
+                                <span class="avatar"></span>
+                                <span id="username-label"></span>
+                            </div>
+                            <button class="btn btn-ink" id="btn-logout">로그아웃</button>
+                        </div>
+                    </header>
+
+                    <div class="content-body">
+                        <div id="main-toast" class="toast banner banner-success" hidden>
+                            <span class="banner-icon">✓</span>
+                            <div>
+                                <div class="toast-title" id="main-toast-text"></div>
+                                <div class="toast-subtitle">방금 · 잠시 후 사라짐</div>
+                            </div>
+                        </div>
+
+                        <div class="search-row">
+                            <div class="search-input-wrap">
+                                <svg class="search-icon" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                                    <path d="M9.64286 1.07143H3.21429V2.14286H9.64286V1.07143Z" fill="currentColor"/>
+                                    <path d="M3.21429 2.14286H2.14286V3.21429H3.21429V2.14286Z" fill="currentColor"/>
+                                    <path d="M10.7143 2.14286H9.64286V3.21429H10.7143V2.14286Z" fill="currentColor"/>
+                                    <path d="M2.14286 3.21429H1.07143V8.57143H2.14286V3.21429Z" fill="currentColor"/>
+                                    <path d="M11.7857 3.21429H10.7143V8.57143H11.7857V3.21429Z" fill="currentColor"/>
+                                    <path d="M3.21429 8.57143H2.14286V9.64286H3.21429V8.57143Z" fill="currentColor"/>
+                                    <path d="M10.7143 8.57143H9.64286V9.64286H10.7143V8.57143Z" fill="currentColor"/>
+                                    <path d="M9.64286 9.64286H3.21429V10.7143H9.64286V9.64286Z" fill="currentColor"/>
+                                    <path opacity="0.12" d="M9.64286 2.14286H3.21429V9.64286H9.64286V2.14286Z" fill="currentColor"/>
+                                    <path d="M10.7143 9.64286H9.64286V10.7143H10.7143V9.64286Z" fill="currentColor"/>
+                                    <path d="M11.7857 10.7143H10.7143V11.7857H11.7857V10.7143Z" fill="currentColor"/>
+                                    <path d="M12.8571 11.7857H11.7857V12.8571H12.8571V11.7857Z" fill="currentColor"/>
+                                    <path d="M15 12.8571H12.8571V15H15V12.8571Z" fill="currentColor"/>
+                                </svg>
+                                <input class="search-field" id="search-name" placeholder="이름으로 검색 (예: 윤아)">
+                            </div>
+                            <button class="btn btn-coral" id="btn-search">검색</button>
+                            <button class="btn btn-navy" id="btn-show-all">전체</button>
+                        </div>
+
+                        <div class="add-form-card">
+                            <div id="add-error-banner" class="banner banner-error" hidden>
+                                <span class="banner-icon">⚠</span>
+                                <span id="add-error-text"></span>
+                            </div>
+                            <form id="add-contact-form" class="add-form-row">
+                                <input class="input" id="add-name" placeholder="이름" maxlength="5">
+                                <input class="input" id="add-phone" placeholder="전화번호">
+                                <input class="input" id="add-addr" placeholder="주소">
+                                <select class="input" id="add-category"></select>
+                                <button type="submit" class="btn btn-sky" id="btn-add-contact">추가</button>
+                            </form>
+                        </div>
+
+                        <div class="list-meta">
+                            <span>
+                                <strong id="list-title">전체</strong>
+                                <span class="total-badge" id="total-count">총 0건</span>
+                            </span>
+                        </div>
+
+                        <table class="contact-table">
+                            <thead>
+                            <tr>
+                                <th>이름</th>
+                                <th>전화번호</th>
+                                <th>주소</th>
+                                <th>종류</th>
+                                <th>변경하기</th>
+                            </tr>
+                            </thead>
+                            <tbody id="contact-rows"></tbody>
+                        </table>
+                    </div>
+                </main>
+
+                <!-- SCR-003 사이드바: 카테고리 nav + 카테고리 관리 -->
+                <aside class="sidebar" id="sidebar" style="order:1">
+                    <div class="brand-row">
+                        <span class="brand-badge"></span>
+                        <span class="brand-name">yourbook.</span>
+                    </div>
+
+                    <p class="section-label">CATEGORY</p>
+                    <ul class="nav-list" id="category-nav"></ul>
+
+                    <p class="section-label">카테고리 관리</p>
+                    <ul class="manage-list" id="category-manage-list"></ul>
+
+                    <div id="category-error" class="banner banner-error" hidden>
+                        <span class="banner-icon">⚠</span>
+                        <span id="category-error-text"></span>
+                    </div>
+
+                    <div class="category-add-row">
+                        <input class="input input-compact" id="new-category-name"
+                               placeholder="새 카테고리" maxlength="10">
+                        <button class="btn btn-navy btn-compact" id="btn-add-category">추가</button>
+                    </div>
+                </aside>
+            </div>
+        </div>
+
+        <!-- 연락처 수정 모달 (ContactModal, 근거: main-수정 501:3042) -->
+        <div id="modal-edit-contact" class="modal-overlay" hidden>
+            <div class="card modal">
+                <div class="card-accent-top"></div>
+                <div class="modal-body">
+                    <div class="modal-header">
+                        <h2>연락처 수정</h2>
+                        <button type="button" class="icon-btn" id="edit-close">✕</button>
+                    </div>
+                    <div id="edit-error-banner" class="banner banner-error" hidden>
+                        <span class="banner-icon">⚠</span>
+                        <span id="edit-error-text"></span>
+                    </div>
+                    <form id="edit-contact-form">
+                        <div class="field">
+                            <label for="edit-name">이름</label>
+                            <input class="input" id="edit-name" placeholder="이름" maxlength="5">
+                        </div>
+                        <div class="field">
+                            <label for="edit-phone">전화번호</label>
+                            <input class="input" id="edit-phone" placeholder="전화번호">
+                        </div>
+                        <div class="field">
+                            <label for="edit-addr">주소</label>
+                            <input class="input" id="edit-addr" placeholder="주소">
+                        </div>
+                        <div class="field">
+                            <label>종류</label>
+                            <div class="type-selector" id="edit-category-selector"></div>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="submit" class="btn btn-sky" id="btn-save-edit">저장</button>
+                            <button type="button" class="btn btn-neutral" id="btn-cancel-edit">취소</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- 주의: 연락처 삭제는 네이티브 confirm() 사용(app.js deleteContact 참고,
+             qa-engineer 테스트 TC-E2E-SCR002-09/10과의 호환을 위한 결정 —
+             화면정의서의 커스텀 ConfirmModal 기술과의 불일치는 dev-pl에게 별도 보고). -->
+    </section>
+
+    <script src="/static/app.js"></script>
 </body>
 </html>

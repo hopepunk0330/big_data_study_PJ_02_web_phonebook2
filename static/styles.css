@@ -1,0 +1,877 @@
+/* 연락처 관리 서비스 — 프론트엔드 스타일
+   토큰 출처: docs/design/design-system.md §1(변수 컬렉션), §5(컴포넌트)
+   확정 디자인(Figma) 8개 프레임 실측값을 CSS 커스텀 프로퍼티로 그대로 옮김.
+   raw hex를 컴포넌트 규칙에 직접 박지 않고 전부 var(...)로 참조한다. */
+
+:root {
+    /* Primitives (design-system.md 1-1) */
+    --color-ink-900: #1a1a1a;
+    --color-white: #ffffff;
+    --color-sky-500: #1395e6;
+    --color-navy-700: #074d7b;
+    --color-amber-600: #ffce2c;
+    --color-amber-500: #ffcb47;
+    --color-coral-500: #ff5a76;
+    --color-coral-900: #a8003b;
+    --color-coral-100: #ffe4e8;
+    --color-teal-500: #17a398;
+    --color-teal-900: #0a4f49;
+    --color-mint-100: #d8fff5;
+    --color-blue-100: #e0f0ff;
+    --color-blue-500: #4a90d9;
+    --color-blue-900: #1a4c88;
+    --color-purple-100: #ede0ff;
+    --color-purple-500: #9b72cf;
+    --color-purple-900: #4b0d9c;
+    --color-paleblue-50: #f5fafd;
+    --color-paleblue-100: #d3ecfb;
+    --color-gray-300: #cccccc;
+    --color-gray-350: #bbbbbb;
+    --color-gray-375: #aaaaaa;
+    --color-gray-450: #888888;
+    --color-gray-500: #777777;
+    --color-gray-600: #5c6366;
+    --color-gray-650: #555555;
+    --color-bg-page: #fff8ee;
+
+    /* Semantic (design-system.md 1-2) */
+    --color-text-muted-strong: var(--color-gray-650);
+    --color-text-muted: var(--color-gray-500);
+    --color-text-muted-subtle: var(--color-gray-450);
+    --color-text-placeholder: var(--color-gray-300);
+    --color-text-placeholder-input: var(--color-gray-350);
+    --color-text-placeholder-strong: var(--color-gray-375);
+    --color-border-divider-cool: var(--color-paleblue-100);
+    --color-bg-row-alt: var(--color-paleblue-50);
+    --color-bg-error: var(--color-coral-100);
+    --color-bg-success: var(--color-mint-100);
+
+    /* Radius/Border (design-system.md 1-1) */
+    --radius-none: 0px;
+    --radius-6: 6px;
+    --radius-10: 10px;
+    --radius-14: 14px;
+    --radius-16: 16px;
+    --border-hairline: 1px;
+    --border-base: 2px;
+    --border-heavy: 3px;
+
+    /* Effects (design-system.md 1-4) */
+    --shadow-hard-1: 1px 1px 0px var(--color-ink-900);
+    --shadow-hard-2: 2px 2px 0px var(--color-ink-900);
+    --shadow-hard-6: 6px 6px 0px var(--color-ink-900);
+    --shadow-raised: 0px 2px 8px rgba(28, 31, 33, 0.08);
+
+    /* CatBadge palette (design-system.md 1-1 신규 카테고리 색) */
+    --cat-friend-bg: var(--color-blue-100);
+    --cat-friend-border: var(--color-blue-500);
+    --cat-friend-text: var(--color-blue-900);
+    --cat-family-bg: var(--color-coral-100);
+    --cat-family-border: var(--color-coral-500);
+    --cat-family-text: var(--color-coral-900);
+    --cat-other-bg: var(--color-purple-100);
+    --cat-other-border: var(--color-purple-500);
+    --cat-other-text: var(--color-purple-900);
+    --cat-company-bg: var(--color-mint-100);
+    --cat-company-border: var(--color-teal-500);
+    --cat-company-text: var(--color-teal-900);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Noto Sans KR", -apple-system, sans-serif;
+    color: var(--color-ink-900);
+    background: var(--color-bg-page);
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+/* ── Buttons (NeoBtn/Button, design-system.md 5절) ────────────────────── */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 44px;
+    padding: 8px 16px;
+    border-radius: var(--radius-10);
+    border: var(--border-base) solid var(--color-ink-900);
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: var(--shadow-hard-2);
+    background: var(--color-white);
+    color: var(--color-ink-900);
+}
+.btn:disabled {
+    background: var(--color-gray-350);
+    border-color: var(--color-gray-600);
+    color: var(--color-text-muted-strong);
+    box-shadow: none;
+    cursor: not-allowed;
+}
+.btn-amber {
+    background: var(--color-amber-600);
+    color: var(--color-ink-900);
+}
+.btn-sky {
+    background: var(--color-sky-500);
+    color: var(--color-white);
+}
+.btn-navy {
+    background: var(--color-navy-700);
+    color: var(--color-white);
+}
+.btn-coral {
+    background: var(--color-coral-500);
+    color: var(--color-white);
+}
+.btn-neutral {
+    background: var(--color-white);
+    color: var(--color-ink-900);
+}
+.btn-ink {
+    background: var(--color-ink-900);
+    color: var(--color-white);
+    height: auto;
+    padding: 6px 12px;
+    box-shadow: none;
+    font-size: 12px;
+}
+.btn-compact {
+    height: 36px;
+    padding: 8px 14px;
+}
+.btn-small {
+    height: auto;
+    padding: 5px 11px;
+    font-size: 10px;
+    border-radius: 8px;
+    box-shadow: none;
+}
+
+/* ── Row action buttons (수정/삭제 in tables/lists) ───────────────────── */
+.row-action.edit {
+    background: var(--color-white);
+    border: 1px solid var(--color-teal-500);
+    color: var(--color-teal-500);
+}
+.row-action.danger {
+    background: var(--color-white);
+    border: 1px solid var(--color-coral-500);
+    color: var(--color-coral-500);
+}
+
+/* ── Inputs (NeoInput/CornerInput) ────────────────────────────────────── */
+.input {
+    height: 44px;
+    border: var(--border-base) solid var(--color-ink-900);
+    border-radius: var(--radius-10);
+    padding: 8px 14px;
+    font-size: 14px;
+    background: var(--color-white);
+    box-shadow: var(--shadow-hard-2);
+    color: var(--color-ink-900);
+}
+.input::placeholder {
+    color: var(--color-text-placeholder-input);
+}
+.input:disabled {
+    background: var(--color-gray-350);
+    border-color: var(--color-gray-600);
+}
+.input-compact {
+    height: 36px;
+}
+select.input {
+    box-shadow: var(--shadow-hard-2);
+}
+
+/* ── Cards (Card component, Type=Auth/Modal) ──────────────────────────── */
+.card {
+    background: var(--color-white);
+    border: var(--border-base) solid var(--color-ink-900);
+    border-radius: var(--radius-none);
+    box-shadow: var(--shadow-hard-6);
+    overflow: hidden;
+    position: relative;
+}
+.card-accent-top {
+    height: 8px;
+    background: var(--color-amber-600);
+    border-bottom: var(--border-base) solid var(--color-ink-900);
+}
+.card-accent-bottom {
+    height: 8px;
+    background: var(--color-sky-500);
+    border-top: var(--border-base) solid var(--color-ink-900);
+}
+.card-body {
+    padding: 32px 32px 20px;
+    position: relative;
+}
+
+/* ── Auth screen (SCR-001/SCR-004) ────────────────────────────────────── */
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(90deg, var(--color-sky-500), var(--color-teal-500));
+    padding: 40px 16px;
+}
+.auth-card {
+    width: 420px;
+    max-width: 100%;
+}
+.brand-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+.brand-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--color-coral-500);
+    border: var(--border-base) solid var(--color-ink-900);
+}
+.brand-name {
+    font-family: "Baloo 2", sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.55px;
+}
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 20px;
+}
+.field label {
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+.password-wrap {
+    position: relative;
+}
+.password-wrap .input {
+    width: 100%;
+    padding-right: 46px;
+}
+.password-toggle {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    height: auto;
+}
+.row-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    font-size: 12px;
+}
+.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.link {
+    color: var(--color-navy-700);
+    font-weight: 700;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 16px 0;
+    color: rgba(26, 26, 26, 0.35);
+    font-size: 11px;
+}
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    height: 2px;
+    background: rgba(26, 26, 26, 0.1);
+}
+.auth-card form {
+    display: flex;
+    flex-direction: column;
+}
+.auth-card form .btn {
+    width: 100%;
+    margin-bottom: 0;
+}
+.auth-card form > * + * {
+    margin-top: 12px;
+}
+
+/* ── Banners / Toast (SCR-900) ─────────────────────────────────────────── */
+.banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: var(--radius-none);
+    box-shadow: var(--shadow-raised);
+    margin-bottom: 16px;
+}
+.banner-error {
+    background: var(--color-bg-error);
+}
+.banner-success {
+    background: var(--color-bg-success);
+}
+.banner-icon {
+    flex-shrink: 0;
+}
+.toast {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 20;
+}
+.toast .toast-title {
+    font-weight: 500;
+    font-size: 13px;
+}
+.toast .toast-subtitle {
+    font-size: 11px;
+    color: var(--color-gray-600);
+}
+
+/* ── Main management screen (SCR-002/003) ─────────────────────────────── */
+.main-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 32px;
+}
+.app-shell {
+    display: flex;
+    width: 1024px;
+    max-width: 100%;
+    min-height: 560px;
+    border: var(--border-base) solid var(--color-ink-900);
+    border-radius: var(--radius-16);
+    overflow: hidden;
+}
+.sidebar {
+    width: 208px;
+    flex-shrink: 0;
+    background: var(--color-sky-500);
+    border-right: var(--border-heavy) solid var(--color-ink-900);
+    padding: 16px;
+    color: var(--color-white);
+}
+.sidebar .brand-row .brand-name {
+    color: var(--color-white);
+}
+.section-label {
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin: 16px 0 8px;
+}
+.nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-radius: var(--radius-10);
+    border: var(--border-base) solid var(--color-ink-900);
+    background: rgba(255, 255, 255, 0.18);
+    font-weight: 700;
+    font-size: 14px;
+}
+.nav-item.active {
+    background: var(--color-navy-700);
+    box-shadow: var(--shadow-hard-2);
+}
+.count-pill {
+    background: var(--color-amber-500);
+    border: var(--border-base) solid var(--color-ink-900);
+    border-radius: 999px;
+    min-width: 20px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 900;
+    color: var(--color-ink-900);
+    text-align: center;
+}
+.nav-item.active .count-pill {
+    background: var(--color-white);
+    box-shadow: var(--shadow-hard-1);
+}
+.manage-list {
+    list-style: none;
+    margin: 0;
+    padding: 8px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-top: var(--border-base) solid rgba(26, 26, 26, 0.3);
+}
+.manage-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+}
+.manage-list li .cat-name {
+    width: 76px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.manage-list li .actions {
+    display: flex;
+    gap: 4px;
+}
+.category-add-row {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.category-add-row .input {
+    width: 100%;
+}
+#category-error {
+    margin-top: 8px;
+}
+
+.content {
+    flex: 1;
+    background: var(--color-paleblue-50);
+    display: flex;
+    flex-direction: column;
+}
+.content-header {
+    background: var(--color-white);
+    border-bottom: var(--border-heavy) solid var(--color-ink-900);
+    padding: 12px 20px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.content-header h1 {
+    font-size: 16px;
+    margin: 0;
+}
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.user-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 700;
+}
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--color-teal-500);
+    border: var(--border-base) solid var(--color-ink-900);
+    display: inline-block;
+}
+.content-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+}
+.search-row {
+    display: flex;
+    gap: 8px;
+}
+.search-input-wrap {
+    flex: 1;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: var(--color-white);
+    border: var(--border-base) solid var(--color-ink-900);
+    border-radius: var(--radius-10);
+    box-shadow: var(--shadow-hard-2);
+}
+.search-icon {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    color: var(--color-sky-500);
+}
+.search-field {
+    flex: 1;
+    height: 100%;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 0;
+    font-size: 14px;
+    color: var(--color-ink-900);
+}
+.search-field::placeholder {
+    color: var(--color-text-placeholder-input);
+}
+.add-form-card {
+    background: var(--color-white);
+    border: var(--border-base) solid var(--color-ink-900);
+    border-radius: 8px;
+    padding: 14px;
+}
+.add-form-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.add-form-row .input {
+    height: 36px;
+}
+#add-name {
+    width: 112px;
+}
+#add-phone {
+    width: 144px;
+}
+#add-addr {
+    flex: 1;
+    min-width: 120px;
+}
+#add-category {
+    width: 103px;
+}
+.list-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px;
+}
+.list-meta .total-badge {
+    background: var(--color-coral-500);
+    color: var(--color-white);
+    border: var(--border-base) solid var(--color-ink-900);
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 900;
+    box-shadow: var(--shadow-hard-1);
+    margin-left: 8px;
+}
+
+.contact-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--color-white);
+    border: var(--border-heavy) solid var(--color-ink-900);
+    border-radius: 14px;
+    overflow: hidden;
+}
+.contact-table thead tr {
+    background: var(--color-navy-700);
+}
+.contact-table thead th {
+    color: var(--color-white);
+    font-size: 11px;
+    font-weight: 900;
+    text-align: left;
+    padding: 10px 16px;
+}
+.contact-table tbody tr {
+    border-bottom: 1px solid var(--color-border-divider-cool);
+}
+.contact-table tbody tr:nth-child(even) {
+    background: var(--color-bg-row-alt);
+}
+.contact-table tbody td {
+    padding: 10px 16px;
+    font-size: 14px;
+}
+.contact-table td.name {
+    font-weight: 700;
+}
+.contact-table td.phone {
+    color: var(--color-text-muted-strong);
+}
+.contact-table td.addr {
+    color: var(--color-text-muted);
+}
+.contact-table td.actions {
+    display: flex;
+    gap: 4px;
+    justify-content: flex-end;
+}
+
+/* ── EmptyState (main-검색없음 501:4218 재사용, design-system.md Pixel/NoResult) ── */
+.contact-table td.empty-state-cell {
+    padding: 0;
+}
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 60px 0 52px;
+}
+.empty-state-icon {
+    width: 40px;
+    height: 44px;
+    flex-shrink: 0;
+}
+.empty-state-icon .body {
+    fill: var(--color-sky-500);
+}
+.empty-state-icon .crack {
+    fill: var(--color-coral-500);
+}
+.empty-state-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+}
+.empty-state-title {
+    margin: 0;
+    font-weight: 900;
+    font-size: 15px;
+    line-height: 22px;
+    color: var(--color-ink-900);
+}
+.empty-state-subtitle {
+    margin: 0;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--color-text-muted-subtle);
+}
+.empty-state-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 22px;
+    border-radius: var(--radius-10);
+    border: var(--border-base) solid var(--color-ink-900);
+    background: var(--color-ink-900);
+    color: var(--color-white);
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: var(--shadow-hard-2);
+}
+
+/* ── CatBadge ──────────────────────────────────────────────────────────── */
+.cat-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 7px;
+    border-radius: 8px;
+    border: 1px solid;
+    font-size: 11px;
+    font-weight: 600;
+}
+.cat-badge .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+.cat-friend {
+    background: var(--cat-friend-bg);
+    border-color: var(--cat-friend-border);
+    color: var(--cat-friend-text);
+}
+.cat-friend .dot {
+    background: var(--cat-friend-border);
+}
+.cat-family {
+    background: var(--cat-family-bg);
+    border-color: var(--cat-family-border);
+    color: var(--cat-family-text);
+}
+.cat-family .dot {
+    background: var(--cat-family-border);
+}
+.cat-other {
+    background: var(--cat-other-bg);
+    border-color: var(--cat-other-border);
+    color: var(--cat-other-text);
+}
+.cat-other .dot {
+    background: var(--cat-other-border);
+}
+.cat-company {
+    background: var(--cat-company-bg);
+    border-color: var(--cat-company-border);
+    color: var(--cat-company-text);
+}
+.cat-company .dot {
+    background: var(--cat-company-border);
+}
+.cat-default {
+    background: #f1f1f1;
+    border-color: var(--color-gray-450);
+    color: var(--color-ink-900);
+}
+.cat-default .dot {
+    background: var(--color-gray-450);
+}
+
+/* ── TypeSelector (연락처 수정 모달) ───────────────────────────────────── */
+.type-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+.type-chip {
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: var(--border-base) solid var(--color-gray-300);
+    background: var(--color-white);
+    color: var(--color-text-muted-subtle);
+    font-size: 12px;
+    font-weight: 700;
+}
+.type-chip.selected.cat-friend {
+    border-color: var(--cat-friend-border);
+    background: var(--cat-friend-bg);
+    color: var(--cat-friend-text);
+}
+.type-chip.selected.cat-family {
+    border-color: var(--cat-family-border);
+    background: var(--cat-family-bg);
+    color: var(--cat-family-text);
+}
+.type-chip.selected.cat-other {
+    border-color: var(--cat-other-border);
+    background: var(--cat-other-bg);
+    color: var(--cat-other-text);
+}
+.type-chip.selected.cat-company {
+    border-color: var(--cat-company-border);
+    background: var(--cat-company-bg);
+    color: var(--cat-company-text);
+}
+
+/* ── Modals (ContactModal/ConfirmModal) ───────────────────────────────── */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 26, 26, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+.modal {
+    width: 480px;
+    max-width: calc(100% - 32px);
+}
+.modal-body {
+    padding: 24px;
+}
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+.modal-header h2 {
+    font-size: 16px;
+    margin: 0;
+}
+.icon-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-none);
+    border: var(--border-base) solid var(--color-ink-900);
+    background: var(--color-white);
+    box-shadow: var(--shadow-hard-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.modal form .field label {
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 700;
+    font-size: 12px;
+}
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+.modal-actions .btn {
+    flex: 1;
+}
+.contact-summary-box {
+    background: #f9f7f3;
+    border: 1px solid #ede6d8;
+    border-radius: var(--radius-none);
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    font-size: 13px;
+}
+.contact-summary-box .summary-name {
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+.warning-box {
+    background: rgba(255, 90, 118, 0.08);
+    border: 1px solid var(--color-coral-500);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 12px;
+    margin-bottom: 16px;
+}
