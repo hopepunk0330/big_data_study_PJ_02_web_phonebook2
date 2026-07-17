@@ -284,12 +284,13 @@ button {
 .avatar {
     /* node 104:131 실측: 배경 component/avatar-bg(#1395e6, sky-500) — teal이 아니다.
        내부 Icon/User(24x24, stroke-only)가 빠져 있던 결함도 함께 수정(2026-07-18,
-       아이콘 전수 체크리스트 대조 중 발견). */
+       아이콘 전수 체크리스트 대조 중 발견). ⚠ 2026-07-18 재정정: 937:1442 재조회 결과
+       Avatar에는 보더가 전혀 없다(다른 컴포넌트의 "2px ink 보더" 관행을 여기에도
+       잘못 적용했던 결함) — border 제거. */
     width: 32px;
     height: 32px;
     border-radius: 50%;
     background: var(--color-sky-500);
-    border: var(--border-base) solid var(--color-ink-900);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -373,7 +374,10 @@ button {
     --col-name-width: 80px;
     --col-phone-width: 128px;
     --col-type-width: 80px;
-    --col-actions-width: 110px;
+    /* 2026-07-18 재정정(939:1597 실측): 110px는 버튼2개(41px×2+gap4=86px)+좌우패딩(16+16=32)
+       =118px보다도 좁아 여백이 거의 없었다 — Figma는 종류/변경하기 셀 사이에 flex gap12 +
+       버튼 앞 여유공간이 있어 훨씬 넓게 보인다. 128px로 넓혀 그 여백을 재현한다. */
+    --col-actions-width: 128px;
     background: var(--color-white);
     border: var(--border-heavy) solid var(--color-ink-900);
     border-radius: 14px;

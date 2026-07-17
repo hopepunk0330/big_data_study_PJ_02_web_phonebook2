@@ -4,6 +4,15 @@
 
 ## 작업 로그
 
+### 2026-07-18 — `color/bg-page` 신규 등록 + #DCDEDF 확정 (신규 44절)
+- 사용자가 "`color/bg-page`(현재 #FFF8EE)를 #DCDEDF로 변경"을 요청 → 전수 검색 결과 Figma에 이 변수 자체가 없었음(CSS `tokens.css`에만 존재, FOUNDATIONS 미등록 갭). 확정 원본(`501:2505`) 대조로 "main 화면 뒤 컨테이너 배경"이 `main`류 5프레임(`501:6008` 등) 최상위 fill `#FFF8EE`임을 확인, SCREENS(`934:3`) 대응 프레임은 `color/gray/0`(흰색)로 잘못 바인딩돼 있었음(37-1절 흰색 일괄 리바인딩 때 편입된 것으로 추정).
+- Primitive `color/gray/205`(`VariableID:1103:3`, #DCDEDF) + Semantic `color/bg-page`(`VariableID:1103:4`, alias, scope FRAME_FILL/SHAPE_FILL) 신규 생성 — 원래값(#FFF8EE)을 거치지 않고 사용자가 이미 확정한 #DCDEDF로 직접 등록(코드가 이미 그 값으로 반영 완료 상태였으므로).
+- Contacts(`934:3`) "main"류 10개 프레임(5개 파일럿 대응 + 5개 후속 신규화면) 배경을 `color/gray/0`→`color/bg-page`로 리바인딩. Auth(`934:2`)는 확정 원본이 `#FFFFFF`라 대상 아님.
+- FOUNDATIONS Colors 페이지(`95:2`)에 기존 스와치(`1025:6`/`1025:14`) clone해 Primitives/Semantic Row에 스와치 2개 추가.
+- 대비: 10개 프레임 전부 최상위에 직접 얹힌 텍스트 없음(전부 내부 AppWindow/Card 자식 위) — WCAG 계산 대상 아님, 충돌 없음 확인.
+- 자체 재대조: 10개 프레임 boundVariable id + hex `#dcdedf` 재확인(불일치 0), `get_screenshot`(`937:298`/`941:1508`) 렌더링 확인. 확정 원본은 읽기 전용 대조만.
+- `docs/design/design-system.md` 신규 44절 Edit로 추가(Write 미사용).
+
 ### 2026-07-17 — `941:1508` ButtonRow 42px vs 44px 상충 3차 재확인·최종 확정 (41-2절)
 - design-qa("42px, HIGH")와 design-systems 이전 재확인(41-1절, "44px, 정상")이 상충해 재실측. `get_metadata`(`941:1508`) — 버튼 `941:3043`/`941:3045` 둘 다 y=4/height=44, 부모 ButtonRow(`941:3042`) height=48로 정확히 채움(잔여 0). `get_design_context`(`941:3042`) Tailwind 변환도 `h-[44px]`/`pt-[4px]` 일치. 확정 원본(`501:4172`)의 `501:4212`/`501:4215`도 동일 y=4/height=44, 부모 `501:4211` height=48로 픽셀 단위 일치. `get_screenshot`(`941:1508`) 육안 확인도 빈 여백 없음.
 - **최종 결론: 44px 확정, design-qa의 42px 보고는 기각.** 42px 값 자체가 어느 노드 속성에도 나타나지 않아 캐시된/오래된 스크린샷 또는 다른 노드 착오로 추정.
@@ -35,16 +44,5 @@
 - **Table 높이**: `939:1442`(Contacts `934:3` main 화면)가 `layoutSizingVertical=FILL`+`primaryAxisSizingMode=FIXED(352px)`로 Body 남은 공간을 강제로 채우고 있었는데, 실제 콘텐츠(헤더39+행6×47=321px)와 31px 차이 나는 유령 공간이 있었음. 확정 원본은 hug 방식(327px, 유령공간 없음)이라 이 원칙을 따라 `HUG`+`AUTO`로 정정 → 321px로 자동 조정. 동일 구조의 `939:1597`(main-알림창)도 함께 정정, `939:2042`(main-검색없음, EmptyState)는 원래 문제 없어 원상태로 되돌림.
 - `get_screenshot`으로 Colors/Typography/Spacing/Elevation/Auth/Contacts 전부 재확인 — 색상 시각적 변화 없음(바인딩만 전환), Table은 유령 공간 없이 렌더링됨.
 - `docs/design/design-system.md` 신규 37절(37-1~37-3) Edit로 추가(Write 미사용). 확정 원본(`501:2505`/`248:11689`)은 읽기 전용 대조만.
-
-### 2026-07-17 — NeoBtn Style=Sky/Navy 텍스트색·보더 결함 정정 (design-qa 감사 후속, 34절 완성도 보완, 35절)
-- 확정 원본 재실측(Sky `501:6423`, Navy `501:6358`): 둘 다 2px ink `INSIDE` 보더+흰 텍스트. 마스터(`712:2`/`712:4`)와 대조 결과 Sky 텍스트가 `color/ink-900`(검정)에 잘못 바인딩, Sky/Navy 둘 다 보더 누락 확인.
-- Sky 텍스트: 마스터뿐 아니라 동일 결함이 전파된 Hover/Press/Focus/Loading까지 5 State 전부 기존 토큰 `color/text-inverse`(`VariableID:219:2`, Navy가 이미 쓰던 것)로 리바인딩. Disabled(이미 `color/text-disabled`로 정상)는 무수정.
-- 보더: Sky/Navy 12개 variant(Default~Loading) 전부에 2px INSIDE 보더 추가 — Default/Hover/Press/Focus/Loading 10개는 `color/ink/900`, Disabled 2개는 기존 Neutral Disabled 패턴을 따라 `color/border-disabled`. Focus의 기존 FocusRing(외측 3px)과 좌표 충돌 없음 확인.
-- padding/gap/font는 확정 원본과 다르지만(Sky 14/6·gap6·Bold14, Navy 12/6·gap4·Black12 vs 마스터 16/8·gap6·Bold14), Coral/Neutral Default도 마스터와 동일 값임을 재확인해 "NeoBtn Size=Default 공유 공식"으로 판단, 변경하지 않음(7-2절 기존 "다른 패턴" TODO로 계속 이월).
-- WCAG 대비 직접 계산: Sky(#1395e6)+흰 텍스트(14px Bold) 약 3.25:1, 확정 원본에 이미 존재하는 조합이라 이번엔 변경 안 함(7-1절 6번과 동일 계열 TODO 기록).
-- 자체 재대조: 12개 variant strokes/boundVariable, 5개 텍스트 fill 전부 재조회 일치 확인. 인스턴스 전파 확인(사이드바 "새 카테고리 추가" `937:1436`, 본문 "연락처 추가" `939:1434` 모두 마스터 정정 자동 반영).
-- 34-1/34-2/34-9절에 "login 회원가입 코랄 배지(`501:5138`/`501:5139`)는 이번 슬롯 메커니즘 대상 아님" 각주(34-10절) 추가.
-- `docs/design/design-system.md` 신규 35절(35-1~35-8) + 34-10절 + 5절/7-2절 각주 Edit로 추가(원문 삭제 없음). Figma NeoBtn ComponentSet(`259:126`) description + 스펙 시트 캡션(`342:5`) 갱신. Write 미사용. 확정 원본은 읽기 전용만.
-- **⚠ 발견(정정 아님, 보고만)**: 이 메모리 로그 최상단에 이미 있던 "36절(Contacts 화면 QA)" 항목이 실제 `docs/design/design-system.md`에는 존재하지 않았다(파일 실제 마지막 섹션은 34절이었음) — 과거 문서 손상 이력과 같은 유형의 유실 가능성이 있어 보인다. 이번 라운드에서 복구 시도는 하지 않았다(내용을 정확히 재구성할 근거 부족, 잘못 재구성하면 오히려 오염 위험) — design-pl/사용자 확인 필요.
 
 
