@@ -1,0 +1,123 @@
+/* 연락처 관리 서비스 — 모달(ContactModal/ConfirmModal/CategoryDeleteModal/
+   CategoryRenameModal) 오버레이·헤더·바디·경고박스. 카드 셸 자체(폭 등)는
+   cards.css(.modal/.modal-category)를 참고, 여기는 내부 구조/부품만 담당. */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 26, 26, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+.modal-body {
+    /* get_design_context(940:1135 EditModal) 실측: Content padding은 px-32 py-28
+       (2026-07-18 정정, 기존 균일 24px는 좌우가 8px씩 좁았다). */
+    padding: 28px 32px 24px;
+}
+/* .banner 전역 오버레이 정정(2026-07-18, missing-screens.md 85-87행): edit-error-banner가
+   모달을 닫지 않고 자체 오버레이로 뜨도록 하는 relative 기준점. .toast(position:absolute
+   top:0)가 이 래퍼 기준으로 폼 위에 겹쳐 뜬다 — 헤더는 이 래퍼 밖이라 영향 없음. */
+.modal-form-area {
+    position: relative;
+}
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* Content의 gap-20(형제 전체 균등 20px, 2026-07-18 재실측 정정 — 기존 16은
+       4px 부족했다) */
+    margin-bottom: 20px;
+}
+.modal-header h2 {
+    font-size: 16px;
+    margin: 0;
+}
+.icon-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-none);
+    border: var(--border-base) solid var(--color-ink-900);
+    background: var(--color-white);
+    box-shadow: var(--shadow-hard-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-ink-900);
+}
+.icon-close {
+    display: block;
+    width: 10px;
+    height: 10px;
+}
+.modal form .field label {
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 700;
+    font-size: 12px;
+}
+.modal-actions {
+    /* ButtonRow(940:2665) 실측: gap-[8px](기존 12는 근사치였음) + 자체 pt-[4px] —
+       마지막 필드의 margin-bottom(20, .field 기본값)과 합쳐 Content gap-20과
+       거의 같은 24px 총 간격이 되도록 margin-top을 8→4로 정정(2026-07-18). */
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+.modal-actions .btn {
+    flex: 1;
+}
+.contact-summary-box {
+    background: #f9f7f3;
+    border: 1px solid #ede6d8;
+    border-radius: var(--radius-none);
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    font-size: 13px;
+}
+.contact-summary-box .summary-name {
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+.warning-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: rgba(255, 90, 118, 0.08);
+    border: 1px solid var(--color-coral-500);
+    border-radius: 6px;
+    padding: 17px;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+.warning-box-icon {
+    /* IconWrap(1001:1610) 실측: pt-[2px] — 아이콘이 첫 텍스트 줄과 정확히
+       나란히 오도록 살짝 아래로 내린다(2026-07-18 정정). */
+    flex-shrink: 0;
+    padding-top: 2px;
+}
+.icon-warning {
+    display: block;
+    width: 16px;
+    height: 16px;
+}
+.warning-box-text {
+    margin: 0;
+}
+
+/* 카테고리 이름 수정 모달의 "이름" 필드는 marginBottom 없이 CornerInput
+   컨텍스트용 마이크로 라벨(Inter Black, 대문자)을 쓴다 — .field 공통 스타일과
+   다른 부분만 여기서 오버라이드. */
+#modal-rename-category .field {
+    margin-bottom: 0;
+}
+#modal-rename-category .field label {
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}

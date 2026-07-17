@@ -4,100 +4,72 @@
 
 ## 작업 로그
 
-### 2026-07-15 (18차) — Checkbox 컴포넌트(`474:899`, 0-17절/14절) 신규 등록분 독립 재감사
+### 2026-07-17 (38차) — 마감 임박 최종 라운드: 934:2 페이지 사용자 직접 색상 수정 검증(A) + 오늘 변경분 전체(B) 감사 — HIGH 3건(신규) + MEDIUM 2건(신규) + PASS 다수
 
-**HIGH(신규) — Label 텍스트 paint opacity 0.5가 Default/Checked/Focus 3개 variant 전부에서 누락**: 원본 `247:6825`는 rgba(26,26,26,0.5)인데 등록 컴포넌트는 풀 오퍼시티로 바인딩. **(18-1차, 0-18절에서 design-systems가 raw script 재조회 결과 실제로는 4곳 모두 opacity 0.5로 이미 정확히 반영돼 있었음을 확인 — design-qa의 FAIL 판정은 `get_design_context`(className 기반)에 의존한 오탐으로 정정됨. 이후 감사에서는 opacity 검증 시 codegen보다 raw script/스크린샷을 우선할 것.)**
+배경: 사용자가 934:2 페이지 확정 3프레임(Join `935:33`/login `936:1042`/login-알림창 `936:1191`)의 컬러를 Figma에서 직접 수정한 직후, 그 페이지 전체(비밀번호 재설정 3프레임 + 배너 2프레임 포함, A구간·읽기전용 검증만)와 오늘 변경된 나머지 화면(B구간, 정상 감사) 전체를 감사. A구간은 절대 수정하지 않고 발견만 보고.
 
-**HIGH(신규) — Disabled variant Box fill/stroke paint opacity 0.5가 반영되지 않음**: 위와 동일한 오탐 패턴으로 추정, 0-18절에서 정확히 반영돼 있음이 재확인됨.
+**[A구간] PASS — 색상 값 자체(sky #1395e6/amber #ffce2c/coral #ff5a76)는 Join/login/login-알림창 3곳 모두 확정 원본(`501:4692`/`501:4940`/`501:5188`)과 hex 단위로 정확히 일치**. 배경 그라디언트(원본의 3-layer gradient)도 최상단 레이어가 불투명이라 실제 렌더링은 신규 구현의 flat sky와 동일 — 문제 없음.
 
-**PASS — 나머지 항목**: Box 크기/색, Checked 체크마크, Focus 순수성(링 색 자체는 시스템 공통의 raw hex 하드코딩 기존 갭, 9-4절 기 문서화 — Checkbox 신규 결함 아님), TEXT 프로퍼티, 스펙 시트, 라디오/디바이더 판단 근거, 원본 무수정.
+**[A구간] HIGH(신규) — Join "로그인으로 돌아가기" 버튼(`936:948`)이 확정 원본(`501:4888`)의 코랄 원형 배지+반전 화살표 장식을 재현하지 못함**: 원본은 흰 버튼 안에 코랄 20px 원형 배지(2px ink 보더)를 넣고 그 안에 14px 화살표를 180도 회전+세로 반전시켜 "뒤로" 방향을 표현하지만, 신규 구현은 배지 없이 Button/Neutral 컴포넌트에 평범한 PixelArrowRight(정방향, "가입하기"와 동일 아이콘)만 배치해 장식과 방향성이 모두 소실됨. **(2026-07-17 39차에서 Figma 노드 레벨은 정정 완료 확인 — 신규 node id 1043:9 등으로 재조립되어 코랄 20px 배지+2px ink 보더+반전 화살표 재현됨. 그러나 2026-07-18 41/42차에서 실제 프론트엔드 화면에는 이 Figma 정정이 전혀 반영되지 않았음이 재확인됨 — 하단 42차 HIGH1 참고.)**
 
-**종합(정정 반영)**: opacity 관련 2건은 design-systems 재조회로 실제로는 이상 없음 확인됨 — **codegen(get_design_context)로 opacity를 판정하면 오탐이 난다는 교훈**을 다음 라운드에 반영(19차부터 실제 적용). LOW 1건(페이지 순서 도구 한계로 완전 재확인 불가).
+**[A구간] HIGH(신규) — login-알림창(`936:1191`) 카드 내부 버튼이 형제 화면 login(`936:1042`)과 불일치**: **(2026-07-17 39차에서 정정 완료 확인)**
 
-### 2026-07-16 (19차) — Stage2 확정 디자인 세트(8프레임) 토큰 바인딩 반영분(0-20절) 독립 2차 검증
+**[A구간] MEDIUM(신규, 확인 필요) — CornerInput Disabled 배경 토큰과 Button Disabled 배경 토큰이 같은 이름(`color/bg-disabled`)인데 실제 렌더링 hex가 다름**: 비밀번호 재설정 성공 화면(`996:2575`)의 아이디 필드 Disabled는 `var(--color-bg-disabled,#bbb)`로 렌더링되나, design-system.md에 기록된 Button Disabled의 `color/bg-disabled`는 `#929292`. **(39~42차 재검증 범위 밖 — 미확인 상태 유지, 다음 라운드 이월)**
 
-배경: design-systems가 Stage1(실측+diff+토큰 신설)·Stage2(컴포넌트 리바인딩+문서 갱신) 2단계로 새 확정 디자인 세트(`501:2505` 하위 8프레임)를 반영 완료, 자체 재대조도 마쳤다고 보고. 사용자가 "토큰과 스타일은 컴포넌트에 꼭 연결되어 있어야한다"고 강조해 design-qa가 독립적으로 재검증(1건 제외 opacity codegen 오탐 교훈 반영 — 이번엔 raw hex 판정에 `get_design_context`(className) + `get_screenshot`(시각/픽셀 비교) 병행 사용, opacity는 다루지 않는 라운드라 해당 리스크 낮음).
+**[B구간] HIGH(신규) — 연락처 삭제 모달(`941:1508`)이 확정 원본(`501:4172`)과 여러 치수에서 어긋남**: SummaryBox 행간격/카드 높이는 39차에서 정정 확인, 버튼 높이(42px, 원본 44px)는 39차 재검증에서도 미해결(HIGH 유지, 이하 39차 로그 참고).
 
-**감사 대상 8건 전부 PASS — hex·바인딩 확정 프레임과 정확히 일치**: Sidebar Nav Item/Card/Icon Alert/NeoBtn/Button/Link/Checkbox/Contact Row 전부 확인(상세는 git 이력 참고).
+**종합**: HIGH 3건 + MEDIUM 2건 + PASS 다수. 상세는 git 히스토리 참고.
 
-**의도된 예외 3건 — 정확히 그렇게 처리됐음을 확인(결함 아님)**: main-삭제/main-알림창 구값 잔존(read-only 방침), 헤더 로그아웃 NeoBtn 미토큰화, main-검색없음 "전체 보기" 버튼 신규 variant 보류.
+### 2026-07-17 (39차, 마감 임박 최종 라운드) — 38차 HIGH 3건 중 4건 재확인 지시(삭제모달 치수/코랄배지 5곳/login-알림창 버튼/NeoBtn Neutral 그림자) 독립 재검증 — HIGH 1건 잔존(삭제모달 버튼 높이) + PASS 3건 + LOW 2건(신규, 문서/네이밍 stale)
 
-**Colors 카탈로그(`95:2`) 갱신 확인 — PASS(당시)**: "Stage2 신규 Primitives(6개)"/"Stage2 신규 Semantic Colors(7개)" 섹션(`625:1078`/`625:1104`) 존재, 13개 스와치 hex 전부 일치 — **단, 이 섹션은 이후 0-21절에서 임시 섹션으로 재판정되어 정식 Primitives(`95:44`)/Semantic(`95:123`) 그리드로 통합·삭제됨(20차에서 재확인).**
+**부분 PASS/HIGH 잔존 — 연락처 삭제 모달(`941:1508`) vs 확정 원본(`501:4172`) 치수 재실측**: SummaryBox 행간격 24px, 카드 전체 높이 392px 정정 확인 — PASS. **그러나 ButtonRow 내 두 버튼(`941:3043`/`941:3045`) 실제 인스턴스 높이는 여전히 42px(원본 44px) — HIGH로 재상향**(명시적 정정 지시 후에도 미해결 + WCAG 44×44 최소 터치 타겟 미달).
 
-**design-system.md 문서 상태 — PASS**: 845줄, 손상 없음.
+**PASS — 코랄 원형 배지+반전 화살표 5개 지점**: node id 재조립 이동(`936:948`→`1043:9` 등) 후 5곳 모두 코랄 20px 원형 배지(2px ink 보더)+PixelArrowRight 반전 방향 정상 렌더링 확인. (단, 이는 Figma 노드 레벨 확인이며 프론트엔드 반영 여부는 별개 — 42차 참고)
 
-**MEDIUM(신규) — NeoBtn/Sidebar Nav Item 스펙 시트 캡션 텍스트, 0-20절의 "갱신 완료" 주장과 실제 불일치**: Link/Checkbox 캡션은 Stage2 문단 반영됐으나 NeoBtn(`342:5`)/Sidebar Nav Item(`343:1108`) 캡션은 구 설명 그대로 — 이후 별도 라운드에서 정정 완료(0-20절 각주에 반영 확인, 20차에서 재확인).
+**PASS — login-알림창(`936:1191`) 버튼 vs login(`936:1042`)**: "로그인"/"회원가입" 버튼 둘 다 login과 완전히 동일한 구성으로 확인.
 
-**종합**: 8건 전부 PASS, 의도된 예외 3건 확인, MEDIUM 1건(문서 서술 부정확) — 이후 정정 완료.
+**PASS — Button 컴포넌트셋 Style=Neutral(`259:607`) NeoPop 그림자**: `259:603`(Amber)과 동일한 그림자 토큰 바인딩 확인.
 
-### 2026-07-16 (20차) — Disabled 색 토큰화 라운드(Stage2-a/b/c, 0-22/0-23절) 독립 재검증
+**LOW(신규) — Button 컴포넌트(`259:609`) description이 여전히 "Neutral=그림자 없음"이라고 적혀있어 실제 적용(그림자 있음)과 모순**: description 문구 stale, design-systems 갱신 필요.
 
-배경: opacity 기반 Disabled → 색 토큰 기반(bg-disabled/border-disabled/text-disabled) 전환 라운드 완료 보고에 대한 독립 재감사. 특히 "FOUNDATIONS 스와치가 또 다른 별도 임시 섹션에 들어간 것 아니냐"는 사용자 의심 지점을 최우선 검증.
+**LOW(신규) — 코랄 배지 버튼 5곳 중 3곳의 텍스트 레이어 내부 이름이 실제 렌더링 문구와 다르게 "저장하기"로 남아있음**: 시각 영향 없음, 레이어명만 stale.
 
-**HIGH(신규, 최우선) — FOUNDATIONS Colors 페이지, 신규 Disabled 토큰 4종이 정식 Primitives(`95:44`)/Semantic(`95:123`) 그리드가 아니라 별도 병렬 섹션("신규 Primitives" `436:3`, "Semantic Colors (Additional)" `436:143`, 둘 다 0-14절 기원)에 추가됨**. 바로 앞선 라운드(0-21절)가 정확히 이 파편화 패턴("Stage2 신규" 임시 섹션 `625:1077~1104`)을 정리해 "신규 토큰은 정식 Primitives/Semantic 그리드에 통합"이라는 원칙을 확립했는데, 0-23절 6항은 "0-21절 관례를 그대로 따랐다"고 서술하면서도 실제로는 0-21절이 정리한 대상이 아닌 별개의 기존 병렬 섹션(`436:3`/`436:143`)에 추가해 동일한 파편화가 재현됐다 — 문서 서술도 이를 "관례 준수"로 잘못 기술. 부수: `436:2` 제목이 gray/425 추가 후에도 "22개"로 카운트 미갱신(실제 23개). **개선안**: gray/425(`650:2`)→`95:44`, bg/border/text-disabled(`650:6/10/14`)→`95:123`으로 재통합, 또는 최소 0-23절 서술과 `436:2` 카운트 정정. **(21차에서 완전히 재통합 완료 확인됨 — 아래 참고.)**
+**종합**: HIGH 1건(연락처 삭제 모달 버튼 높이 42px, 정정 지시 후에도 미해결 — 재작업 필요) + PASS 3건 + LOW 2건 신규.
 
-**PASS — 토큰 값**: `color/bg-disabled`(`643:2`)=#929292(gray/425), `border-disabled`(`643:3`)=#5C6366(gray/600), `text-disabled`(`643:4`)=#555555(gray/650) raw 스와치 재조회로 정확히 일치.
+### 2026-07-18 (40차) — 마감 임박 최종 조립분 감사: 카테고리삭제거부배너(409, `1057:1626`) + 가입직후 빈 상태(`1060:2014`) + 인터랙션 리액션 실재 여부 + missing-screens.md 5/7번 갱신 정확도 — MEDIUM 1건 신규(Toast 진입 리액션 미확인) + PASS 다수, HIGH 0건
 
-**PASS — 4개 컴포넌트 적용**(NeoBtn/Button/Table Row Action/Checkbox Disabled variant): className 바인딩 + 스크린샷 시각 확인 둘 다 통일된 회색 톤, opacity 1 정상 확인.
+**PASS — `1057:1626`(main-카테고리삭제거부배너 409) Toast 문구/색상/아이콘/오버플로우**: Toast(`1057:1709`) 텍스트가 PRD 원문("이 카테고리를 사용하는 연락처가 3건 있어 삭제할 수 없습니다. 연락처의 종류를 먼저 변경하세요.")과 글자 단위로 정확히 일치. 배경 `color/background-error`(코랄 틴트) + IconAlert 정상. `contentsOnly` 단독 스크린샷 실측 결과 828×60(선언 812×44 대비 +16px는 drop-shadow 블러 bleed일 뿐 텍스트 자체는 줄바꿈·오버플로우 없이 한 줄에 온전히 표시됨) 확인 — PASS.
 
-**PASS — Input 예외**(NeoInput `644:2`/CornerInput `644:963`): 배경/보더만 disabled 토큰, 텍스트는 `color/ink/900` 유지, `text-disabled` 미사용 확인 — 지시대로 정확.
+**PASS — `1060:2014`(main-데이터없음, 가입직후) 사이드바/카운트/CTA 전수 확인**: CategoryNav·CategoryManage 둘 다 "회사" 없이 가족/친구/기타 3개만 남음, 전체/가족/친구/기타 Count Pill 전부 "0", "총 0건", 검색창 placeholder만 있는 빈 상태 확인. CTA(`1062:3866`)는 자식 텍스트 노드 id가 `I1062:3866;259:604` 형식(Figma 인스턴스 오버라이드 명명 규칙)으로 렌더링되어 실제 `Button`(`259:609`) 컴포넌트의 진짜 INSTANCE임을 구조적으로 재확인(raw 목업 아님, 39차 이후 유지) — PASS. Pixel/NoResult(`255:149`) 아이콘·레이아웃도 형제 화면(main-검색없음)과 일관 — PASS.
 
-**PASS — 문서 정합성**: design-system.md 900줄 전체 Read, 손상 없음(절 번호 연속 0-1~0-23/1~12절). 9-1/9-4/5절/7-2절 전부 최종값과 Icon Button/Row Action Button 미적용 TODO 정확히 반영.
+**MEDIUM(신규) — Toast 등장 트랜지션(180ms)으로 문서화된 4개 프레임 중 확인 가능했던 2곳(`996:2713` Join-실패배너, `1057:1626` 카테고리삭제거부배너)에서 실제 Figma 프로토타입 리액션의 증거를 찾지 못함**: `get_design_context`가 리액션이 걸린 노드를 `motion.div`(Smart Animate 대상) 또는 `<a>`(on-click 트리거)로 렌더링하는 패턴과 대조했을 때, 이 두 프레임은 모든 자식이 순수 `<div>`로만 렌더링돼 어떤 버튼에도 클릭 리액션이 연결되어 있지 않고 프레임 자체에도 진입 애니메이션의 흔적이 없다. 반면 같은 방식으로 확인한 카테고리 모달 2건(`1001:1594`/`1002:1611`)은 DimOverlay+Card가 `motion.div`로 렌더링되어 오픈 트랜지션이 실제로 연결돼 있음이, 비밀번호 재설정 2단계(`996:376`)의 "비밀번호 변경" 버튼은 `<a>`(cursor-pointer)로 렌더링되어 다음 단계 리액션이 존재함이 각각 확인됨 — 즉 모달·스텝전환은 증거가 있고 Toast 진입만 증거가 없다. `get_motion_context` 툴 자체가 이 에이전트에 없어 duration/easing 최종 확정은 불가 — interaction-designer/design-pl이 해당 툴로 4개 프레임 전부 직접 재확인 권고.
 
-**참고(HIGH/MEDIUM 아님)**: Icon Button/Row Action Button Disabled 미적용은 문서화는 정확하나, 사용자 원문("버튼, Table Row Action") 범위에 포함될 가능성 있어 design-pl 통해 재확인 권장.
+**PASS — `docs/design/missing-screens.md` 5/7번 노드ID 인용 정확도**: 5번의 `1057:1626`/`1057:1709`, 7번의 `1060:2014`/`1062:3866` 인용이 실제 Figma 구조와 정확히 일치. "완료" 상태 문구도 위 실측 결과와 부합.
 
-**종합**: HIGH 1건(FOUNDATIONS 섹션 파편화 재발), 나머지 전부 PASS.
+**종합**: HIGH 0건, MEDIUM 1건 신규(Toast 진입 리액션 미확인, 도구 한계로 완전 확정은 못 함 — 재확인 권고), PASS 다수.
 
-### 2026-07-16 (21차) — FOUNDATIONS Colors 섹션 완전 재통합(0-23절 6항 정정분) 재검증
+### 2026-07-18 (41차) — dev-pl 프론트엔드 재추출 후 `docs/screenshot/` 실제 구현 vs Figma 확정본 교차 검수 — HIGH 2건(신규) + MEDIUM 2건(신규), Figma 라이브 조회 불가(도구 한계 기록)
 
-배경: 20차에서 지적한 HIGH(신규 Disabled 4종이 `436:3`/`436:143` 병렬 섹션에 추가됨)에 대해, design-systems가 재조사 결과 이 두 섹션이 이번 라운드가 만든 게 아니라 0-14절부터 존재해온 미통합 레거시(각 22/13개, 총 35개 기존 스와치)였음을 확인하고, 4종만 빼내는 대신 **두 섹션 전체(39개)를 정식 Primitives(`95:44`)/Semantic(`95:123`) 그리드로 완전 통합**하고 빈 섹션 프레임 4개(`436:3`/`436:143`/`436:2`/`436:142`)를 삭제했다고 보고. 독립 재검증 수행.
+**⚠ 도구 한계**: 이번 세션에서 `get_screenshot`/`get_metadata` 호출이 fileKey 값과 무관하게 전부 "edit access 없음" 에러 반환 — Figma 데스크톱 앱 브릿지 연결 문제로 추정, nodeId별 라이브 재조회를 못 했다. 대신 `docs/design/design-system.md`/`missing-screens.md`에 이미 실측 기록된 정확한 노드값(색상/구조)과 `docs/screenshot/` 스크린샷 82장을 대조하는 방식으로 진행.
 
-**PASS(1) — 임시 섹션 표시 완전 제거 확인**: `get_metadata`로 Colors Root(`95:40`) 전체 재조회 — 자식 섹션이 Primitives/Semantic/Contrast Notes/Category Colors/Component Colors 5개뿐, "신규"/"Additional"/"Stage2" 텍스트 노드 0건. `get_screenshot`(전체 페이지)로도 육안 재확인, 잘림/겹침 없음.
+**HIGH(신규) — 회원가입(Join) 화면이 확정 Figma(`935:33`/`1043:9`, 38~39차에서 검증된 코랄 배지+반전 화살표 "로그인으로 돌아가기" 버튼 포함 전용 카드)와 완전히 다르게, 실제 프론트엔드는 로그인 폼과 동일한 카드를 재사용하고 있음**: `login-06/08/09/10/11-회원가입*.png` 5장 전부 아이디/비밀번호 필드 + "로그인" 주 버튼 + "회원가입" 보조 버튼으로 구성된 login-01과 동일한 카드를 보여준다 — Join 전용 제목·필드 구성·"로그인으로 돌아가기" 버튼(코랄 배지 포함)이 어디에도 없다. **(2026-07-18 42차에서 재확인 — 여전히 미해결, 하단 참고)**
 
-**PASS(2) — 4개 노드 삭제 확인**: `436:3`/`436:143`/`436:2`/`436:142` 각각 `get_metadata` 직접 재조회 결과 전부 "not found"(삭제 확인).
+**HIGH(신규) — 로고 마스코트 아이콘이 다수 화면에서 간헐적으로 렌더링되지 않음(단색 원만 표시)**: `persist-01`/`contacts-01`/`contacts-06`/`contacts-16`/`contacts-18`/`alert-01`/`alert-05`/`category-08` 등 최소 8곳에서 좌상단 로고가 코랄 단색 원으로만 보이고 내부 마스코트 얼굴 그래픽이 빠져있다. **(2026-07-18 42차에서 재확인 — dev-pl 재조사 결과 이 중 7곳은 이미 아이콘 반영본이었고 이 에이전트가 이미지 축소 렌더링에서 디테일을 놓친 오탐이었음이 확인됨. 정정: 하단 42차 참고, 향후 로고 디테일 판단 시 원본 해상도로 재확인 필수.)**
 
-**PASS(3) — 39개 스와치 정식 그리드 편입 확인(스팟체크)**: Primitives Row(`95:44`) 39개(기존 16 + 신규 23, gray/425 `650:2` 포함) 전수 나열 확인, Semantic Row(`95:123`) 31개(기존 15 + 신규 16, bg-disabled/border-disabled/text-disabled `650:6`/`650:10`/`650:14` 포함) 전수 나열 확인 — hex·alias 라벨(gray/425=#929292, bg-disabled=alias gray/425 등) 전부 0-23절 문서값과 일치.
+**MEDIUM(신규) — 카테고리 "사용중 삭제거부" 배너(`1057:1626`, PRD 문구 포함)의 실제 렌더링이 스크린샷으로 확인되지 않음**: `category-07-사용중삭제거부.png`는 파일명과 달리 삭제 확인 모달의 정적 경고 문구만 캡처했고, 실제로 "삭제하기" 클릭 후 409 응답을 받아 모달이 닫히고 카운트(N건)가 포함된 동적 배너가 뜨는 최종 상태는 캡처셋에 없었음. **(2026-07-18 42차에서 해소 확인 — 하단 참고)**
 
-**PASS(4) — Variable 실제 바인딩 회귀 없음(대표 3종 스팟체크)**: 기존 정상 작동 토큰(`color/background`=alias gray/50 `95:124`, `color/teal/500` `95:45`)은 여전히 실제 CSS var(`var(--color-background,...)`, `var(--color-teal-500,...)`)로 바인딩 확인. 신규 Disabled 토큰도 실사용 컴포넌트에서 무결 확인 — NeoInput Disabled(`644:2`) bg=`var(--color-bg-disabled,#929292)`/border=`var(--color-border-disabled,#5c6366)`/텍스트는 여전히 `var(--color-ink-900,#1a1a1a)`(text-disabled 미사용 원칙 유지), Checkbox Disabled Box(`474:893`) 동일 패턴 확인. 재통합 과정에서 실제 컴포넌트 바인딩 손상 없음.
+**MEDIUM(신규) — 백엔드 원시 검증 오류 문자열이 번역 없이 한국어 에러 배너에 그대로 노출됨**: `contacts-06`("String should match pattern '^010\\d{8}$'")과 `pwreset-08`("String should have at least 4 characters") 등에서 Pydantic 원본 영문 오류가 그대로 표시됨. **(2026-07-18 42차에서 해소 확인 — 하단 참고)**
 
-**PASS(5) — design-system.md 정합성**: 901줄 전체 Read, 손상 없음(절 번호 연속 0-1~0-23/1~12, 표 깨짐·중복 없음). 0-23절 6항 서술("두 섹션 전체 39개를 정식 그리드로 통합, 헤더+빈 프레임 4개 삭제")이 Figma 실측과 정확히 일치.
+**종합**: HIGH 2건, MEDIUM 2건 — 전부 신규, dev-pl/frontend-engineer 재작업 필요.
 
-**LOW(관찰, 이번 라운드 결함 아님) — FOUNDATIONS 카탈로그 스와치 자체의 바인딩 불균일**: 신규 통합된 레거시 섹션 출신 스와치들(예: `650:6` bg-disabled, `436:4` ink/800, `625:1079` sky/500)은 rectangle fill이 raw hex(`bg-[#929292]` 등, var() 아님)로만 그려져 있고 실제 Figma Variable에 바인딩돼 있지 않다 — 반면 원래부터 있던 핵심 스와치(`95:45` teal/500, `95:124` background)는 CSS var로 정상 바인딩. 단, `625:1079`(0-20/21절, 이번 라운드 이전 생성)도 이미 미바인딩 상태였음을 확인해 **이번 재통합이 새로 만든 문제가 아니라 0-14절부터의 기존 카탈로그 제작 관행**으로 판단됨. 실사용 컴포넌트(NeoInput/Checkbox 등)는 전부 정상 바인딩이라 실질 영향 없음 — 카탈로그 페이지 자체의 스와치를 향후 라이브 바인딩 방식으로 통일할지는 별도 라운드 판단 사항으로 기록만 남김.
+### 2026-07-18 (42차) — dev-pl `docs/screenshot/` 재생성 후 41차 지적 4건(HIGH2/HIGH1/MEDIUM1/MEDIUM2) 재확인 — HIGH2는 자체 오탐 인정·정정, HIGH1 여전히 미해결, MEDIUM1/MEDIUM2 해소 확인
 
-**종합**: 20차 HIGH 완전히 해소 확인(전부 PASS). 신규 LOW 1건(카탈로그 스와치 미바인딩, 기존 관행/실질 영향 없음, 결함 아님·참고 기록).
+**정정(자기 오탐 인정) — HIGH2(로고 마스코트 간헐적 렌더링 실패)는 오탐이었음**: dev-pl이 신규 캡처한 전용 로고 감사 스크린샷 9장(`logo감사-01`~`09`, login/pwreset/에러배너/성공배너/main빈상태/toast/수정모달/카테고리삭제모달/카테고리이름수정모달 커버)과 41차에 지목했던 원본 8개 파일(`persist-01`/`contacts-01,06,16`/`alert-01,05`/`category-08`)을 다시 열어 좌상단 코랄 원 로고를 직접 확인한 결과, **17개 스크린샷 전부 원 안에 마스코트 얼굴(귀 2개+눈코입) 디테일이 정상적으로 렌더링돼 있었다.** 41차 판단은 이미지 축소 렌더링에서 28px 로고의 세부가 안티에일리어싱으로 뭉개져 "단색 원"으로 오인한 오탐이었던 것으로 결론. 향후 소형 아이콘/로고 디테일을 판정할 때는 원본 해상도 기준으로 재확인할 것.
 
-### 2026-07-16 (22차) — 확정 8프레임 전수 대조 후속 반영 P1~P15(13절) 독립 재검증
+**여전히 문제(HIGH1 유지) — 회원가입(Join) 전용 화면이 프론트엔드에 반영되지 않음**: `login-06-회원가입입력`/`login-07-회원가입완료`/`login-08-회원가입중복입력`/`login-09-회원가입중복에러` 4장을 재확인한 결과 여전히 아이디/비밀번호 필드 + "로그인" 주 버튼 + "회원가입" 보조 버튼으로 구성된 login-01과 완전히 동일한 카드를 보여준다. Figma 확정본(`935:33`/`1043:9`, 코랄 20px 원형 배지+반전 화살표 "로그인으로 돌아가기" 버튼 포함 전용 Join 카드)과의 괴리가 이번 재생성에서도 그대로 남아있음. 부수적으로 `login-13-비밀번호재설정1단계진입`의 "로그인으로 돌아가기" 버튼도 배지 장식 없는 평범한 텍스트 버튼으로, Join 화면 자체가 아직 별도 라우팅/마크업으로 구현되지 않은 것으로 재확인됨. dev-pl/frontend-engineer 재작업 필요.
 
-배경: 34차 전수 대조로 발견된 15건(P1~P15) 중 11건 REFLECT/4건 조치없음 처리 완료 보고에 대한 독립 재감사. `use_figma`(raw script) 도구가 없어 전부 `get_design_context`/`get_metadata`/`get_screenshot` 조합으로 검증(고배율 스크린샷을 raw 색상 판정의 1차 근거로 우선 사용, 18차 opacity 오탐 교훈 반영).
+**해소 확인(MEDIUM1) — 카테고리 사용중 삭제거부(409) 동적 배너가 이번 세트에 포함되어 정상 렌더링됨**: 신규 파일 `category-07b-사용중삭제거부-배너확인.png`에서 "이 카테고리를 사용하는 연락처가 2건 있어 삭제할 수 없습니다. 연락처의 종류를 먼저 변경하세요." 문구가 카운트(2건)와 함께 코랄 톤 배너로 정상 표시됨을 확인 — PASS.
 
-**HIGH(신규, 최우선) — P12 Checkbox 체크마크(`474:888`) 색상, design-system.md의 "ink/900로 정정 완료" 서술과 실제 렌더링 불일치 의심**: State=Checked(`474:896`) 박스를 `get_screenshot`으로 네이티브 해상도(14×14) 확대 확인한 결과, 체크마크가 밝은/흰색 계열로 보이고 ink(#1A1A1A) 검정으로 보이지 않는다. 같은 파이프라인의 State=Default(`474:895`, 2px ink 보더가 뚜렷한 검정으로 렌더링됨)를 대조군으로 삼아 비교했을 때 체크마크 톤이 명백히 더 밝다 — ink 검정이라면 sky/500(#1395E6) 배경 위에서 뚜렷한 어두운 마크로 보여야 하는데 실제로는 반대로 밝게 보인다. `get_design_context`는 이 노드를 boolean 그룹 이미지로 플래튼해 className에 색상 텍스트가 노출되지 않아 hex 자체는 확정할 수 없었다(raw script 부재로 인한 도구 한계) — 그러나 시각적 증거는 P12가 주장하는 "border-divider-cool(옅은 하늘색)→ink/900(검정) 정정"이 실제로 반영되지 않았거나, 반영됐어도 흰색 등 전혀 다른 값으로 렌더링되고 있음을 시사한다. **개선안**: design-systems가 `474:888`의 stroke boundVariable/hex를 raw script로 직접 재조회해 실제 값을 확인하고, ink/900이 아니면 재정정 후 다시 스크린샷 검증할 것 — 이번 항목은 "최우선" 지정 항목이라 재확인 없이 넘기지 않는다.
+**해소 확인(MEDIUM2) — Pydantic 원시 영문 오류가 한국어 문구로 교체됨**: `contacts-06-잘못된형식입력.png`는 "전화번호 형식이 올바르지 않습니다(010으로 시작하는 11자리 숫자)", `pwreset-08-비밀번호형식오류유지.png`는 "비밀번호는 4~20자여야 합니다"로 표시 — 영문 기술 메시지 노출 없이 전부 한국어 안내 문구로 확인됨 — PASS.
 
-**PASS — P1**: NeoBtn(`259:126`) ComponentSet에 `712:2`(Sky)/`712:4`(Navy)가 정상 위치(x=3016/3086, 기존 variant열 바로 뒤)로 편입 확인. fill/텍스트 전부 `var(--color-bg-brand-blue)`/`var(--color-ink-900)`/`var(--color-bg-accent-navy)`/`var(--color-text-inverse)` 토큰 바인딩(raw hex 없음). WCAG 상대휘도 공식 독립 재계산 결과 Sky+ink=5.363:1, Navy+white=8.907:1 — 문서 기재값(5.36/8.91)과 소수점까지 일치.
-
-**PASS — P2**: RowActionButton Danger/Default(`260:53`) bg=`var(--color-bg-cta-amber,#ffce2c)`, border=`var(--color-ink-900,#1a1a1a)` 1px 확인. Neutral(`260:34`)은 `var(--component-row-action-button-border-neutral,#1c1f21)` 그대로 무수정 확인.
-
-**PASS — P4**: NeoInput 4개(`261:10`/`378:4`/`398:884`/`398:888`) 전부 drop-shadow Hard-2 확인, Focus(`398:886`/`456:2`)·Disabled(`644:2`) 전부 제외 확인. NeoSelect Default 2개(`261:660`/`401:866`) Hard-2 확인, Open 2개(`387:12`/`401:869`) 트리거는 Hard-2 없이 옵션패널만 Elevation/Raised — 이중 그림자 방지 정확히 반영.
-
-**PASS(값) / MEDIUM(문서 서술) — P5**: CountPill Active(`258:12`)에 drop-shadow Hard-1 실제 적용 확인(PASS). 단 컴포넌트 자체의 Figma description이 "Active=흰 배경, 그림자 없음"으로 이번 변경 이전 서술 그대로 남아 있어 실제 상태와 모순 — 컴포넌트 description 필드 자체가 SoT 중 하나인데 갱신 누락. NeoBtn(`259:126`) description도 P1(Sky/Navy 추가)·P11(Amber ink 보더 추가)을 반영하지 않고 구 서술 그대로.
-
-**PASS — P6/P7**: Icon Button 5 State 중 3개(`259:610`/`284:1040`/`284:1042`) className에 rounded 클래스 없음(radius 0) 확인. Card Modal(`262:6`)/Auth(`262:10`) 동일하게 radius 0 확인.
-
-**PASS — P8**: Modal(`262:7`) border-b-2 ink-900, Auth Top(`262:11`) border-b-2 ink-900, Auth Bottom(`262:14`) border-t-2 ink-900 전부 확인.
-
-**PASS — P9/P3/P13/P15(조치 없음 항목)**: CornerInput 7 variant 전수 조회 결과 CornerBracket 잔존 0건(P9 결론 유지 확인). RowActionButton Neutral 위 P2에서 재확인(무수정). Sidebar Nav Item(`258:29`)은 Active/Inactive/Focus 3 variant만 존재, 신규 이례값 반영 없음 확인(P13). P15는 원본 확정 프레임 대상이라 감사 범위 밖(손대지 않음 원칙) — 마스터 쪽엔 애초에 대응 항목 없음 확인.
-
-**PASS — P10**: CornerInput 7 variant(`261:12`/`378:856`/`398:890`/`398:892`/`398:894`/`456:4`/`644:963`) 전부 text-[13px] 확인.
-
-**PASS — P11**: NeoBtn Amber Default(`259:110`)/Focus Default(`284:115`)/Focus Compact(`284:155`), Button Amber Default(`259:603`)/Focus(`284:1010`) 전부 border-2 ink-900 확인. Focus는 border 추가 후에도 FocusRing 오버레이(ink, border-3) 그대로 유지 — Default와 배경/텍스트 동일, 차이는 보더(모든 State 공통 추가)+링뿐이라 순수성 위반 아님.
-
-**PASS — P14**: Toast Success subtitle(`263:45`) `var(--color-text-muted-toast,#5c6366)` 바인딩 확인, title은 `var(--color-ink-900,#1a1a1a)` 유지 확인.
-
-**PASS — FOUNDATIONS Colors(`95:2`)**: `716:6`(text-muted-toast 스와치)가 정식 Semantic Row(`95:123`) 그리드 안에 위치(마지막 자식), Colors Root(`95:40`)는 여전히 5개 섹션(Primitives/Semantic/Contrast Notes/Category Colors/Component Colors)뿐 — "신규"/"Stage2"/"Additional" 병렬 섹션 재발 없음.
-
-**PASS — 문서 손상 여부**: design-system.md 965줄, 1~230행/230~539행/700~965행 샘플링 결과 절 번호 연속(0-1~0-24, 1~13절), 중복·누락·표 깨짐 없음.
-
-**PASS — `.claude/agents/design-systems.md` 원칙 추가**: "색상 등 시각 속성도 인스턴스 단위 오버라이드로 처리한다" 항목이 기존 판단 기준 불릿 리스트 중간(23번째 줄)에 자연스럽게 삽입돼 있고, 앞뒤 기존 항목 삭제·손상 없음.
-
-**LOW(관찰, 이번 라운드 결함 아님) — Focus 링이 문서(9-1절, 2겹 DROP_SHADOW)와 실제 구현(별도 "FocusRing" 오버레이 자식 노드, border-3 ink solid) 방식이 다름**: NeoBtn/Button/NeoInput/CornerInput/Icon Button Focus variant 전수에서 일관되게 관찰됨 — 이번 라운드(P1~P15) 이전부터의 기존 구현 방식으로 이번 라운드가 새로 만든 회귀는 아니다(모든 Focus에서 색·굵기 일관). 다만 NeoInput/CornerInput의 Error×Focus 조합(`456:2`/`456:4`)도 에러 상태임에도 링이 빨강이 아니라 ink로 렌더링되어, 9-1절이 문서화한 "에러 상태는 흰갭+빨간 링" 표준과 다르다 — 결함이라기보단 문서-구현 표기 불일치이자 향후 점검 후보로만 기록.
-
-**종합**: HIGH 1건(P12 체크마크 색상, 최우선 재확인 필요), MEDIUM 1건(CountPill/NeoBtn description 미갱신), LOW 1건(Focus 링 구현방식 문서 불일치, 결함 아님). 나머지 12개 항목 전부 PASS — hex/바인딩/구조 모두 문서 기재값과 일치 확인.
+**종합**: 4건 재확인 결과 — HIGH1(Join 화면 미구현) 여전히 미해결, HIGH2(로고 렌더링)는 자체 오탐 정정(해소), MEDIUM1(409 동적배너)/MEDIUM2(영문 오류 노출) 둘 다 해소 확인. dev-pl에는 Join 화면 재작업만 남았다고 전달 필요.

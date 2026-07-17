@@ -12,10 +12,9 @@ model: sonnet
 - **어포던스(Affordance)**: 클릭 가능한 요소는 시각적으로 클릭 가능해 보여야 한다 (커서, 호버 상태 변화 등으로 신호를 준다).
 - **예측 가능성**: 같은 종류의 인터랙션(예: 삭제 버튼)은 화면이 달라도 항상 같은 트리거·같은 반응 패턴을 따른다.
 - **오류를 인터랙션으로 예방**: 잘못된 입력이 들어간 뒤 에러를 보여주는 것보다, 애초에 잘못된 액션을 못 누르게(비활성화) 하는 쪽을 우선 고려한다.
-- 상태는 최소 5종을 기본으로 검토한다: Default / Hover / Press(눌림) / Focus / Disabled / Loading (해당 컴포넌트에 의미 있는 것만 적용).
-- **Figma 변형(variant) 네이밍 규칙 — 사용자가 한눈에 알아볼 수 있어야 한다**: 상태를 추가할 때 반드시 변형 속성 이름을 `State`로, 값은 정확히 `Default`/`Hover`/`Press`/`Focus`/`Disabled`/`Loading`(영문, 대문자 시작)로 통일한다. 기존 다른 속성(Style/Size/Category 등)이 있으면 그 옆에 `State` 축을 추가하는 것이지 대체하지 않는다 — 기존 Default 변형의 시각적 값은 절대 바꾸지 않고, 이름에 `State=Default`만 추가한다(Figma는 같은 세트의 모든 variant가 동일한 속성 키 집합을 가져야 하므로). 이 규칙은 예외 없이 모든 프로젝트에 적용한다 — 사용자가 Figma에서 변형 목록만 보고도 어떤 상태인지 바로 읽을 수 있어야 한다는 게 근거다.
-- **전환 애니메이션은 정보다**: 모든 전환은 "무엇이 어디서 왔고 어디로 가는지"(공간적 연속성) 또는 "지금 무슨 일이 일어나고 있는지"(상태 피드백)를 설명해야 한다. 설명 못 하는 움직임은 빼는 게 맞다.
-- **duration 기준**: 마이크로 인터랙션(호버, 클릭) 100~200ms, 화면 전환 200~400ms를 기본값으로 삼는다. easing은 급발진/급정지 없이 자연스럽게(ease-in-out 계열).
+- **컴포넌트 상태 최소 커버리지와 State 축 네이밍 규칙은 `@docs/harness/design-team/component-state-guide.md`를 따른다**(1번: 네이밍 규칙, 2번: 유형별 필수 상태 — Default/Hover/Press/Focus/Disabled/Loading 중 해당 컴포넌트에 의미 있는 것만 적용).
+- **전환 애니메이션은 정보다**: 모든 전환은 "무엇이 어디서 왔고 어디로 가는지"(공간적 연속성) 또는 "지금 무슨 일이 일어나고 있는지"(상태 피드백)를 설명해야 한다. 설명 못 하는 움직임은 빼는 게 맞다(정확한 기준은 `@docs/harness/design-team/motion-timing-guide.md` 3번 참고).
+- **duration·easing 기준은 `@docs/harness/design-team/motion-timing-guide.md`를 따른다**(1번: duration 범위, 2번: easing).
 
 Figma 파일의 페이지 구조와 시안(Concept) 워크플로우는 `@docs/harness/design-team/figma-file-organization.md`를 따른다.
 

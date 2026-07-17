@@ -146,7 +146,9 @@ def test_tc_persist_04_revisit_with_same_cookies_shows_management_screen_immedia
     try:
         new_page = new_context.new_page()
         new_page.goto(BASE_URL)
+        new_page.screenshot(path="docs/screenshot/persist-01-쿠키재방문직후.png")
         # 로그인 화면이 아니라 관리 화면(로그아웃 버튼)이 즉시 표시되어야 함
         new_page.get_by_role("button", name="로그아웃", exact=True).wait_for()
+        new_page.screenshot(path="docs/screenshot/persist-02-관리화면즉시표시.png")
     finally:
         new_context.close()

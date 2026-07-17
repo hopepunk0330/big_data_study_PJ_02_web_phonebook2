@@ -1,0 +1,82 @@
+/* 연락처 관리 서비스 — 전역 디자인 토큰
+   출처: docs/design/design-system.md §1(변수 컬렉션)
+   확정 디자인(Figma) 실측값을 CSS 커스텀 프로퍼티로 그대로 옮긴다.
+   여기 있는 값은 :root 전역 변수뿐이다 — 컴포넌트 스타일은 buttons.css/
+   inputs.css/cards.css/modals.css/toasts.css/layout.css로 분리돼 있다. */
+
+:root {
+    /* Primitives (design-system.md 1-1) */
+    --color-ink-900: #1a1a1a;
+    --color-white: #ffffff;
+    --color-sky-500: #1395e6;
+    --color-navy-700: #074d7b;
+    --color-amber-600: #ffce2c;
+    --color-amber-500: #ffcb47;
+    --color-coral-500: #ff5a76;
+    --color-coral-900: #a8003b;
+    --color-coral-100: #ffe4e8;
+    --color-teal-500: #17a398;
+    --color-teal-900: #0a4f49;
+    --color-mint-100: #d8fff5;
+    --color-blue-100: #e0f0ff;
+    --color-blue-500: #4a90d9;
+    --color-blue-900: #1a4c88;
+    --color-purple-100: #ede0ff;
+    --color-purple-500: #9b72cf;
+    --color-purple-900: #4b0d9c;
+    --color-paleblue-50: #f5fafd;
+    --color-paleblue-100: #d3ecfb;
+    /* Row Action Button(카테고리 관리 아이콘 버튼) Neutral 보더 전용 —
+       design-system.md 27절: color/ink/900(#1a1a1a)과 별개인 ink/800(#1c1f21) */
+    --component-row-action-button-border-neutral: #1c1f21;
+    --color-gray-300: #cccccc;
+    --color-gray-350: #bbbbbb;
+    --color-gray-375: #aaaaaa;
+    --color-gray-450: #888888;
+    --color-gray-500: #777777;
+    --color-gray-600: #5c6366;
+    --color-gray-650: #555555;
+    --color-bg-page: #dcdedf;
+
+    /* Semantic (design-system.md 1-2) */
+    --color-text-muted-strong: var(--color-gray-650);
+    --color-text-muted: var(--color-gray-500);
+    --color-text-muted-subtle: var(--color-gray-450);
+    --color-text-placeholder: var(--color-gray-300);
+    --color-text-placeholder-input: var(--color-gray-350);
+    --color-text-placeholder-strong: var(--color-gray-375);
+    --color-border-divider-cool: var(--color-paleblue-100);
+    --color-bg-row-alt: var(--color-paleblue-50);
+    --color-bg-error: var(--color-coral-100);
+    --color-bg-success: var(--color-mint-100);
+
+    /* Radius/Border (design-system.md 1-1) */
+    --radius-none: 0px;
+    --radius-6: 6px;
+    --radius-10: 10px;
+    --radius-14: 14px;
+    --radius-16: 16px;
+    --border-hairline: 1px;
+    --border-base: 2px;
+    --border-heavy: 3px;
+
+    /* Effects (design-system.md 1-4) */
+    --shadow-hard-1: 1px 1px 0px var(--color-ink-900);
+    --shadow-hard-2: 2px 2px 0px var(--color-ink-900);
+    --shadow-hard-6: 6px 6px 0px var(--color-ink-900);
+    --shadow-raised: 0px 2px 8px rgba(28, 31, 33, 0.08);
+
+    /* CatBadge palette (design-system.md 1-1 신규 카테고리 색) */
+    --cat-friend-bg: var(--color-blue-100);
+    --cat-friend-border: var(--color-blue-500);
+    --cat-friend-text: var(--color-blue-900);
+    --cat-family-bg: var(--color-coral-100);
+    --cat-family-border: var(--color-coral-500);
+    --cat-family-text: var(--color-coral-900);
+    --cat-other-bg: var(--color-purple-100);
+    --cat-other-border: var(--color-purple-500);
+    --cat-other-text: var(--color-purple-900);
+    --cat-company-bg: var(--color-mint-100);
+    --cat-company-border: var(--color-teal-500);
+    --cat-company-text: var(--color-teal-900);
+}

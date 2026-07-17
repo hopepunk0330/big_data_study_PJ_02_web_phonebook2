@@ -4,38 +4,33 @@
 
 ## 작업 로그
 
-### 2026-07-12 — Concept B "Warm Ledger" 정식화 (Brand Guide 완성) + 미채택 라벨링
-- design-pl로부터 "Concept B 확정, 시안 재제작 아님" 브리프 수신. 컬러/폰트 값은 기존 메모리 표에서 그대로 가져오고 임의 조정하지 않음.
-- "Brand Guide" 페이지(`52:2`) 신규 생성(레퍼런스 페이지 `15:2` 바로 다음 순서로 배치), 루트 프레임(`52:3`, 960px 폭)에 7개 섹션 구성: Header(워드마크+태그라인) / Positioning / Personality / Color Palette(3 스와치+색채심리 근거+사용비율) / Typography(4단계 램프) / Logo & Wordmark Usage(파비콘~히어로 4단계 축소·확대 검토 + "제품명 미정" 경고 콜아웃) / Illustration Direction(참고, 간단 방향만).
-- 파비콘 카드 라벨 텍스트가 FILL 폭 설정 때문에 세로로 쪼개져 보이는 버그를 발견 → HUG/WIDTH_AND_HEIGHT로 수정 후 스크린샷 재확인.
-- "브랜드 컨셉 Concepts" 페이지(`34:2`)에서 미채택 세트(Concept A: `34:3`+`44:2`, Concept C: `34:5`+`46:2`) 이름 앞에 `❌ 미채택 — ` 부여. 프레임 내부 디자인은 건드리지 않음. 확정 세트(`34:4`, `45:2`)는 변경 없음.
-- 컬러/폰트 값 조정 없음, 워드마크 placeholder를 최종 네이밍으로 확정하지 않음 — 브리프의 금지사항 준수.
-
-### 2026-07-12 — 레퍼런스 기반 재작업 (버그 수정)
-- 배경: 이전 라운드가 최상위 `get_metadata` 페이지 목록만 보고 "레퍼런스 없음"으로 오판한 채 만든 시안이었음이 드러남. `docs/harness/design-team/figma-file-organization.md`에 0번 항목("Figma 조회 결과를 그대로 믿지 않는다") 신설됨.
-- 이번엔 nodeId `15:2`로 직접 `get_metadata` 호출 → "레퍼런스" 페이지의 "컨셉 참고" 섹션(`15:6`) 확인, 내부 이미지 9장을 `get_screenshot`으로 실제 열람(Y2K/레트로팝 톤 무드보드: 두꺼운 아웃라인 배지, 스큐어모픽 Win98 다이얼로그, 픽셀게임 UI, 그리드 UI 키트, 미니멀 SaaS 포스터 등).
-- 이를 연락처 관리 앱(멀티유저 로그인+데이터 격리 최중요 평가기준, PC 브라우저) 성격에 맞게 3가지 뚜렷한 축으로 재해석: Concept A(Deskline, 레트로 OS형) / Concept B(Warm Ledger, 네오팝 배지형) / Concept C(Gridline, 그리드 유틸리티형).
-- "브랜드 컨셉 Concepts" 페이지(34:2)의 기존 프레임 34:3/34:4/34:5를 새 시안으로 덮어씀(❌ 미채택 표시 없이 완전 교체 — 이전 산출물이 레퍼런스 미확인 상태에서 나온 오작이었기 때문).
-- 결정 안 함: 3안 중 채택 여부는 design-pl → 사용자 확정 필요. 다음 단계(design-systems 토큰화, Brand Guide 완성)는 진행하지 않음.
-
 ### 2026-07-12 — Brand Guide "만들다 만" 상태 보완: Layout Convention(B-2) 섹션 신설
 - 사용자가 Brand Guide를 미완성 상태로 지적 → SCREENS 파일럿(로그인/Contacts)이 확정된 2차 레이아웃 B-2(`62:6`)의 실제 관례를 못 이어받고 컬러·느낌만 재해석해버린 원인 중 하나로 지목됨.
 - 기존 메모리 요약을 베끼지 않고 `34:4`(Concept B 톤 프레임)와 `62:6`(B-2)을 `get_screenshot`+`get_design_context`로 다시 직접 관찰. 컬러/폰트값은 기존 확정과 100% 동일 확인(조정 없음).
-- 관찰해 새로 기록한 디테일: 보더 두께 위계(3px 화면 프레임 › 2.5px 그룹 컨테이너 › 1.5px 개별 입력·버튼 › 1px 소형 액션 버튼 › 1px 헤어라인 `#E0E0E0`은 잉크가 아닌 예외), 라운드 스케일(16/10/8/5/999), 4px 기반 간격 리듬(사이드바 gap16·본문 gap14·행 padding 12×9 등), 정보 밀도 타이포 크기 5단계, UI 색상 사용 로직(teal=주요액션+데이터강조, coral=파괴적액션+검색, amber=선택상태+CTA), 장식 모티프(로고 원형 배지+pill 카운트 배지뿐, 그림자 전혀 없음).
-- Figma "Brand Guide" 루트 프레임(`52:3`)에 새 섹션 "레이아웃 관례 (Layout Convention — B-2)"(`125:2`)를 기존 섹션 뒤에 추가만 함 — Header/Positioning/Personality/Color Palette/Typography/Logo/Illustration 기존 7개 섹션은 내용 무변경. Color Palette 스와치는 이미 2~3px 잉크 보더 + radius 16으로 되어 있어 정합적임을 확인만 하고 손대지 않음.
-- `docs/design/brand-guide.md`를 이 관찰 내용으로 덮어써서 갱신(새 "레이아웃 관례" 섹션 추가, 상태 헤드라인에 "B-2 확정" 반영). Concepts 페이지의 Concept A/C 미채택 프레임은 건드리지 않음. 확정 게이트 재요청이나 시안 재생성 없이 기존 산출물 보완만 진행.
+- 관찰해 새로 기록한 디테일: 보더 두께 위계, 라운드 스케일(16/10/8/5/999), 4px 기반 간격 리듬, 정보 밀도 타이포 크기 5단계, UI 색상 사용 로직(teal=주요액션+데이터강조, coral=파괴적액션+검색, amber=선택상태+CTA), 장식 모티프(로고 원형 배지+pill 카운트 배지뿐, 그림자 전혀 없음).
+- Figma "Brand Guide" 루트 프레임(`52:3`)에 새 섹션 "레이아웃 관례 (Layout Convention — B-2)"(`125:2`) 추가. `docs/design/brand-guide.md` 갱신.
 
 ### 2026-07-12 — 34:4 재관찰: 브랜드 퍼스낼리티 표현 장치 보강 + 로고 섹션 재작성
-- 배경: `62:6`(B-2)만 재관찰했던 지난 보완에서 `34:4`(1차 톤 프레임) 자체의 성격 표현 장치(배지 은유, 정확한 워드마크 레터링, 퍼스낼리티 이중성)는 관찰하지 않은 채 넘어간 것이 드러남. SCREENS 파일럿에서 로고 자리가 임의의 원+텍스트로 대체된 실제 결함의 원인으로 지목됨.
-- `34:4`를 `get_screenshot`+`get_design_context`+`use_figma`(정확한 fill/stroke/fontName 수치 조회)로 재관찰. 발견: 심볼(24×24 원)은 코랄 `#FF5A76` 채움 + 2px 잉크 `#1A1A1A` 스트로크, 워드마크 텍스트는 Baloo 2 **Bold**(ExtraBold 아님) 26px 색상 `#0F7A6E`(딥틸, 주조색보다 어둡게 톤다운) 자간 0%, 심볼-워드마크 간격 14px·수직 중심 정렬(오차 0.5px 이내)·수평으로는 카드 중심에서 약 21px 우측 편향(완전 중앙정렬 아님).
-- 기존 "로고 & 워드마크 사용 예시" 섹션(Figma `52:9`)의 스케일 예시(Nav/Header/Hero)가 이번 관찰과 어긋나는 스펙(Baloo 2 ExtraBold + ink 색상 `#1c1f21`, 간격 8px 고정)으로 이미 만들어져 있던 것을 발견 → 텍스트 폰트/색상을 Bold+`#0F7A6E`로, 심볼-워드마크 간격을 관찰 비율(24px 기준 14px → 32px 19px · 64px 37px)로 직접 수정. 심볼 자체의 채움색(파비콘 코랄 vs 24px+ 틸로 스케일별 상이)은 이번 브리프 범위 밖으로 판단해 손대지 않음(별도 논의 필요 시 design-pl 보고 대상으로 남김).
-- Figma "Brand Guide" 페이지에 새 섹션 "브랜드 퍼스낼리티 표현 장치 (Brand Personality Devices)"(`142:2`)를 "레이아웃 관례(B-2)" 섹션 뒤에 추가, 기존 7개 섹션과 Layout Convention 섹션은 무변경(surgical). `52:9` 내부에 "정확한 레터링 스펙" 서브 블록(`141:311`)도 함께 추가.
-- `docs/design/brand-guide.md` 갱신: 로고/워드마크 행을 정확한 레터링 스펙으로 재작성, 새 "브랜드 퍼스낼리티 표현 장치" 섹션 추가(다른 섹션·미채택 이력은 그대로 유지).
+- 배경: `62:6`(B-2)만 재관찰했던 지난 보완에서 `34:4`(1차 톤 프레임) 자체의 성격 표현 장치(배지 은유, 정확한 워드마크 레터링, 퍼스낼리티 이중성)는 관찰하지 않은 채 넘어간 것이 드러남.
+- `34:4`를 재관찰해 심볼(코랄 `#FF5A76` 채움 + 2px 잉크 스트로크)·워드마크(Baloo 2 Bold 26px `#0F7A6E`)·간격(14px) 정확 스펙 확보. Figma "Brand Guide" 페이지에 "브랜드 퍼스낼리티 표현 장치" 섹션(`142:2`) 추가, `52:9` 내부에 정확한 레터링 스펙 서브 블록 추가. `docs/design/brand-guide.md` 갱신.
 
 ### 2026-07-13 — 사용자 직접 확정 디자인(8프레임) 기준 Brand Guide 전면 재작성 (2-4번 적용)
-- 배경: 사용자가 Figma에 직접 만든 "확정 디자인 - 절대 원본 건들지 말것-" 섹션(`248:11689`, 8개 프레임: main/main-수정/main-삭제/main-검색없음/Join/login/login-알림창/main-알림창)이 AI 파일럿(B-2 등)보다 우선하는 최종 소스임이 확인됨(2-4번). 기존 메모리·이전 Brand Guide 요약을 재활용하지 않고 8개 프레임 전부를 `get_screenshot`+`get_design_context`+`get_metadata`로 새로 관찰. **읽기 전용만 수행, 8개 프레임 내용/이름은 전혀 수정하지 않음.**
-- 이전 문서의 핵심 오류를 발견해 정정: (1) "그림자 전혀 안 씀" → 실제로는 하드 오프셋 ink 스티커 그림자(1/2/6px, 주요 액션·모달·카드 전용)와 소프트 블러 그림자(알림 배너 전용) 두 시스템을 명확히 구분해서 씀. (2) 워드마크는 Baloo 2 Bold가 아니라 **ExtraBold** 22px, 색상은 고정 딥틸이 아니라 배경에 따라 흰색/ink로 반전. (3) 심볼-워드마크 간격은 14px가 아니라 10px. (4) 로고 심볼은 빈 원이 아니라 내부에 흰 픽셀 별(PxStar) 아이콘 포함.
-- 신규 발견(이전 문서에 전혀 없던 내용): 8bit 픽셀 컨페티 배경 장식(BgPixels 전역 산포 vs MemphisAccents 구석 클러스터, 밀도 규칙 다름), 인증/모달 전용 코너 브래킷 인풋(CornerInput, radius 0 + 8px 잉크 브래킷, 목록화면 NeoInput은 반대로 radius 10 브래킷 없음), 카드 상/하단 액센트 스트립(모달=상단 앰버만, 인증카드=상단 앰버+하단 틸 샌드위치), 카테고리 배지(CatBadge) 4색 팔레트(친구 블루/가족 코랄/기타 퍼플/회사 틸, "연한 배경+진한 보더닷+더 진한 텍스트" 공식), 마이크로 픽셀 아이콘(Pixel*/Px*, 8bit) vs 24px 표준 플랫 아이콘(Icon/*) 이중 계층 아이콘 시스템, Inter Black 대문자 마이크로라벨 vs Noto Sans KR 본문의 폰트 역할 분리.
-- 관찰된 불일치 발견·기록(임의로 통일하지 않음): 편집 모달의 "종류" TypeSelector 칩 색상이 메인 목록 CatBadge 팔레트와 다름(예: 가족=초록, 기타=회색, 회사 선택시=주황) — design-systems 토큰화 시 정리 필요 사항으로 Brand Guide에 명시.
-- login-알림창(`247:5303`)/main-알림창(`247:5558`)은 각각 login/main 화면 위에 최상위 z-index로 플로팅하는 의도된 오버레이임을 확인(버그 아님, 사용자 확인 사항) — 정확한 위치·크기·겹침 방식(에러 배너는 카드 내부 절대위치, 성공 토스트는 검색행을 덮는 절대위치)까지 기록.
-- `docs/design/brand-guide.md`를 8개 프레임 관찰 결과로 전면 덮어씀(이전 "Warm Ledger/B-2" 서술 전부 교체, 13개 섹션으로 재구성: 트라이앵글/컬러/타이포/보더·radius/그림자/간격/장식모티프/로고스펙/아이콘방향/알림오버레이/대비규칙/네이밍미정/이전시안이력). Figma는 전혀 쓰지 않음(read-only 작업).
+- 배경: 사용자가 Figma에 직접 만든 "확정 디자인 - 절대 원본 건들지 말것-" 섹션(`248:11689`, 8개 프레임)이 AI 파일럿(B-2 등)보다 우선하는 최종 소스임이 확인됨(2-4번). 8개 프레임 전부를 `get_screenshot`+`get_design_context`+`get_metadata`로 새로 관찰. **읽기 전용만 수행.**
+- 이전 문서의 핵심 오류 정정: (1) "그림자 전혀 안 씀" → 실제로는 하드 오프셋 스티커 그림자(1/2/6px)와 소프트 블러 그림자(알림 배너 전용) 두 시스템. (2) 워드마크는 Baloo 2 ExtraBold 22px, 색상은 배경에 따라 흰색/ink로 반전. (3) 심볼-워드마크 간격 10px. (4) 로고 심볼은 내부에 흰 픽셀 별(PxStar) 포함.
+- 신규 발견: 8bit 픽셀 컨페티(BgPixels 전역 산포 vs MemphisAccents 구석 클러스터), 코너 브래킷 인풋(CornerInput), 카드 상/하단 액센트 스트립, CatBadge 4색 팔레트, 마이크로 픽셀 아이콘(Pixel*/Px*) vs 24px 표준 플랫 아이콘(Icon/*) 이중 계층.
+- `docs/design/brand-guide.md`를 8개 프레임 관찰 결과로 전면 덮어씀(13개 섹션 재구성). Figma는 전혀 쓰지 않음.
+
+### 2026-07-17 — Primary/Secondary/Accent 역할 재평가 + Brand Guide 신규 프레임 정식화 + Warm Ledger 폐기 라벨링
+- 배경: 세션 중 다수 컴포넌트가 teal(`#17A398`)→sky(`#1395E6`)로 리바인딩됐는데 문서(`brand-guide.md`, `user-confirmed-final-design.md`)는 여전히 "Primary 틸"로 기록돼 있었고, 사용자가 직접 "프라이머리/세컨더리 구분이 바뀌었을 것 같다"고 지적. design-pl의 초기 스팟체크(main 프레임만 대충 셈)를 8개 확정 프레임(`501:2505` 하위) 전체·fill+stroke 양쪽 실측으로 검증.
+- **실측 방법**: `use_figma` 읽기 전용 스크립트로 8개 프레임 전체를 순회해 sky/teal/coral/amber 4색의 fill·stroke 매칭 노드를 수집하고 면적(px²)·용도를 집계. teal 32×32 fill의 정체(Avatar 래퍼 Container, 실제 렌더링은 스카이블루 오버라이드에 가려짐)까지 노드 경로 추적으로 확인.
+- **결론**: Primary=스카이블루(`#1395E6`, 사이드바 전체·Join/login 풀블리드 배경·아바타 — 실측 면적 압도적 1위, 신규 편입) / Secondary=코랄(변경 없음) / Accent=앰버(변경 없음, 단 count pill·main-삭제 모달 스트립은 구값 `#FFCB47` 잔존 발견) / 틸=Primary에서 제외, "카테고리 식별색(narrow)"으로 재정의(유일한 가시 용도: CatBadge "회사" 보더/닷, row "수정" 액션 아웃라인). 프리미티브 토큰 이름은 변경 없음, Figma 바인딩도 손대지 않음(문서 정정 전용 라운드).
+- `docs/design/brand-guide.md` 2절, `docs/design/confirmed/user-confirmed-final-design.md` 2-1절을 정정 각주 방식(원문 보존, 기존 2026-07-16 각주 위에 이어붙임)으로 갱신. `docs/design/graphic-assets.md`는 Read로만 확인(소유권 경계 유지, 이미 "구 세대 원문 기록" 캐비트 있어 충돌 없음).
+- Figma에서 옛 "Brand Guide — Warm Ledger"(`52:3` + 하위 9개 섹션)에 `❌ 폐기 —` 라벨 부여(내용/구조 무변경). 같은 페이지(`52:2`)에 신규 프레임 "Brand Guide — Pixel Confetti Brutalism (Stage2 Confirmed, 2026-07-17)"(`920:7`)를 9개 섹션으로 신규 제작(Color Palette에 재평가된 트라이어드 + 카테고리 식별색 콜아웃 + CatBadge 4색, Brand Personality Devices에 하드그림자/코너브래킷/액센트스트립 시각 데모 포함).
+- **버그 발견 및 우회**: Baloo 2 ExtraBold 흰색 텍스트가 "2단계 이상 중첩된 auto-layout" 안에서 빈 흰색 박스로 깨지는 Figma 렌더링 버그를 발견(격리 재현으로 확인). 워드마크 데모의 "Lockup"을 auto-layout이 아닌 plain frame(절대좌표)으로 바꿔 우회 — 이후 섹션 제작 시 백색 텍스트는 이 패턴을 유지할 것.
+
+### 2026-07-17 — design-qa MEDIUM 결함 정정: Triad Swatch Row 높이 불균일 (161px/153px → 166px 통일)
+- design-qa 감사에서 `920:7`(Brand Guide 신규 프레임) Color Palette 섹션 `921:5` "Triad Swatch Row"의 4개 스와치 컨테이너(`921:6`/`921:10`/`921:14`/`921:18`) 폭은 196px로 동일하지만 설명 텍스트 줄 수 차이(3줄 vs 2줄)로 높이가 166px/153px로 어긋나 있음이 발견됨 — `figma-page-format-guide.md` 1번(스와치 크기 통일) 위반. 같은 라운드 완성도 보완이라 별도 승인 없이 즉시 정정.
+- `get_metadata`/`get_design_context`로 `921:5`+4개 자식 먼저 재확인 → 원인이 hug 사이징(`primaryAxisSizingMode='AUTO'`)임을 확인.
+- 정정 방식은 텍스트 재작성(줄 수 강제 조정) 대신 **고정 높이**를 선택: 4개 컨테이너 모두 `resize(width, 166)` 후 `primaryAxisSizingMode='FIXED'`로 전환. 이 페이지 스와치는 "내용에 따라 흔들리지 않는 고정 크기"가 포맷 가이드 취지에 맞고, 설명 문구를 인위적으로 줄이거나 늘려 내용을 왜곡할 필요가 없기 때문. 색상 hex·바인딩·텍스트 내용은 전혀 건드리지 않음.
+- `get_screenshot`으로 4개 스와치 하단 정렬·잘림/겹침 없음 확인. 상위 Row(`921:5`, 172px)·Color Palette 섹션(`921:2`, 444px)은 원래도 최댓값(166px) 기준으로 계산돼 있어 크기 변화 없음(하위 프레임 위치 재검토 불필요).
+- `docs/design/brand-guide.md` 14절에 이 정정을 각주로 추가(원문 삭제 없음).

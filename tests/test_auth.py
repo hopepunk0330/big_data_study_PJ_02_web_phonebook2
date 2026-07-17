@@ -269,6 +269,7 @@ def test_tc_api_screen_01_get_root_serves_html(api_request):
 
 def test_tc_e2e_scr001_01_first_visit_shows_login_section(page):
     page.goto(BASE_URL)
+    page.screenshot(path="docs/screenshot/login-01-초기화면.png")
     assert page.get_by_role("button", name="로그인", exact=True).is_visible()
     assert not page.get_by_role("button", name="로그아웃", exact=True).is_visible()
 
@@ -278,8 +279,10 @@ def test_tc_e2e_scr001_02_login_wrong_password_shows_detail_message(page, api_re
     page.goto(BASE_URL)
     page.get_by_placeholder("영문 소문자·숫자 4~20자").fill(username)
     page.get_by_placeholder("4~20자").first.fill("wrongpass1")
+    page.screenshot(path="docs/screenshot/login-02-로그인실패입력.png")
     page.get_by_role("button", name="로그인", exact=True).click()
     page.get_by_text("아이디 또는 비밀번호가 올바르지 않습니다").wait_for()
+    page.screenshot(path="docs/screenshot/login-03-로그인실패에러.png")
     # 로그인 폼 유지 확인
     assert page.get_by_role("button", name="로그인", exact=True).is_visible()
 
@@ -290,8 +293,10 @@ def test_tc_e2e_scr001_03_login_success_transitions_and_loads_data(page, api_req
     page.goto(BASE_URL)
     page.get_by_placeholder("영문 소문자·숫자 4~20자").fill(username)
     page.get_by_placeholder("4~20자").first.fill(DEFAULT_PASSWORD)
+    page.screenshot(path="docs/screenshot/login-04-로그인입력.png")
     page.get_by_role("button", name="로그인", exact=True).click()
     page.get_by_role("button", name="로그아웃", exact=True).wait_for()
+    page.screenshot(path="docs/screenshot/login-05-로그인성공.png")
     assert called(log, "GET", "/categories")
     assert called(log, "GET", "/contacts")
 
@@ -300,8 +305,10 @@ def test_tc_e2e_scr001_04_signup_unknown_username_shows_guidance(page):
     page.goto(BASE_URL)
     page.get_by_placeholder("영문 소문자·숫자 4~20자").fill(unique_username())
     page.get_by_placeholder("4~20자").first.fill(DEFAULT_PASSWORD)
+    page.screenshot(path="docs/screenshot/login-06-회원가입입력.png")
     page.get_by_role("button", name="회원가입", exact=True).click()
     page.get_by_text("가입 완료! 로그인해 주세요").wait_for()
+    page.screenshot(path="docs/screenshot/login-07-회원가입완료.png")
     assert page.get_by_role("button", name="로그인", exact=True).is_visible()
 
 
@@ -310,16 +317,20 @@ def test_tc_e2e_scr001_05_signup_duplicate_username_shows_detail(page, api_reque
     page.goto(BASE_URL)
     page.get_by_placeholder("영문 소문자·숫자 4~20자").fill(username)
     page.get_by_placeholder("4~20자").first.fill(DEFAULT_PASSWORD)
+    page.screenshot(path="docs/screenshot/login-08-회원가입중복입력.png")
     page.get_by_role("button", name="회원가입", exact=True).click()
     page.get_by_text("이미").wait_for()  # 서버 detail 문구(409) 표시 확인
+    page.screenshot(path="docs/screenshot/login-09-회원가입중복에러.png")
 
 
 def test_tc_e2e_scr001_06_signup_invalid_format_shows_detail(page):
     page.goto(BASE_URL)
     page.get_by_placeholder("영문 소문자·숫자 4~20자").fill("ab")
     page.get_by_placeholder("4~20자").first.fill(DEFAULT_PASSWORD)
+    page.screenshot(path="docs/screenshot/login-10-회원가입형식오류입력.png")
     page.get_by_role("button", name="회원가입", exact=True).click()
     page.wait_for_timeout(500)
+    page.screenshot(path="docs/screenshot/login-11-회원가입형식오류유지.png")
     assert page.get_by_role("button", name="회원가입", exact=True).is_visible()
 
 
@@ -327,7 +338,9 @@ def test_tc_e2e_scr001_07_password_reset_link_no_api_call(page):
     log = record_network(page)
     page.goto(BASE_URL)
     page.get_by_text("비밀번호 재설정").click()
+    page.screenshot(path="docs/screenshot/login-12-비밀번호재설정링크클릭.png")
     page.get_by_role("button", name="확인", exact=True).wait_for()
+    page.screenshot(path="docs/screenshot/login-13-비밀번호재설정1단계진입.png")
     assert not called(log, "POST", "/auth/find-password")
     assert not called(log, "PATCH", "/auth/password")
 
@@ -344,17 +357,21 @@ def _goto_scr004(page):
 def test_tc_e2e_scr004_01_find_password_success_shows_step2(page, api_request):
     username, _ = signup(api_request)
     _goto_scr004(page)
+    page.screenshot(path="docs/screenshot/pwreset-01-아이디입력화면.png")
     page.get_by_placeholder("가입 시 사용한 아이디").fill(username)
     page.get_by_role("button", name="확인", exact=True).click()
     page.get_by_role("button", name="비밀번호 변경", exact=True).wait_for()
+    page.screenshot(path="docs/screenshot/pwreset-02-2단계진입.png")
     assert page.get_by_text(username).is_visible()
 
 
 def test_tc_e2e_scr004_02_find_password_unknown_username_stays_step1(page):
     _goto_scr004(page)
     page.get_by_placeholder("가입 시 사용한 아이디").fill(unique_username())
+    page.screenshot(path="docs/screenshot/pwreset-03-존재하지않는아이디입력.png")
     page.get_by_role("button", name="확인", exact=True).click()
     page.get_by_text("존재하지 않는 아이디입니다").wait_for()
+    page.screenshot(path="docs/screenshot/pwreset-04-존재하지않는아이디에러.png")
     assert page.get_by_role("button", name="확인", exact=True).is_visible()
 
 
@@ -366,8 +383,10 @@ def test_tc_e2e_scr004_03_password_mismatch_no_api_call(page, api_request):
     page.get_by_role("button", name="확인", exact=True).click()
     page.get_by_placeholder("4~20자").first.fill("newpass1234")
     page.get_by_placeholder("위와 동일하게 입력").fill("differentpass1")
+    page.screenshot(path="docs/screenshot/pwreset-05-비밀번호불일치입력.png")
     page.get_by_role("button", name="비밀번호 변경", exact=True).click()
     page.get_by_text("두 비밀번호가 일치하지 않습니다").wait_for()
+    page.screenshot(path="docs/screenshot/pwreset-06-비밀번호불일치에러.png")
     assert not called(log, "PATCH", "/auth/password")
 
 
@@ -378,8 +397,10 @@ def test_tc_e2e_scr004_04_password_too_short_shows_detail(page, api_request):
     page.get_by_role("button", name="확인", exact=True).click()
     page.get_by_placeholder("4~20자").first.fill("abc")
     page.get_by_placeholder("위와 동일하게 입력").fill("abc")
+    page.screenshot(path="docs/screenshot/pwreset-07-비밀번호형식오류입력.png")
     page.get_by_role("button", name="비밀번호 변경", exact=True).click()
     page.wait_for_timeout(500)
+    page.screenshot(path="docs/screenshot/pwreset-08-비밀번호형식오류유지.png")
     assert page.get_by_role("button", name="비밀번호 변경", exact=True).is_visible()
 
 
@@ -390,16 +411,21 @@ def test_tc_e2e_scr004_05_password_reset_success_returns_to_login(page, api_requ
     page.get_by_role("button", name="확인", exact=True).click()
     page.get_by_placeholder("4~20자").first.fill("newpass1234")
     page.get_by_placeholder("위와 동일하게 입력").fill("newpass1234")
+    page.screenshot(path="docs/screenshot/pwreset-09-비밀번호변경입력.png")
     page.get_by_role("button", name="비밀번호 변경", exact=True).click()
     page.get_by_text("비밀번호가 변경되었습니다").wait_for()
+    page.screenshot(path="docs/screenshot/pwreset-10-비밀번호변경성공.png")
     page.get_by_role("button", name="로그인", exact=True).wait_for()
+    page.screenshot(path="docs/screenshot/pwreset-11-로그인화면복귀.png")
 
 
 def test_tc_e2e_scr004_06_back_to_login_link_no_api_call(page):
     log = record_network(page)
     _goto_scr004(page)
+    page.screenshot(path="docs/screenshot/pwreset-12-1단계화면.png")
     page.get_by_role("button", name="로그인으로 돌아가기", exact=True).click()
     page.get_by_role("button", name="로그인", exact=True).wait_for()
+    page.screenshot(path="docs/screenshot/pwreset-13-로그인화면복귀.png")
     assert not called(log, "POST", "/auth/find-password")
 
 
@@ -417,45 +443,56 @@ def _login_via_page(page, username, password=DEFAULT_PASSWORD):
 def test_tc_e2e_scr900_01_session_expiry_forces_login_screen(page, api_request):
     username, _ = signup(api_request)
     _login_via_page(page, username)
+    page.screenshot(path="docs/screenshot/alert-01-로그인상태.png")
     # 서버에서 강제 로그아웃 처리(세션 만료 유도) — page의 쿠키 저장소는 그대로 둔 채
     page.context.request.post("/auth/logout")
     page.get_by_role("button", name="검색", exact=True).click()
     page.get_by_text("다시 로그인해 주세요").wait_for()
+    page.screenshot(path="docs/screenshot/alert-02-세션만료알림.png")
     page.get_by_role("button", name="로그인", exact=True).wait_for()
+    page.screenshot(path="docs/screenshot/alert-03-로그인화면복귀.png")
 
 
 def test_tc_e2e_scr900_02_404_409_422_shows_detail_without_transition(page, api_request):
     username, _ = signup(api_request)
+    login(api_request, username)
     _login_via_page(page, username)
     category_id = get_category_id(api_request)
     payload = contact_payload(category_id, phone="123")  # 형식 위반 → 422 유도
-    page.get_by_placeholder("이름").fill(payload["name"])
+    page.get_by_placeholder("이름", exact=True).fill(payload["name"])
     page.get_by_placeholder("전화번호").fill(payload["phone"])
-    page.get_by_role("button", name="추가", exact=True).click()
+    page.screenshot(path="docs/screenshot/alert-04-잘못된입력.png")
+    page.get_by_role("button", name="추가", exact=True).nth(0).click()
     page.wait_for_timeout(500)
+    page.screenshot(path="docs/screenshot/alert-05-오류알림표시.png")
     assert page.get_by_role("button", name="로그아웃", exact=True).is_visible()  # 화면 유지(전환 없음)
 
 
 def test_tc_e2e_scr900_03_pydantic_array_422_shows_first_msg_only(page, api_request):
     username, _ = signup(api_request)
     _login_via_page(page, username)
-    page.get_by_placeholder("이름").fill("")  # name, phone 둘 다 위반 유도
+    page.get_by_placeholder("이름", exact=True).fill("")  # name, phone 둘 다 위반 유도
     page.get_by_placeholder("전화번호").fill("123")
-    page.get_by_role("button", name="추가", exact=True).click()
+    page.screenshot(path="docs/screenshot/alert-06-복수오류입력.png")
+    page.get_by_role("button", name="추가", exact=True).nth(0).click()
     page.wait_for_timeout(500)
+    page.screenshot(path="docs/screenshot/alert-07-첫번째오류메시지만표시.png")
     # 배열 detail의 첫 항목 msg만 표시됨(복수 오류 문구가 동시에 나열되지 않음)
     assert page.get_by_role("button", name="로그아웃", exact=True).is_visible()
 
 
 def test_tc_e2e_scr900_04_success_response_shows_transient_message(page, api_request):
     username, _ = signup(api_request)
+    login(api_request, username)
     _login_via_page(page, username)
     category_id = get_category_id(api_request)
     payload = contact_payload(category_id)
-    page.get_by_placeholder("이름").fill(payload["name"])
+    page.get_by_placeholder("이름", exact=True).fill(payload["name"])
     page.get_by_placeholder("전화번호").fill(payload["phone"])
-    page.get_by_role("button", name="추가", exact=True).click()
+    page.screenshot(path="docs/screenshot/alert-08-정상입력.png")
+    page.get_by_role("button", name="추가", exact=True).nth(0).click()
     page.get_by_text("추가되었습니다").wait_for()
+    page.screenshot(path="docs/screenshot/alert-09-성공알림표시.png")
 
 
 def test_tc_e2e_scr900_05_login_401_stays_on_login_form_no_forced_transition(page, api_request):
@@ -463,8 +500,10 @@ def test_tc_e2e_scr900_05_login_401_stays_on_login_form_no_forced_transition(pag
     page.goto(BASE_URL)
     page.get_by_placeholder("영문 소문자·숫자 4~20자").fill(username)
     page.get_by_placeholder("4~20자").first.fill("wrongpass1")
+    page.screenshot(path="docs/screenshot/alert-10-로그인401입력.png")
     page.get_by_role("button", name="로그인", exact=True).click()
     page.get_by_text("아이디 또는 비밀번호가 올바르지 않습니다").wait_for()
+    page.screenshot(path="docs/screenshot/alert-11-로그인폼유지.png")
     # 강제 전환 예외 — 로그인 폼에 계속 머무름("다시 로그인해 주세요"로 다시 전환되는 게 아님)
     assert page.get_by_role("button", name="로그인", exact=True).is_visible()
     assert not page.get_by_text("다시 로그인해 주세요").is_visible()

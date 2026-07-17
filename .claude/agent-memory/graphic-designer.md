@@ -4,31 +4,38 @@
 
 ## 작업 로그
 
-### 2026-07-12 — 기능 아이콘 8종 제작 (Search/Add/Edit/Delete/Category/Logout/Alert/User)
-- design-pl 브리프: Concept B "Warm Ledger" 브랜드 1차 확정 + B-2 레이아웃 2차 확정 완료 상태, 이번은 컨셉 라운드 아님 — 최종형 8종 바로 제작 지시.
-- 시작 전 Brand Guide `52:3`/`52:10`을 스크린샷+design_context로 실물 재확인(기억 재구성 금지 규칙 준수) — hex 3개와 아웃라인 두께 문구가 브리프 참고값과 정확히 일치함을 확인.
-- "Graphic Assets" 페이지 신규 생성(`90:2`), figma.root.children 순서를 Brand Guide 바로 다음(index+1)으로 삽입해 문서 규칙 순서 준수.
-- 8개 아이콘을 단계적으로 제작(스켈레톤 1콜 → 1~4번 1콜 → 5~8번 1콜)하며 매 단계 `node.screenshot({scale:12})`로 확대 검증.
-- Edit(연필) 아이콘: 처음엔 rectangle+triangle을 rotation/union으로 조합했으나 결과가 화살표 모양처럼 뭉개짐 → 5점 벡터 패스(`M 0 0 L 12 0 L 17 2.2 L 12 4.4 L 0 4.4 Z`)로 재작업해 명확한 연필 실루엣 확보. 회전 후 프레임 밖으로 살짝 클리핑되는 문제는 `absoluteBoundingBox` 측정 후 x/y를 보정해 해결(단순 center-pivot 가정이 틀렸음을 실측으로 확인).
-- 최종 8개를 한 화면에 스크린샷 비교해 아웃라인 두께/그리드/채색 규칙 일관성 확인 완료.
-- 다음 단계(이 에이전트 범위 아님): design-systems가 이 8개 원화를 "Icons" 페이지에 정식 컴포넌트(variant 포함)로 등록.
+### 2026-07-17 — 문서 정합성 정정 2건 (harness-auditor 발견, "그리기" 작업 아님)
+- harness-auditor가 `docs/design/graphic-assets.md`에서 발견한 오류 2건을 사용자 승인 하에 정정. 순수 문서 서술 정정(디자인 판단·색상/형태 변경 아님), Figma 쓰기 작업 없음(읽기 전용 재확인만).
+- 1건 — "Icon/* teal 계열 6종 fill" 오기: 나열된 아이콘은 Search/Add/Edit/Delete/Category/Logout/User = 7종(Delete·Category·User는 노드 2개씩이라 ×2 표기일 뿐 종류 수와 무관) → "7종"으로 정정.
+- 2건 — Pixel/Eye(`281:405`) 벡터 개수 서술 불일치("6블록" vs "descendant 14개"): `use_figma` 읽기 전용으로 `281:405` 자식 트리 전체를 재실측한 결과 현재 직접 자식 VECTOR가 정확히 14개(전부 fill `#1a1a1a`)임을 확인 — 원래 6블록(`281:399`~`281:404`, 좌표까지 기존 기록과 완전 일치)은 그대로 남아 있고, 그 외 8개(`429:38`~`429:52`, 눈 중앙부 디테일)가 나중에 추가된 것으로 판단(ID 번호대가 원본보다 뚜렷하게 나중 순번). 즉 단위 차이(그룹 vs 하위노드)가 아니라 "2026-07-14 관찰 당시엔 정확했는데 이후 컴포넌트가 바뀐" 케이스 — 두 서술 모두 각자 시점엔 정확했으므로, 6블록 좌표 기록은 삭제하지 않고 그대로 두되 3곳(PixelEyeOff 절, Pixel/* 12종 상세 표, A/B 분류표)에 "2026-07-17 재실측 결과 현재 14개" 갱신 주석을 추가해 통일.
+- `docs/design/graphic-assets.md`에 정정 근거를 담은 "문서 정합성 정정 2건" 절 신규 append(기존 절 삭제 없음). **전달 대상**: 없음(문서 정정 자체가 완료 작업, design-systems가 향후 실바인딩 시 A/B 분류표의 Pixel/Eye "14개" 값을 그대로 참고하면 됨).
 
-### 2026-07-13 — 신규 Pixel 아이콘 9종 카탈로그화 + docs/planning 갭 감사(누락 없음)
-- 작업 A: design-systems가 확정 프레임에서 clone해 "Icons" 페이지(`96:7`)에 이미 등록해둔 `Pixel/Star·Search·Plus·Logout·Edit·Delete·Close·Warning·NoResult` 9종을 새로 그리지 않고 관찰만 해서 카탈로그화. get_design_context + use_figma(읽기전용 fills 조회)로 정확한 hex/사이즈/블록 구성 확인. 이 9종은 기존 8종(Icon/*, 24px Basic/Visual strokeWeight 트랙)과 다른 별개 트랙 — Brand Guide 9번의 "마이크로 픽셀 아이콘"(8~15px, 블록 조합 실루엣) 계층. Pixel/Close만 유일하게 블록 조합이 아니라 2px stroke 벡터로 구성된 예외, Pixel/Star는 컴포넌트 설명(흰색)과 실제 마스터 fill(잉크 `#1a1a1a`)이 불일치 — 둘 다 design-systems 참고용으로만 기록, 임의로 고치지 않음.
-- 작업 B: docs/planning FR-01~13 전체를 확정 8개 프레임(read-only) + 17종 아이콘과 대조 — 새로 그릴 아이콘 없음("누락 없음"). 다만 확정 login 프레임(`247:6666`)에 이미 그려져 있는 `PixelEye`(비밀번호 표시/숨김, `247:6814`)가 9종 추출 라운드에서 누락된 것을 발견 — docs/planning FR에 없는 기능이라 이번 갭 감사 대상은 아니지만, design-systems가 다른 9종과 같은 방식(clone)으로 마저 추출·등록하도록 design-pl 경유 전달 필요(graphic-designer가 새로 그리면 확정 프레임 원본과 어긋날 위험이 있어 직접 그리지 않음).
-- `docs/design/graphic-assets.md`에 두 섹션(Pixel 9종 카탈로그, 갭 감사 결과) 추가(기존 8종 섹션은 덮어쓰지 않음).
+### 2026-07-17 — Icon/* 8종 Basic/Visual 트랙 재판정 + Basic 6종 재드로잉 지시 (사용자가 Icon/User를 직접 지적)
+- design-pl 브리프: 사용자가 Figma에서 `Icon/User`(`96:45`)를 직접 보고 "라인형이 맞는 아이콘 같다"고 지적 — Icon/* 8종 전부가 `.claude/agents/graphic-designer.md`의 기존 Basic/Visual 트랙 구분(로그아웃=Basic, 카테고리/알림=Visual 예시)을 한 번도 적용받지 못하고 균일하게 teal fill+3px ink stroke로 그려져 있던 것을 재판정.
+- `use_figma` 읽기 전용으로 Icon/* 8종 전체 자식 노드(fill/stroke hex·bound 상태·strokeWeight)를 재실측 — 직전 라운드(색상 바인딩 감사)에서 design-systems가 이미 fill(teal/amber)·stroke(ink/900) 재바인딩을 완료해놓은 상태(`bound: true`, `#1a1a1a`)임을 확인. 이번 라운드는 그 색상 정확성 작업을 뒤집는 게 아니라 "그 fill을 애초에 갖고 있어야 하는가"(트랙)라는 다른 층위 질문에 답하는 것 — 인계 문구로 명확히 구분해 문서에 남김.
+- 판정 결과: Basic 6종(Search/Add/Edit/Delete/Logout/User) — 범용 기호이거나 실사용에서 이미 얇은 `Pixel/*` 처리로 다뤄지고 있음, 위험/분류 신호는 컨테이너(버튼 보더·경고 박스)가 전담. Visual 2종 유지(Category/Alert) — 색이 분류·상태 의미를 실제로 나르는 자리.
+- Avatar(`104:131`) 구조를 `use_figma`로 실측해 "원 배경(자체 fill)"과 "Icon/User 인스턴스(글리프)" 2겹 구조임을 확인. 새 발견: 마스터는 틸(bound)인데 실제 확정 화면 인스턴스(`501:6370`)의 원 배경은 스카이블루 `#1395e6`(unbound 로컬 오버라이드)로 마스터와 달랐다 — 직전 감사 라운드의 "Avatar는 신 세대에도 틸" 결론은 아이콘 글리프 색만 본 것이었고 원 배경 자체는 확인 대상이 아니었음을 정정. 이 색상 불일치는 이번 브리프 범위 밖이라 design-pl에 별도 보고만, 여기서 고치지 않음. Avatar 원 배경 색 채움 자체는 "사용자별 데이터 격리 신뢰 요소"(brand-guide 1번) 근거로 유지 판정, 그 위 사람 실루엣만 Basic(면색 제거) — 모순 아님.
+- Basic 6종 재드로잉 지시(design-systems 실행용): 두께 2px 확정(brand-guide 4번 "기본 컴포넌트 보더 2px" 값 재사용, 새 임의값 아님), 색은 이미 바인딩된 `color/ink/900` 그대로(stroke weight만 3→2 변경하면 됨), "주 실루엣" 도형(teal fill 보유)만 fill 제거하고 "디테일" 도형(원래도 ink fill만이던 손잡이·+막대·화살표 등)은 무변경 — 노드 ID 단위로 표 작성. Icon/User는 Avatar 인스턴스 오버라이드가 마스터 변경을 자동 상속하지 않는다는 주의사항 별도 명시.
+- `docs/design/graphic-assets.md`에 "Icon/* 8종 Basic/Visual 트랙 재판정 + Basic 6종 재드로잉 지시" 절 신규 append(기존 절 무손실). **전달 대상**: design-systems(재드로잉 실행), design-pl(Avatar 원 배경 색상 불일치 별도 보고).
 
-### 2026-07-14 — "Graphic Assets" 페이지 사용자 삭제 반영, 문서 동기화 (그리기 작업 아님)
-- 배경: 사용자가 Figma에서 "Graphic Assets" 페이지(`90:2`)를 직접 삭제("레거시 아이콘과 겹쳐서 지웠다")했다고 알려와, `docs/design/graphic-assets.md` / `docs/design/design-system.md`를 실제 Figma 상태와 재대조하라는 지시.
-- `use_figma`로 전체 페이지 목록 재조회 → `90:2` 완전히 없음(21개 페이지 중)을 확인. "Icons" 페이지(`96:7`)는 그대로(Icon/* 8종 + Pixel/* 10종, get_metadata 결과 문서와 정확히 일치).
-- Icon/* 8종의 strokeWeight를 use_figma로 직접 재실측 → 전부 3px 균일. 즉 이전에 문서에 기록돼 있던 "Basic(1.5px)/Visual(3px) 두 트랙 분리" 작업은 등록 컴포넌트에는 한 번도 반영되지 않은 채(design-systems "재바인딩 권고" 대기 상태) 원화(`90:2`)만 삭제되어 사라짐 — 복원하지 않고 그 기록을 문서에서 전부 제거, 대신 현재 실존하는 8종(균일 3px)의 구성/색상표로 대체.
-- `docs/design/graphic-assets.md` 전면 재작성(Pixel 10종 섹션·갭 감사 섹션은 실제와 일치해 내용 유지, 표현만 트랙 분리 언급 제거), `docs/design/design-system.md`는 4절에 재확인 한 줄 추가 + 8절 레거시 페이지 순서 표에서 `90:2` 행 제거·삭제 사실 각주 추가(그 외 불변).
-- 전달 대상: design-systems — 기존에 남아 있던 "Icon/Search·Edit·Logout 재바인딩 필요" 권고는 근거 원화가 사라졌으므로 진행하지 않음(신규 작업 없음, 후속 트랙 분리가 필요하면 design-pl이 새 라운드로 재요청해야 함).
+### 2026-07-17 — Pixel/Search 색상 검증(teal→sky/500), 그리기 작업 아님
+- 배경: 메인 세션이 확정 main 프레임 안 `PxSearch`(`501:6390`) 13개 벡터를 직접 실측해 전부 sky `#1395e6`임을 확인, 반면 마스터 `Pixel/Search`(`255:26`)는 위 색상 감사 절에서 teal/500(A그룹, 재해석 불필요)로 이미 판정돼 있어 모순 발견 — 신뢰 형식으로 sky/500 리바인딩 승인, 확인/판정만 수행(벡터 직접 수정 없음).
+- `use_figma` 읽기 전용으로 `501:6390`과 `255:26`을 나란히 실측: 13개 벡터 전부 x/y/width/height/vectorPaths 소수점까지 완전 동일(형태 100% 일치, 색상 외 차이 없음). 마스터 13개 전수 `#17a398`+`color/teal/500` 바인딩(예외 없음), 확정 인스턴스 13개 전수 raw `#1395e6`(unbound) 확인.
+- 트랙 판정: Pixel/Search는 icon-craft-guide의 Icon/* 24px Basic/Visual(스트로크 유무) 이분법이 아니라 별도의 Pixel/* 마이크로 픽셀 블록-실루엣 트랙(스트로크 개념 없음, 항상 solid fill)에 속함 — 이 트랙 안에서는 fill 유무가 Basic/Visual 구분 신호가 아니므로, teal→sky 색상 토큰 교체는 트랙 규칙(strokeWeight·fill 구성)을 전혀 건드리지 않음. 위반 없음.
+- 판정: 순수 오류 정정(브랜드 톤 재해석 아님) — Pixel/NoResult(2026-07-16, 동일 사유)·Icon/Category(같은 날 앞 라운드, "범용 UI 크롬은 sky/500 버킷") 전례와 일치, 신규 토큰 없이 기존 `color/sky/500` 재사용, 다른 아이콘의 teal 사용에 영향 없음.
+- `docs/design/graphic-assets.md`에 "Pixel/Search 색상 검증" 절 신규 append, 기존 A/B 분류표의 Pixel/Search 행은 이 절이 대체함을 명시(기존 행 삭제 없음). **결론**: "리바인딩 승인, design-systems 진행 가능." **전달 대상**: design-systems(마스터 `255:26`의 13개 벡터 fill teal/500→sky/500 실제 리바인딩 실행).
 
-### 2026-07-14 — Pixel/EyeOff 신규 원화 (Pixel/Eye 짝 아이콘, raw)
-- design-prompter 브리프: `Pixel/Eye`(`281:405`, 원본 `247:6814`)는 "표시" 상태만 있고 "숨김" 상태 짝이 없음(2-2번 규칙의 원문 예시) — 그 짝을 그리는 작업.
-- 시작 전 `use_figma`로 Pixel/Eye의 실제 벡터 6블록 좌표를 직접 실측(문서 요약 대신 재관찰): 중앙 가로 바(x0,y4,w14,h2) + 상단 코너 3블록(x2/6/10,y2) + 하단 코너 2블록(x2/10,y6).
-- 형태는 (b)안(코너 블록 제거 → 평평한 눈꺼풀) 채택, (a)안(슬래시 추가)은 14×10 초소형 캔버스에서 스텝형 대각선이 뭉개져 보일 위험 때문에 기각. 상단 피크 3블록만 제거하고 바+하단 2블록은 Pixel/Eye와 동일 좌표로 유지(6블록→3블록) — 하단까지 다 지우면 단순 "-" 기호로 오독될 위험이 있어 유지.
-- `PixelEyeOff`(raw FRAME, `414:2`)를 Icons 페이지(`96:7`)의 `x=1241,y=403`(Pixel/Eye 옆, 기존 120px 간격 규칙 그대로 연장)에 배치. 자식 3개 RECTANGLE(`414:3~5`, name="Vector"), 잉크 `#1a1a1a` 동일 hex. 근거 메모 텍스트 노드(`414:6`)를 아이콘 아래에 온캔버스로도 남김.
-- `get_screenshot`(scale 10)으로 Pixel/Eye와 나란히 비교해 형태 차이(피크 있음 vs 납작함)가 색상 없이도 구분됨을 확인. Pixel/Eye(`281:405`)와 원본(`247:6814`)은 metadata 재조회로 무수정 확인.
-- **아직 Component 아님** — design-systems가 `createComponentFromNode(414:2)`로 `Pixel/EyeOff` 정식 등록해야 함(이름 최종 확정 포함). `docs/design/graphic-assets.md`에 상세 절 추가.
+### 2026-07-17 — Auth 페이지(`934:2`) BgPixels/ConfettiFooter 컨페티 오브제 불투명도 결함 수정 (사용자 이슈 제보, 직접 수정)
+- 사용자 제보: "로그인 화면 뒤에 bg의 블루배경에 있는 오브제들의 컬러가 달라" — 노드 `934:2` 확인 요청("누락 8개 화면 조립"과 무관한 별개 트랙).
+- `get_metadata` 조사 결과 `934:2`는 "Auth"라는 이름의 캔버스(페이지)였고, 그 아래 `Join`(`935:33`)/`login`(`936:1042`)/`login-알림창`(`936:1191`) 3개 프레임을 담고 있음 — 확정 원본(nodeId `501:4692`/`501:4940`/`501:5188`, `user-confirmed-final-design.md` 참고)과는 다른 nodeId라 **파생 SCREENS 페이지**로 판단(보호 라벨 대상 아님, 직접 수정 가능).
+- `use_figma` 읽기 전용으로 각 프레임의 `BgPixels`(전역 컨페티 14개: 다이아몬드5+십자4+별5)·`ConfettiFooter`(카드 하단 5개: 다이아몬드3+별2) 전체 fill/opacity/boundVariables 실측 — fill은 전부 `color/ink/900`(`#1a1a1a`)에 정확히 바인딩(색상 토큰 문제 아님, **이 결론은 다음 라운드에서 틀린 것으로 정정됨**). 실제 결함은 **opacity**: 별(Pixel/Star 인스턴스)만 brand-guide 7번 스펙대로 0.25~0.4가 걸려 있고, 다이아몬드·십자는 전부 opacity 1(완전 불투명) — 같은 잉크색인데 반투명/불투명이 섞여 사용자에게 "색이 다르다"는 인상을 줌. ConfettiFooter는 스펙(25% 불투명도)과 반대로 5개 전부(별 포함) opacity 1이었음. 3개 프레임 전부 동일 패턴(프레임당 14개, 총 42개).
+- `use_figma`로 3개 프레임 총 42개 노드의 opacity 수정: BgPixels 다이아몬드+십자 9개/프레임은 brand-guide 7번 25~40% 범위 내 0.4/0.3/0.35/0.25 순환 배정, ConfettiFooter 5개/프레임은 스펙대로 전부 0.25로 통일. 형태·fill 색·boundVariables는 무변경. **⚠ 후속(다음 항목 참고): "fill 색 자체는 문제 없다"는 이 판단은 틀렸음 — 원본과 직접 대조하지 않고 내린 결론이었다.**
+- `docs/design/graphic-assets.md`에 "Auth 페이지 BgPixels/ConfettiFooter 컨페티 오브제 불투명도 결함 수정 완료" 절 신규 append. **전달 대상**: 없음(직접 완료, design-pl 참고 보고) — 단, 컬러 자체는 다음 라운드에서 재작업됨.
+
+### 2026-07-17 — Auth 페이지(`934:2`) BgPixels 컬러 자체 오류 정정 (사용자 3차 재확인, 전수 hex 재실측 → 직접 수정)
+- 사용자가 opacity 수정 후에도 "컬러 자체가 여전히 원본과 다르다"고 3차 재확인 요청 — 원본(`501:4940`)과 직접 hex 대조 없이 "ink/900 바인딩이니 정상"이라 판단했던 직전 라운드의 결론이 틀렸음을 확인.
+- `use_figma` 읽기 전용으로 확정 login 프레임(`501:4940`) 하위 BgPixels/ConfettiFooter/Divider 전체 vector를 실측한 결과, **원본은 배치 위치에 따라 다른 색 체계를 쓰고 있었다**: BgPixels(블루 배경 위 전역 산포)의 다이아몬드·십자는 **흰색 `#ffffff`**, 별은 **앰버 `#ffce2c`** — ConfettiFooter(흰 카드 안)는 다이아몬드·별 모두 잉크 `#1a1a1a`(이 부분만 934:2와 이미 일치, 재작업 불필요). Divider(or 구분선) 라인도 원본은 `#1a1a1a` opacity 10%(옅은 선)인데 934:2는 opacity 100%(진한 검정 실선)로 달랐다.
+- 934:2 페이지 8개 프레임(Join `935:33`/login `936:1042`/login-알림창 `936:1191`/비번재설정 3개 `995:303`,`996:376`,`996:2575`/Join 배너 2개 `996:2713`,`996:3014`) 전체를 `use_figma`로 전수 스캔한 결과 BgPixels 다이아몬드 40개·십자 32개(64 vector)·별 40개 인스턴스(320 vector)가 **전부 예외 없이 잉크 `#1a1a1a`**로 잘못 복제돼 있었음(원본의 흰색/앰버 2색 체계가 반영 안 됨).
+- `use_figma`로 8개 프레임 전체 수정: 다이아몬드 40개+십자 64개 vector → 흰색 `#ffffff`(raw, unbound — 원본과 동일하게 토큰 미바인딩), 별 320개 vector(인스턴스 오버라이드) → 앰버 `#ffce2c`, Divider 10개 라인 → stroke opacity 0.1(색은 동일 `#1a1a1a`). 총 수정 112개 shape/instance(색상) + 10개 line(불투명도) = 122개 노드, 8개 프레임 전체. ConfettiFooter(40개)는 이미 원본과 일치해 무변경.
+- 부수 발견: `935:33`은 컴포넌트/인스턴스가 아니라 일반 FRAME(8개 프레임이 BgPixels/ConfettiFooter를 독립 복제한 raw 구조, 마스터 공유 안 함) — "935:33만 고치면 전파된다"는 가정 성립 안 해 8개 프레임 전부 개별 수정.
+- `get_screenshot`으로 934:2 페이지 전체·개별 프레임(login/Join/995:303) 재검증 완료. `docs/design/graphic-assets.md`에 "BgPixels 컬러 자체 오류 정정 완료" 절 신규 append. **전달 대상**: design-pl(① 이전 라운드의 "색 문제 없음" 결론이 틀렸다는 점, ② 935:33이 공유 컴포넌트가 아니라는 구조적 발견 — 향후 컴포넌트화 권장 — 참고 보고).

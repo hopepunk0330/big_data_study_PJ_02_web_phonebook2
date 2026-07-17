@@ -15,6 +15,7 @@ from conftest import (
     called,
     contact_payload,
     get_category_id,
+    login,
     record_network,
     signup,
     signup_and_login,
@@ -354,15 +355,18 @@ def _total_count_text(page):
 
 def test_tc_e2e_scr002_01_add_contact_clears_form_and_refreshes_list(page, api_request):
     username, _ = signup(api_request)
+    login(api_request, username)
     _login_via_page(page, username)
     before_total = api_request.get("/contacts").json()["total"]
 
-    page.get_by_placeholder("이름").fill("윤아")
+    page.get_by_placeholder("이름", exact=True).fill("윤아")
     page.get_by_placeholder("전화번호").fill(unique_phone())
-    page.get_by_role("button", name="추가", exact=True).click()
+    page.screenshot(path="docs/screenshot/contacts-01-연락처입력.png")
+    page.get_by_role("button", name="추가", exact=True).nth(0).click()
     page.get_by_text("추가되었습니다").wait_for()
+    page.screenshot(path="docs/screenshot/contacts-02-추가완료.png")
 
-    assert page.get_by_placeholder("이름").input_value() == ""
+    assert page.get_by_placeholder("이름", exact=True).input_value() == ""
     after_total = api_request.get("/contacts").json()["total"]
     assert after_total == before_total + 1
 
@@ -372,53 +376,62 @@ def test_tc_e2e_scr002_02_session_expiry_forces_login_screen(page, api_request):
     _login_via_page(page, username)
     page.context.request.post("/auth/logout")  # 세션 만료 유도
 
-    page.get_by_placeholder("이름").fill("윤아")
+    page.get_by_placeholder("이름", exact=True).fill("윤아")
     page.get_by_placeholder("전화번호").fill(unique_phone())
-    page.get_by_role("button", name="추가", exact=True).click()
+    page.screenshot(path="docs/screenshot/contacts-03-세션만료후입력.png")
+    page.get_by_role("button", name="추가", exact=True).nth(0).click()
 
     page.get_by_text("다시 로그인해 주세요").wait_for()
+    page.screenshot(path="docs/screenshot/contacts-04-세션만료알림.png")
     page.get_by_role("button", name="로그인", exact=True).wait_for()
+    page.screenshot(path="docs/screenshot/contacts-05-로그인화면복귀.png")
 
 
 def test_tc_e2e_scr002_03_invalid_format_keeps_input_and_shows_detail(page, api_request):
     username, _ = signup(api_request)
     _login_via_page(page, username)
 
-    page.get_by_placeholder("이름").fill("윤아")
+    page.get_by_placeholder("이름", exact=True).fill("윤아")
     page.get_by_placeholder("전화번호").fill("010-1234-5678")
-    page.get_by_role("button", name="추가", exact=True).click()
+    page.screenshot(path="docs/screenshot/contacts-06-잘못된형식입력.png")
+    page.get_by_role("button", name="추가", exact=True).nth(0).click()
     page.wait_for_timeout(500)
+    page.screenshot(path="docs/screenshot/contacts-07-잘못된형식유지.png")
 
-    assert page.get_by_placeholder("이름").input_value() == "윤아"
+    assert page.get_by_placeholder("이름", exact=True).input_value() == "윤아"
     assert page.get_by_role("button", name="로그아웃", exact=True).is_visible()  # 화면 안 멈춤
 
 
 def test_tc_e2e_scr002_04_search_by_name_replaces_list(page, api_request):
     username, _ = signup(api_request)
+    login(api_request, username)
     _login_via_page(page, username)
     category_id = get_category_id(api_request)
     api_request.post("/contacts", data=contact_payload(category_id, name="윤아"))
     api_request.post("/contacts", data=contact_payload(category_id, name="윤아"))
 
-    page.get_by_placeholder("이름 검색").fill("윤아")
+    page.get_by_placeholder("이름으로 검색 (예: 윤아)").fill("윤아")
     page.get_by_role("button", name="검색", exact=True).click()
     page.wait_for_timeout(500)
+    page.screenshot(path="docs/screenshot/contacts-08-이름검색결과.png")
     assert page.get_by_text("윤아").count() >= 2
 
 
 def test_tc_e2e_scr002_05_show_all_restores_full_list(page, api_request):
     username, _ = signup(api_request)
     _login_via_page(page, username)
-    page.get_by_placeholder("이름 검색").fill("존재안함")
+    page.get_by_placeholder("이름으로 검색 (예: 윤아)").fill("존재안함")
     page.get_by_role("button", name="검색", exact=True).click()
     page.wait_for_timeout(300)
     page.get_by_role("button", name="전체", exact=True).click()
     page.wait_for_timeout(300)
-    assert page.get_by_role("button", name="추가", exact=True).is_visible()
+    page.screenshot(path="docs/screenshot/contacts-09-전체목록복원.png")
+    assert page.get_by_role("button", name="추가", exact=True).nth(0).is_visible()
 
 
 def test_tc_e2e_scr002_06_edit_button_opens_modal_without_api_call(page, api_request):
     username, _ = signup(api_request)
+    login(api_request, username)
     _login_via_page(page, username)
     category_id = get_category_id(api_request)
     created = api_request.post(
@@ -430,11 +443,13 @@ def test_tc_e2e_scr002_06_edit_button_opens_modal_without_api_call(page, api_req
     log = record_network(page)
     page.get_by_role("row", name=created["name"]).get_by_role("button", name="수정", exact=True).click()
     page.get_by_role("button", name="저장", exact=True).wait_for()
+    page.screenshot(path="docs/screenshot/contacts-10-수정모달오픈.png")
     assert not called(log, "PATCH", f"/contacts/{created['id']}")
 
 
 def test_tc_e2e_scr002_07_edit_modal_save_updates_addr(page, api_request):
     username, _ = signup(api_request)
+    login(api_request, username)
     _login_via_page(page, username)
     category_id = get_category_id(api_request)
     created = api_request.post(
@@ -445,12 +460,15 @@ def test_tc_e2e_scr002_07_edit_modal_save_updates_addr(page, api_request):
 
     page.get_by_role("row", name=created["name"]).get_by_role("button", name="수정", exact=True).click()
     page.get_by_placeholder("주소").fill("제주시")
+    page.screenshot(path="docs/screenshot/contacts-11-주소수정입력.png")
     page.get_by_role("button", name="저장", exact=True).click()
     page.get_by_text("제주시").wait_for()
+    page.screenshot(path="docs/screenshot/contacts-12-주소수정완료.png")
 
 
 def test_tc_e2e_scr002_08_edit_modal_invalid_value_stays_open(page, api_request):
     username, _ = signup(api_request)
+    login(api_request, username)
     _login_via_page(page, username)
     category_id = get_category_id(api_request)
     created = api_request.post(
@@ -461,13 +479,16 @@ def test_tc_e2e_scr002_08_edit_modal_invalid_value_stays_open(page, api_request)
 
     page.get_by_role("row", name=created["name"]).get_by_role("button", name="수정", exact=True).click()
     page.get_by_placeholder("전화번호").fill("010-1234-5678")
+    page.screenshot(path="docs/screenshot/contacts-13-수정모달오류입력.png")
     page.get_by_role("button", name="저장", exact=True).click()
     page.wait_for_timeout(500)
+    page.screenshot(path="docs/screenshot/contacts-14-수정모달유지.png")
     assert page.get_by_role("button", name="저장", exact=True).is_visible()  # 모달 유지
 
 
 def test_tc_e2e_scr002_09_delete_cancel_confirm_no_change(page, api_request):
     username, _ = signup(api_request)
+    login(api_request, username)
     _login_via_page(page, username)
     category_id = get_category_id(api_request)
     created = api_request.post(
@@ -480,12 +501,14 @@ def test_tc_e2e_scr002_09_delete_cancel_confirm_no_change(page, api_request):
     log = record_network(page)
     page.get_by_role("row", name=created["name"]).get_by_role("button", name="삭제", exact=True).click()
     page.wait_for_timeout(500)
+    page.screenshot(path="docs/screenshot/contacts-15-삭제취소유지.png")
     assert not called(log, "DELETE", f"/contacts/{created['id']}")
     assert page.get_by_text(created["name"]).is_visible()
 
 
 def test_tc_e2e_scr002_10_delete_confirm_removes_row(page, api_request):
     username, _ = signup(api_request)
+    login(api_request, username)
     _login_via_page(page, username)
     category_id = get_category_id(api_request)
     created = api_request.post(
@@ -497,6 +520,7 @@ def test_tc_e2e_scr002_10_delete_confirm_removes_row(page, api_request):
     page.once("dialog", lambda dialog: dialog.accept())
     page.get_by_role("row", name=created["name"]).get_by_role("button", name="삭제", exact=True).click()
     page.wait_for_timeout(500)
+    page.screenshot(path="docs/screenshot/contacts-16-삭제완료.png")
     assert page.get_by_text(created["name"]).count() == 0
 
 
@@ -505,18 +529,21 @@ def test_tc_e2e_scr002_11_logout_button_transitions_to_login(page, api_request):
     _login_via_page(page, username)
     page.get_by_role("button", name="로그아웃", exact=True).click()
     page.get_by_role("button", name="로그인", exact=True).wait_for()
+    page.screenshot(path="docs/screenshot/contacts-17-로그아웃완료.png")
 
 
 def test_tc_e2e_scr002_12_double_click_add_sends_single_request(page, api_request):
     username, _ = signup(api_request)
     _login_via_page(page, username)
 
-    page.get_by_placeholder("이름").fill("윤아")
+    page.get_by_placeholder("이름", exact=True).fill("윤아")
     page.get_by_placeholder("전화번호").fill(unique_phone())
+    page.screenshot(path="docs/screenshot/contacts-18-중복클릭입력.png")
     log = record_network(page)
-    add_button = page.get_by_role("button", name="추가", exact=True)
+    add_button = page.get_by_role("button", name="추가", exact=True).nth(0)
     add_button.dblclick()
     page.wait_for_timeout(1000)
+    page.screenshot(path="docs/screenshot/contacts-19-중복클릭결과.png")
     post_count = sum(1 for entry in log if entry.startswith(f"POST {BASE_URL}/contacts"))
     assert post_count == 1
 

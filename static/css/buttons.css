@@ -1,0 +1,205 @@
+/* 연락처 관리 서비스 — 버튼(NeoBtn/Button, design-system.md 5절/9절)
+   .btn*(모든 버튼 스타일 변형) + Row Action Button(테이블/카테고리 목록의
+   수정·삭제 소형 아웃라인 버튼). */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 44px;
+    padding: 8px 16px;
+    border-radius: var(--radius-10);
+    border: var(--border-base) solid var(--color-ink-900);
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: var(--shadow-hard-2);
+    background: var(--color-white);
+    color: var(--color-ink-900);
+}
+.btn:disabled {
+    background: var(--color-gray-350);
+    border-color: var(--color-gray-600);
+    color: var(--color-text-muted-strong);
+    box-shadow: none;
+    cursor: not-allowed;
+}
+.btn-amber {
+    background: var(--color-amber-600);
+    color: var(--color-ink-900);
+}
+.btn-sky {
+    background: var(--color-sky-500);
+    color: var(--color-white);
+}
+.btn-navy {
+    background: var(--color-navy-700);
+    color: var(--color-white);
+}
+.btn-coral {
+    background: var(--color-coral-500);
+    color: var(--color-white);
+}
+.btn-neutral {
+    background: var(--color-white);
+    color: var(--color-ink-900);
+}
+.btn-ink {
+    /* NeoBtn Style=Ink, Size=Compact(79x25, 937:1448 실측) — 헤더 로그아웃 전용.
+       너비는 79px 실측값을 최소값으로만 두고 고정하지 않는다 — 렌더링 폰트(Chromium
+       Noto Sans KR)의 "로그아웃"+아이콘+gap 실제 폭이 Figma 실측 79px보다 근소하게
+       넓어 고정폭이면 텍스트가 줄바꿈되는 결함이 있었다(2026-07-18 발견). */
+    min-width: 79px;
+    height: 25px;
+    background: var(--color-ink-900);
+    color: var(--color-white);
+    padding: 4px 10px;
+    box-shadow: none;
+    font-size: 12px;
+    white-space: nowrap;
+}
+.btn-compact {
+    height: 36px;
+    padding: 8px 14px;
+}
+.btn-small {
+    height: auto;
+    padding: 5px 11px;
+    font-size: 10px;
+    border-radius: 8px;
+    box-shadow: none;
+}
+/* Leading Icon(NeoBtn 추가/로그아웃 버튼 앞 아이콘, 9px 정사각) */
+.btn .icon-plus,
+.btn .icon-logout {
+    width: 9px;
+    height: 9px;
+    flex-shrink: 0;
+}
+
+/* ── Table Row Action(main 연락처 목록 테이블 수정/삭제, node 260:100,
+   41x25 텍스트 아웃라인, 그림자 없음) ─────────────────────────────────── */
+.row-action {
+    width: 41px;
+    height: 25px;
+    padding: 0;
+}
+.row-action.edit {
+    background: var(--color-white);
+    border: 1px solid var(--color-teal-500);
+    color: var(--color-teal-500);
+}
+.row-action.danger {
+    background: var(--color-white);
+    border: 1px solid var(--color-coral-500);
+    color: var(--color-coral-500);
+}
+
+/* ── Row Action Button(사이드바 "카테고리 관리" 목록 수정/삭제, node 260:95,
+   28x22 아이콘 전용, 그림자 없음) ──────────────────────────────────────
+   Table Row Action(위)과 완전히 다른 컴포넌트 — 혼동 금지. */
+.row-action-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 22px;
+    padding: 0;
+    border-radius: 5px;
+    border: var(--border-hairline) solid;
+    box-shadow: none;
+    cursor: pointer;
+}
+.row-action-icon svg {
+    width: 14px;
+    height: 14px;
+    display: block;
+}
+.row-action-icon.neutral {
+    background: var(--color-white);
+    border-color: var(--component-row-action-button-border-neutral);
+    color: var(--color-ink-900);
+}
+.row-action-icon.danger {
+    background: var(--color-amber-600);
+    border-color: var(--color-ink-900);
+    color: var(--color-ink-900);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   인터랙션 상태(Hover/Press/Focus/Disabled) — design-system.md 9-1/9-2절.
+   Hover/Press hex는 문서의 블렌드 공식 mix(base, target, t)을 그대로 계산한
+   값이다(임의값 아님, 계산 근거는 각 규칙 옆 주석). Focus는 9-1절 "2겹
+   DROP_SHADOW" 공식(흰 1px 갭 + ink 4px 링, 장식 그림자 제거)을
+   box-shadow 다중 레이어로 재현한다. Disabled는 이미 위에서 색 토큰 공식대로
+   구현돼 있어(0-24절) 여기서는 반복하지 않는다. ══════════════════════════ */
+
+/* Focus — 모든 .btn 계열 공통(브랜드색/뉴트럴/잉크 전부 동일 링) */
+/* 브라우저 기본(UA) 아웃라인 제거(2026-07-18 버그 수정): outline:none이 기존엔
+   :focus-visible 블록 안에만 있었다 — 그러면 Tab 포커스(:focus-visible 매치)에서만
+   기본 아웃라인이 사라지고, 마우스 클릭 포커스(일반 :focus, :focus-visible 비매치)
+   에서는 브라우저 기본 아웃라인이 그대로 남았다. :focus-visible과 별개로 모든
+   :focus에서 기본값을 지운다 — 커스텀 링(box-shadow)은 여전히 :focus-visible에서만. */
+.btn:focus {
+    outline: none;
+}
+.btn:focus-visible {
+    box-shadow: 0 0 0 1px var(--color-white), 0 0 0 4px var(--color-ink-900);
+}
+.btn:disabled:focus-visible {
+    box-shadow: none;
+}
+
+/* Hover/Press — 브랜드색 배경: ink 쪽으로 12%/24% 블렌드 */
+.btn-amber:hover:not(:disabled) { background: #e4b82a; } /* mix(#ffce2c, #1a1a1a, .12) */
+.btn-amber:active:not(:disabled) { background: #c8a328; box-shadow: none; } /* t=.24 */
+.btn-sky:hover:not(:disabled) { background: #1486ce; } /* mix(#1395e6, #1a1a1a, .12) */
+.btn-sky:active:not(:disabled) { background: #1577b5; box-shadow: none; } /* t=.24 */
+.btn-navy:hover:not(:disabled) { background: #09476f; } /* mix(#074d7b, #1a1a1a, .12) */
+.btn-navy:active:not(:disabled) { background: #0c4164; box-shadow: none; } /* t=.24 */
+.btn-coral:hover:not(:disabled) { background: #e4526b; } /* mix(#ff5a76, #1a1a1a, .12) */
+.btn-coral:active:not(:disabled) { background: #c84b60; box-shadow: none; } /* t=.24 */
+
+/* Hover/Press — 흰 배경류(Neutral): ink 쪽으로 6%/12% 블렌드 */
+.btn-neutral:hover:not(:disabled) { background: #f1f1f1; } /* mix(#fff, #1a1a1a, .06) */
+.btn-neutral:active:not(:disabled) { background: #e4e4e4; box-shadow: none; } /* t=.12 */
+
+/* Hover/Press — Ink(베이스가 이미 ink라 흰색 쪽으로 12%/24% 블렌드, 9-1절 명시 대체 공식) */
+.btn-ink:hover:not(:disabled) { background: #353535; } /* mix(#1a1a1a, #fff, .12) */
+.btn-ink:active:not(:disabled) { background: #515151; box-shadow: none; } /* t=.24 */
+
+/* Table Row Action(main 테이블 수정/삭제) — 자기 보더/텍스트색 쪽으로 12%/24% */
+.row-action.edit:hover:not(:disabled) { background: #e3f4f3; } /* mix(#fff, #17a398, .12) */
+.row-action.edit:active:not(:disabled) { background: #c7e9e6; } /* t=.24 */
+.row-action.danger:hover:not(:disabled) { background: #ffebef; } /* mix(#fff, #ff5a76, .12) */
+.row-action.danger:active:not(:disabled) { background: #ffd7de; } /* t=.24 */
+.row-action:focus {
+    outline: none;
+}
+.row-action:focus-visible {
+    box-shadow: 0 0 0 1px var(--color-white), 0 0 0 4px var(--color-ink-900);
+}
+.row-action:disabled {
+    background: var(--color-gray-350);
+    border-color: var(--color-gray-600);
+    color: var(--color-text-muted-strong);
+    cursor: not-allowed;
+}
+
+/* Row Action Button(사이드바 카테고리 관리 아이콘) — 자기 보더색 쪽으로 10%/20% */
+.row-action-icon.neutral:hover:not(:disabled) { background: #e8e9e9; } /* mix(#fff, #1c1f21, .10) */
+.row-action-icon.neutral:active:not(:disabled) { background: #d2d2d3; } /* t=.20 */
+.row-action-icon.danger:hover:not(:disabled) { background: #e8bc2a; } /* mix(#ffce2c, #1a1a1a, .10) */
+.row-action-icon.danger:active:not(:disabled) { background: #d1aa28; } /* t=.20 */
+.row-action-icon:focus {
+    outline: none;
+}
+.row-action-icon:focus-visible {
+    box-shadow: 0 0 0 1px var(--color-white), 0 0 0 4px var(--color-ink-900);
+}
+.row-action-icon:disabled {
+    background: var(--color-gray-350);
+    border-color: var(--color-gray-600);
+    color: var(--color-text-muted-strong);
+    cursor: not-allowed;
+}

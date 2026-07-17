@@ -14,7 +14,12 @@
 - `.claude/skills/*/SKILL.md` — design-concept-round, report-pdf, review, summary
 - `.claude/commands/*.md` — summary.md
 - `.claude/hooks/stop-failure-notify.sh` — 스크립트 로직 자체는 포터블(단, 아래 C-2 웹훅 파일은 별도 취급)
-- `docs/harness/**` — claude-harness.md, git-workflow.md, design-team/figma-file-organization.md, 이 리셋 체크리스트, report-format-guide.md·report-style.css(범용 보고서 HTML/PDF 템플릿 — 프로젝트 브랜드 색이 아니라 남색/호박색 범용 톤이라 포터블. `docs/design/`에 잘못 있던 것을 이번에 이쪽으로 재분류함, 2026-07-16)
+- `docs/harness/**` — claude-harness.md, git-workflow.md, design-team/figma-file-organization.md, 이 리셋 체크리스트, report-format-guide.md·report-style.css(범용 보고서 HTML/PDF 템플릿 — 프로젝트 브랜드 색이 아니라 남색/호박색 범용 톤이라 포터블. `docs/design/`에 잘못 있던 것을 이번에 이쪽으로 재분류함, 2026-07-16), 그리고 design-team 아래 다음 크래프트/감사 참조 문서들(전부 노드 ID·hex 등 프로젝트 고유 값 미포함, design-systems/graphic-designer/interaction-designer/motion-designer가 만들 때 참조하고 design-qa가 감사할 때 검증 기준으로 삼는 공용 포터블 문서):
+  - `design-team/figma-page-format-guide.md`(문서화 페이지 시각 포맷 표준 — 스와치 카탈로그·컴포넌트 스펙 시트 서식 원칙과 체크리스트, 2026-07-16 신설)
+  - `design-team/icon-craft-guide.md`(아이콘 Basic/Visual 트랙 구분 — 트랙 판정 기준, 면색 유무, 스트로크 두께 원칙, 2026-07-17 신설)
+  - `design-team/component-state-guide.md`(컴포넌트 상태 커버리지·네이밍 — State 축 네이밍, 유형별 필수 상태, Disabled 색 토큰 표현, 아이콘 INSTANCE 조립 원칙, 2026-07-17 신설)
+  - `design-team/token-architecture-guide.md`(토큰 아키텍처 — 3계층 구조, elevation 제한 사용, padding+hug 높이, 텍스트 Property 노출 원칙, 2026-07-17 신설)
+  - `design-team/motion-timing-guide.md`(모션 타이밍·퍼포먼스 — duration·easing·루프·성능 기준, 2026-07-17 신설)
 - `docs/karpathy_skills.md`
 - `pdf-maker/make-pdf.js`, `pdf-maker/package.json` — md→PDF 변환 유틸리티(절차/도구), 생성물은 B그룹
 - `.gitignore` — 항목 전부가 이 프로젝트 데이터가 아니라 Python 범용 관례(`.venv/`, `__pycache__/`, `.pytest_cache/`)나 A그룹 도구/인프라에 종속된 무시 규칙(`pdf-maker/node_modules/`, `pdf-maker/결과.pdf`, `.claude/settings.local.json`, `.claude/hooks/.slack-webhook-url`)이다. 새 프로젝트에서 일부 경로(예: pdf-maker를 안 쓰는 프로젝트)가 안 맞아도 그냥 매칭 안 될 뿐 해롭지 않으므로 그대로 유지한다
@@ -34,10 +39,10 @@
 
 1. **`.claude/settings.local.json`**: `permissions.allow` 안의 Bash 허용 목록 다수가 이 프로젝트의 **절대경로**(`/Users/aydana/dev/big21/project/02_web_phonebook/...`)를 하드코딩하고 있다(실측: 7곳). 다만 이 파일은 `.gitignore` 대상이라 git 기반 하네스 공유(레포 복사 등)로는 애초에 전파되지 않고, Claude Code 자체도 프로젝트 절대경로를 키로 권한을 관리하므로(`~/.claude.json`의 `projects` 항목도 경로별로 분리) **새 프로젝트 폴더를 열면 자동으로 빈 상태로 시작된다 — 별도 리셋 작업이 필요 없다.** 유일하게 신경 쓸 경우는 `.claude/` 폴더를 git을 거치지 않고 파일째로(cp 등) 새 프로젝트에 복사할 때뿐이며, 이때도 옛 경로 항목은 그냥 안 쓰이는 죽은 줄로 남을 뿐 실질적 위험은 없다 — 지저분함이 싫으면 지우는 정도.
 2. **`.claude/hooks/.slack-webhook-url`**: `.gitignore` 처리돼 있어 git에는 안 남지만 디스크에는 실제로 남아있다. 이건 프로젝트가 아니라 **사람(작업자)에 연결된 자격증명**이라 오히려 재사용 가능하다 — 지우지 않고 그대로 둬도 된다. 워크스페이스/Slack 채널이 바뀔 때만 재설정.
-3. **예시 문장에 프로젝트명·Figma 노드 ID가 하드코딩된 곳**: 프로젝트명(예: "연락처 관리 웹 서비스")보다 **Figma 노드 ID**(예: `259:609`)가 더 조심해야 할 대상이다 — 프로젝트명은 새 프로젝트에서 읽었을 때 "예시구나" 하고 넘어갈 수 있지만, 노드 ID는 새 프로젝트의 Figma 파일에서 완전히 무관한(또는 존재하지 않는) 요소를 가리키므로 그대로 읽으면 혼란을 준다. `.claude/agents/*.md`·`docs/harness/**`(포터블 문서)에 컴포넌트 예시를 들 때는 **노드 ID 없이 이름만** 적는다 — 구체적 ID가 필요하면 `docs/design/design-system.md`(프로젝트 데이터, 매번 새로 채워짐)를 참고하라고 안내한다. — 기능적 로직에는 영향 없지만 새 프로젝트에 그대로 복사하면 예시가 어색해진다. 복사 시점에 프로젝트명만 치환 권장(삭제 대상 아님):
+3. **예시 문장에 프로젝트명·Figma 노드 ID가 하드코딩된 곳**: 프로젝트명(예: "연락처 관리 웹 서비스")보다 **Figma 노드 ID**(예: `259:609`)가 더 조심해야 할 대상이다 — 프로젝트명은 새 프로젝트에서 읽었을 때 "예시구나" 하고 넘어갈 수 있지만, 노드 ID는 새 프로젝트의 Figma 파일에서 완전히 무관한(또는 존재하지 않는) 요소를 가리키므로 그대로 읽으면 혼란을 준다. `.claude/agents/*.md`·`docs/harness/**`(포터블 문서)에 컴포넌트 예시를 들 때는 **노드 ID 없이 이름만** 적는다 — 구체적 ID가 필요하면 `docs/design/design-system.md`(프로젝트 데이터, 매번 새로 채워짐)를 참고하라고 안내한다. — 기능적 로직에는 영향 없지만 새 프로젝트에 그대로 복사하면 예시가 어색해진다. 복사 시점에 프로젝트명만 치환 권장(삭제 대상 아님). **줄 번호는 문서가 수정될 때마다 밀릴 수 있으니, 리셋 실행 시점에 매번 재확인한다(2026-07-17, stale 참조 정정 사례로 아래 항목 갱신):**
    - `.claude/agents/brand-designer.md` 21번째 줄 — "이 프로젝트(연락처 관리 웹 서비스)에 맞게"
    - `.claude/agents/planning-writer.md` 17번째 줄, `.claude/agents/qa-planner.md` 23번째 줄 — `06_연락처관리_웹서비스_테스트계획서_v1.0.md` 예시 파일명
-   - `docs/harness/design-team/figma-file-organization.md` 42번째 줄 — "연락처" 예시 언급
+   - `docs/harness/design-team/figma-file-organization.md` 45번째 줄("연락처" 화면 카테고리 예시)과 175번째 줄("이 프로젝트(예: 폼이 있는 연락처 관리 서비스)" — 2-6번 선제적 기본 구성 판단 기준 예시) — 두 곳 모두 "연락처" 예시 언급(2026-07-17, 두 번째 occurrence 신규 반영)
    - `.claude/agents/service-planner.md`·`.claude/agents/tech-architect.md`·`.claude/agents/dev-pl.md` — "이 프로젝트는 FastAPI+DB 과제" 류의 스택 예시 언급. 전부 "지금 이 프로젝트는 X지만 다음 프로젝트는 그 문서를 따라간다" 식으로 명시적으로 비하드코딩 처리돼 있어 기능적으로는 안전하지만, 새 프로젝트 복사 시 예시 문구만 참고용임을 인지할 것
 4. **`~/.claude/agents/*.md` (전역)**: 디자인팀 12개 + 개발+QA팀 4개(dev-pl, backend-engineer, frontend-engineer, qa-engineer)는 이미 복사돼 있다. 기획팀 5개(planning-pl, service-planner, tech-architect, qa-planner, planning-writer)는 아직 프로젝트 로컬에만 있다 — 다른 프로젝트에서도 기획팀을 쓰려면 이때 전역으로 복사할지 결정한다(리셋과 별개로, 아직 결정 안 된 사항).
 
