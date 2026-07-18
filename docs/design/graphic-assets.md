@@ -143,7 +143,7 @@ docs/planning(`01_구현요구사항`, `02_화면정의서`, `03_기능정의서
 
 참고로 로그인 버튼 안의 화살표형 "Icon"(nodeId `247:6829`, 14×14)은 재사용 가능한 이름으로 명명되지 않은 장식용 화살표라 이번 보고에서는 관찰만 남기고 조치 대상에서 제외했다(변경 없음, 계속 조치 대상 아님).
 
-**값 출처**: `docs/design/brand-guide.md`(색상 hex), `docs/planning/01_연락처관리_웹서비스_구현요구사항_v1.11.md`, `docs/planning/02_연락처관리_웹서비스_화면정의서_v1.15.md`, `docs/planning/03_연락처관리_웹서비스_기능정의서_v1.3.md`(FR 목록) + 확정 8개 프레임 직접 재관찰(get_metadata/get_design_context, 읽기 전용) + Pixel/Eye 벡터 좌표 실측(use_figma 읽기 전용) + PixelCheck 원본(`474:888`) 벡터 좌표/stroke 속성 실측(use_figma 읽기 전용).
+**값 출처**: `docs/design/brand-guide.md`(색상 hex), `docs/planning/01_연락처관리_웹서비스_구현요구사항_v1.14.md`, `docs/planning/02_연락처관리_웹서비스_화면정의서_v1.18.md`, `docs/planning/03_연락처관리_웹서비스_기능정의서_v1.3.md`(FR 목록) + 확정 8개 프레임 직접 재관찰(get_metadata/get_design_context, 읽기 전용) + Pixel/Eye 벡터 좌표 실측(use_figma 읽기 전용) + PixelCheck 원본(`474:888`) 벡터 좌표/stroke 속성 실측(use_figma 읽기 전용).
 
 ## 상태: Icons 페이지(`96:7`) 색상 바인딩 전수 감사 — Icon/* 8종 + Pixel/* 12종, A/B 분류 (2026-07-17, design-pl 브리프)
 

@@ -18,8 +18,10 @@
 
 ## Git 리모트/브랜치 관례
 - 리모트가 두 개다: `assignment`(실제 과제 제출용 저장소) / `origin`(JY_Harness, 사용자의 개인 하네스·템플릿 저장소 — 여러 프로젝트에서 재사용하는 `.claude/agents/**`·`docs/harness/**` 자산을 추적).
-- 두 리모트 모두 **main에 바로 push하지 않고 기능 브랜치로 push한 뒤 PR로 머지**하는 방식을 쓴다(예: 백엔드 작업은 `feat/backend` 브랜치 → PR #1 → main 머지).
-- `.claude/agents/**`·`docs/harness/**`(하네스 파일)을 수정하면, assignment 제출과 별개로 **origin(JY_Harness)에도 기능 브랜치로 push**해서 개인 하네스 저장소에 반영한다 — 하네스 변경은 두 리모트 모두에 반영하는 게 기본 패턴이다.
+- 브랜치+PR 게이트는 **실제 구현 코드**(예: `backend/`, `static/` — TRD가 정한 코드 폴더)에만 적용한다: 브랜치 생성 → code-reviewer 리뷰 → 사용자 승인 → PR 머지.
+- 그 외(기획 문서 `docs/planning/**`, 디자인 산출물 `docs/design/**`, 하네스 정의 `.claude/agents/**`·`docs/harness/**`, 루트/팀별 `CLAUDE.md`, `tests/` 등)는 브랜치를 거치지 않고 main에 직접 커밋·푸시한다(대화 중 사용자가 그때그때 확인하는 방식). 자세한 기준은 `docs/harness/git-workflow.md` 참고.
+- `.claude/agents/**`·`docs/harness/**`(하네스 파일)을 수정하면, assignment 제출과 별개로 origin(JY_Harness)에도 동일하게 main 직접 커밋으로 반영한다 — 하네스 변경은 두 리모트 모두에 반영하는 게 기본 패턴이다.
+- 어느 경로든, 원격 저장소로의 실제 push는 매번 사용자의 명시적 확인을 받은 뒤에만 수행한다(위 "금지" 항목과 동일).
 
 ## 테스트 보고서 Notion 동기화 + 문서 버전관리
 - `docs/test-reports/`의 단위/통합 테스트 보고서를 갱신할 때마다, 아래 두 Notion 페이지에도 최신 내용을 반영한다:
