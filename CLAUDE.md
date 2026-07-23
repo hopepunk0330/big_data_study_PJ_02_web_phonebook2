@@ -10,7 +10,7 @@
 
 ## 검증 명령
 -- 테스트 : python -m pytest
--- 형식 검사 : lint 사용
+-- 형식 검사 : python -m ruff check backend/ (설정: pyproject.toml)
 
 ## 금지
 - 내 명시적 허락 없이 원격 저장소로 push 하지 않습니다

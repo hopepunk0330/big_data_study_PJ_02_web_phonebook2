@@ -31,7 +31,7 @@
 - `docs/planning/**` — 00~06 번호 문서(md·PDF 전부), `old/`, `service-concept.md`, `tech-architecture.md` 전부
 - `docs/pdf/**` — 생성된 PDF/HTML 산출물
 - `.claude/logs/stop-failures.log`
-- `backend/`, `static/`, `frontend/`, `tests/`, `pdf-maker/문서.html`, `pdf-maker/결과.pdf` — 실제 애플리케이션 코드/생성물. **`backend/CLAUDE.md`/`frontend/CLAUDE.md`(이 프로젝트의 확정 스택·파일구조 요약)도 포함** — 삭제해도 문제없다, backend-engineer/frontend-engineer가 새 프로젝트에서 작업을 시작하면 그 프로젝트의 `docs/planning`·`docs/design`을 읽어 그 자리에서 다시 만들어내도록 하네스 규칙(`.claude/agents/backend-engineer.md`·`frontend-engineer.md` "할 일 0번")에 이미 명문화돼 있다 — 수동으로 남겨둘 필요 없음. **`static/`은 실제로 서빙되는 화면 코드(`index.html`/`app.js`)가 들어가는 폴더로, `backend/`·`frontend/`와 형제 폴더다(05 TRD §3) — 가이드 문서가 아니라 이 프로젝트 고유의 구현 산출물이므로 B그룹이 맞다.**
+- `backend/`, `static/`, `frontend/`, `tests/`, `pdf-maker/문서.html`, `pdf-maker/결과.pdf` — 실제 애플리케이션 코드/생성물. **`backend/CLAUDE.md`/`frontend/CLAUDE.md`(이 프로젝트의 확정 스택·파일구조 요약)도 포함**. **루트 `pyproject.toml`도 포함** — 이 프로젝트의 `backend/` 전용 ruff 설정(`src = ["backend"]`, Python 3.12 대상)이라 프로젝트 데이터다 — 삭제해도 문제없다, `backend-engineer.md`의 lint 기본값 규칙에 따라 새 프로젝트에서 필요할 때 다시 만들어진다 — 삭제해도 문제없다, backend-engineer/frontend-engineer가 새 프로젝트에서 작업을 시작하면 그 프로젝트의 `docs/planning`·`docs/design`을 읽어 그 자리에서 다시 만들어내도록 하네스 규칙(`.claude/agents/backend-engineer.md`·`frontend-engineer.md` "할 일 0번")에 이미 명문화돼 있다 — 수동으로 남겨둘 필요 없음. **`static/`은 실제로 서빙되는 화면 코드(`index.html`/`app.js`)가 들어가는 폴더로, `backend/`·`frontend/`와 형제 폴더다(05 TRD §3) — 가이드 문서가 아니라 이 프로젝트 고유의 구현 산출물이므로 B그룹이 맞다.**
 - 루트 `CLAUDE.md` — 이 프로젝트 고유 규칙(들여쓰기, 검증 명령 등). 새 프로젝트는 새로 작성하되, 이 파일의 "행동 지침"·"기본 도구" 절만 템플릿으로 참고 가능
 - `.claude/agent-memory/*.md`의 "작업 로그" 섹션 내용 — 파일 자체는 남겨도 되지만 내용은 비우거나 "신설" 상태로 리셋(에이전트가 다음 실행 시 알아서 새로 채움)
 
