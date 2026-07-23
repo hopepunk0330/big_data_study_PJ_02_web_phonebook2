@@ -3,7 +3,7 @@
 이 파일은 `backend/` 폴더에서 작업할 때 참고하는 요약 가이드다. 정본(source of truth)은 항상 아래 `docs/planning` 문서들이다 — 여기 내용과 정본이 어긋나면 정본이 맞다. API 계약·DB 스키마 전체 내용을 여기 복사하지 않는다(중복되면 나중에 어긋난다) — 실제 값은 항상 정본 문서를 열어서 확인한다.
 
 ## 정본 문서
-- `docs/planning/05_연락처관리_웹서비스_TRD_v1.1.md` — 기술 스택 확정, 전체 아키텍처, 프로젝트 파일 구조, DB 설계(DDL), 인증 설계
+- `docs/planning/05_연락처관리_웹서비스_TRD_v1.4.md` — 기술 스택 확정, 전체 아키텍처, 프로젝트 파일 구조, DB 설계(DDL), 인증 설계
 - `docs/planning/tech-architecture.md` — TRD와 같은 내용의 canonical 요약본
 - `docs/planning/03_연락처관리_웹서비스_기능정의서_*.md` — 파일·함수 단위 설계
 

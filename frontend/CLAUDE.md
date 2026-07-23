@@ -6,7 +6,7 @@
 - `docs/design/design-system.md` — 토큰(색상/타이포/spacing/elevation)·컴포넌트 인벤토리, 인터랙션 상태(Hover/Press/Focus/Disabled 등)
 - `docs/design/confirmed/` — 확정 프레임 요약(화면별)
 - `docs/planning/02_연락처관리_웹서비스_화면정의서_*.md` — 화면 목적·구성요소-동작 표·상태 분기 플로우차트
-- `docs/planning/05_연락처관리_웹서비스_TRD_v1.1.md` §2/§3 — 실제 파일 구조, 정적 파일 서빙 방식
+- `docs/planning/05_연락처관리_웹서비스_TRD_v1.4.md` §2/§3 — 실제 파일 구조, 정적 파일 서빙 방식
 
 ## 실제 화면 코드 위치
 ```
