@@ -21,6 +21,7 @@
   - `design-team/component-state-guide.md`(컴포넌트 상태 커버리지·네이밍 — State 축 네이밍, 유형별 필수 상태, Disabled 색 토큰 표현, 아이콘 INSTANCE 조립 원칙, 2026-07-17 신설)
   - `design-team/token-architecture-guide.md`(토큰 아키텍처 — 3계층 구조, elevation 제한 사용, padding+hug 높이, 텍스트 Property 노출 원칙, 2026-07-17 신설)
   - `design-team/motion-timing-guide.md`(모션 타이밍·퍼포먼스 — duration·easing·루프·성능 기준, 2026-07-17 신설)
+  - `design-team/korean-ecommerce-detail-page-guide.md`(한국 이커머스 상세페이지·카드뉴스 장르 관습 — 대형 그래픽 타이포, 컬러 블록, 뱃지·콜아웃, 아이콘 그리드, 창의적 장치 다양성, 그리고 표준 스토리라인 구조(7단계 심리 흐름). `content-designer`(비주얼)와 `service-planner`(기획팀, 스토리라인) 양쪽이 함께 참고하는 문서라 design-team 폴더에 있지만 기획팀도 참조한다. 노드 ID·특정 브랜드 색상값 없이 일반화된 장르 관습만 담아 포터블, 2026-07-26 신설)
   - 그리고 `planning-team/*.md`(전부 프로젝트 고유 스택·도메인명 미포함, service-planner/tech-architect/qa-planner/planning-writer가 브리프·문서를 만들 때 참조하고 `planning-kickoff-round` 스킬이 절차 흐름에서 정본으로 삼는 공용 포터블 문서(스킬 안에서는 인터뷰 항목과 1:1 대응되는 4개만 `[[wikilink]]`로 직접 연결되고, `document-structure-guide.md`는 0단계에서 `@`참조로 별도 언급되며, 나머지 2개(functional-spec-writing-guide, document-versioning-guide)는 스킬 자체가 아니라 문서 작성 단계에서 적용됨), 2026-07-26 신설): `planning-team/prd-writing-guide.md`(서비스 트라이앵글·스코프 트레이드오프·비목표 감별), `planning-team/architecture-decision-guide.md`(API 계약 우선·DB 스키마 근거·스택 선택 기준), `planning-team/functional-spec-writing-guide.md`(기능 단위 입력/처리/출력/예외 스펙 구조), `planning-team/screen-spec-pattern-guide.md`(화면정의서 4종 세트·오버레이 포함 원칙), `planning-team/test-plan-design-guide.md`(동등분할+경계값·추적성·위험기반 우선순위), `planning-team/document-versioning-guide.md`(old/ 보존·인용 갱신·changelog 구분), `planning-team/document-structure-guide.md`(문서 구조 상속 — 기존/전달받은 문서 패턴을 새 문서에도 이어받기, 2026-07-26 신설)
 - `docs/karpathy_skills.md`
 - `pdf-maker/make-pdf.js`, `pdf-maker/package.json` — md→PDF 변환 유틸리티(절차/도구), 생성물은 B그룹
@@ -30,6 +31,7 @@
 
 - `docs/design/*.md` — brand-guide.md, design-system.md, graphic-assets.md, missing-screens.md
 - `docs/design/confirmed/*.md` — 사용자가 확정한 이 프로젝트 디자인 기록
+- `docs/design/ai-image-content/**` — `ai-image-prompt-writer`가 작성한 프롬프트 파일과 그 결과물(다운로드한 이미지, 조립본), 2026-07-26 신설
 - `docs/planning/**` — 00~06 번호 문서(md·PDF 전부), `old/`, `service-concept.md`, `tech-architecture.md` 전부
 - `docs/pdf/**` — 생성된 PDF/HTML 산출물
 - `.claude/logs/stop-failures.log`
@@ -46,7 +48,7 @@
    - (2026-07-26 해소) `.claude/agents/planning-writer.md`·`.claude/agents/qa-planner.md`의 "06_연락처관리..." 예시 파일명 하드코딩은 harness-auditor 52차 지적(문서가 이미 존재하는데 "신규/미작성"으로 stale하게 서술)으로 제거됨 — 이제 "테스트계획서는 06번" 정도의 포터블 서술만 남고 프로젝트명 하드코딩 없음
    - `docs/harness/design-team/figma-file-organization.md` 45번째 줄("연락처" 화면 카테고리 예시)과 176번째 줄("이 프로젝트(예: 폼이 있는 연락처 관리 서비스)" — 2-6번 선제적 기본 구성 판단 기준 예시) — 두 곳 모두 "연락처" 예시 언급(2026-07-17, 두 번째 occurrence 신규 반영)
    - `.claude/agents/service-planner.md`·`.claude/agents/tech-architect.md`·`.claude/agents/dev-pl.md` — "이 프로젝트는 FastAPI+DB 과제" 류의 스택 예시 언급. 전부 "지금 이 프로젝트는 X지만 다음 프로젝트는 그 문서를 따라간다" 식으로 명시적으로 비하드코딩 처리돼 있어 기능적으로는 안전하지만, 새 프로젝트 복사 시 예시 문구만 참고용임을 인지할 것
-   - `.claude/agents/content-designer.md` 25번째 줄 — "제품 화면(로그인, 연락처 관리 등)을 다루지 않는다"(2026-07-26, harness-auditor 53차 신규 반영)
+   - `.claude/agents/content-designer.md` 28번째 줄 — "제품 화면(로그인, 연락처 관리 등)을 다루지 않는다"(2026-07-26, harness-auditor 53차 신규 반영, 63차·66차에서 줄 번호 정정 — 이 파일은 자주 편집되니 줄 번호보다 문구로 찾는 게 안전하다)
    - `docs/harness/report-style.css` 2번째 줄(파일 최상단 주석) — "연락처 관리 웹 서비스 — 보고서 CSS 템플릿"(2026-07-26, harness-auditor 53차 신규 반영). 주석일 뿐 실제 CSS 규칙에는 영향 없음.
 4. **`~/.claude/agents/*.md` (전역)**: 디자인팀 12개(2026-07-17 시점 구성) + 개발+QA팀 4개(dev-pl, backend-engineer, frontend-engineer, qa-engineer)는 이미 복사돼 있다. 기획팀 6개(planning-pl, service-planner, tech-architect, qa-planner, copywriter, planning-writer)와 디자인팀 신규 1개(ai-image-prompt-writer, 2026-07-26 신설)는 아직 프로젝트 로컬에만 있다 — 다른 프로젝트에서도 이 역할들을 쓰려면 이때 전역으로 복사할지 결정한다(리셋과 별개로, 아직 결정 안 된 사항).
 
