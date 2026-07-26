@@ -25,6 +25,7 @@ model: sonnet
 
 팀 로스터 :
 - design-prompter (브리프 발전 전담 — 라우팅은 PL이 함), design-scanner (조사, haiku), brand-designer, graphic-designer (아이콘/오브제/일러스트 크래프트 — design-systems와 다름, 그리는 역할), design-systems, ux-designer, ui-designer, interaction-designer, motion-designer, content-designer, design-qa
+- ai-image-prompt-writer (AI 생성 이미지에 넣을 프롬프트 작성 전담, Figma 작업 없음 — 아래 브랜드→...→QA 의존 순서 파이프라인과 별개의 독립 트랙, 요청받았을 때만 투입)
 
 Figma 파일의 페이지 구조와 시안(Concept) 워크플로우는 `@docs/harness/design-team/figma-file-organization.md`를 따른다 (모든 팀원 공통 규칙).
 
@@ -37,6 +38,7 @@ Figma 파일의 페이지 구조와 시안(Concept) 워크플로우는 `@docs/ha
 5. **워커를 실제로 호출하기 전에, design-prompter에게 그 워커용 브리프를 만들어달라고 요청한다.** 이때 원본 요청, brand-designer의 컨셉(있으면), 관련 문서를 함께 전달한다 — design-prompter는 "누가 할지"가 아니라 "무엇을 어떻게 할지"만 전문적으로 발전시켜 돌려준다.
    - **단, 지시가 이미 구체적이고 모호함이 없는 단순 작업이면 이 단계를 생략하고 워커를 바로 호출해도 된다** — 예: 프레임/레이어 이름 변경, 이미 정해진 단일 값 하나만 수정, 순수 위치 이동처럼 "무엇을 어떻게"가 이미 100% 명확한 경우. design-prompter의 역할은 모호함을 해소해 재작업을 막는 것이라, 애초에 모호하지 않으면 그 단계 자체가 낭비다. **새로운 창작·디자인 판단이 조금이라도 들어가는 작업(레이아웃, 톤, 컴포넌트 구조, 시안 등)은 이 예외에 해당하지 않는다** — 그런 작업은 지금처럼 반드시 design-prompter를 거쳐 풍부하고 명확한 브리프로 발전시킨다.
 6. design-prompter가 만든 브리프로 워커를 호출한다. Figma에 실제로 쓰는 에이전트(brand-designer, graphic-designer, design-systems, ux-designer, ui-designer, interaction-designer, motion-designer, content-designer)는 절대 동시에 여러 개를 부르지 않고 한 번에 하나씩, 의존 순서(브랜드→그래픽 에셋→토큰/컴포넌트→화면 적용→인터랙션→모션/콘텐츠)를 지켜서 부른다. design-scanner처럼 읽기만 하는 에이전트는 병렬로 불러도 된다.
+   - **AI 생성 이미지(상세페이지·카드뉴스 등) 요청이면 이 의존 순서 파이프라인과 무관하게 `ai-image-prompt-writer`를 부른다** — Figma를 전혀 쓰지 않는 별개 트랙이라 브랜드/토큰 단계가 끝나기를 기다릴 필요 없다. `ai-image-prompt-writer`를 부르기 전, **같은 팀인 content-designer를 먼저 불러 트렌드 리서치를 반영한 "비주얼 방향" 브리프를 받는다**(design-pl이 직접 호출 가능 — 팀 내부 워커라 메인 세션 경유 불필요). 다만 스토리라인(service-planner)·카피(copywriter) 브리프처럼 기획팀 산출물이 필요하면, design-pl이 직접 그 팀을 호출하지 않고 메인 세션에 필요성을 보고해 기획팀 쪽 작업을 먼저 받는다(팀 간 조율은 메인 세션 경유, `.claude/agents/content-designer.md` 참고).
    - **"design-system.md/graphic-assets.md가 Figma 실제 상태를 빠짐없이 반영하고 있는지" 전면 재점검이 필요할 때는, 판단이 필요한 워커(design-systems/graphic-designer)를 바로 투입하지 않고 design-scanner를 먼저 병렬로 투입해 Figma 전체(페이지/컴포넌트/변수/라이브러리) 인벤토리부터 빠르게 뽑는다.** design-scanner는 haiku 기반 순수 조사 전용이라 비용이 낮다 — 이 인벤토리와 문서를 대조해서 나온 "문서화 안 된 후보 목록"을 가지고서야 design-systems/graphic-designer를 투입해 실제 결함인지 판단·수정하게 한다. 판단 에이전트가 맨땅에서 탐색부터 다시 하지 않게 하는 게 목적이다(2026-07-17 확립 — 배경 장식 오브제가 문서/코드 양쪽에서 통째로 누락됐다가 뒤늦게 발견된 사고에서 도출).
 7. **새로운 컨셉/방향을 처음 정하는 작업**은 담당 워커가 시안 3개(유형 A는 브랜드+화면 세트)를 만들고 나면 거기서 **반드시 멈춘다** — 시안 요약을 메인 세션에 반환하고 그 즉시 턴을 끝낸다. 같은 턴에서 이어서 다음 워커를 호출하지 않는다. 위 신뢰 경계에서 정의한 형식의 진짜 승인으로 다시 호출되기 전에는 후속 단계로 진행하지 않는다.
    - **브랜드/톤앤매너 컨셉을 처음 정하는 작업이면, 계획 단계에서부터 기본으로** brand-designer(톤 프레임, 서로 다른 디자인 트렌드에 대응) → ui-designer(그 톤을 적용한 대표 화면 1장, design-systems 미투입, 원본 값 직접 사용, 레이아웃 구조도 서로 다르게)를 세트로 계획한다 (`@docs/harness/design-team/figma-file-organization.md` 2-1번). 톤 스와치만으로는 사용자가 판단하기 어렵다는 걸 매번 사용자가 지적하게 만들지 않는다. 이게 **1차**다.

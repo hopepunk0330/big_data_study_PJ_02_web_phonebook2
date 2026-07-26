@@ -10,7 +10,7 @@
 
 ## A. 그대로 유지 (하네스 — 포터블)
 
-- `.claude/agents/*.md` — 전체 24개(디자인팀 12 + 기획팀 5 + 개발+QA팀 4[dev-pl, backend-engineer, frontend-engineer, qa-engineer] + code-reviewer, doc-writer, harness-auditor)
+- `.claude/agents/*.md` — 전체 26개(디자인팀 13[brand-designer, content-designer, design-pl, design-prompter, design-qa, design-scanner, design-systems, graphic-designer, interaction-designer, motion-designer, ui-designer, ux-designer, ai-image-prompt-writer] + 기획팀 6[service-planner, tech-architect, qa-planner, copywriter, planning-writer, planning-pl] + 개발+QA팀 4[dev-pl, backend-engineer, frontend-engineer, qa-engineer] + code-reviewer, doc-writer, harness-auditor)
 - `.claude/skills/*/SKILL.md` — design-concept-round, planning-kickoff-round, report-pdf, review, summary
   (참고: 킥오프 스킬은 0단계 판정에 따라 2단계 데스크리서치 기본 태도가 갈린다 — 문서 없이 시작하면 적극 권장, 문서를 전달받아 갭만 채우면 기본은 안 함이되 워커가 필요하다고 판단하면 사용자 승인을 받아 예외적으로 진행 가능. 이 게이팅 규칙은 `.claude/agents/service-planner.md`·`tech-architect.md`와도 3곳 일관을 유지해야 한다, 2026-07-26 신설)
 - `.claude/commands/*.md` — summary.md
@@ -48,7 +48,7 @@
    - `.claude/agents/service-planner.md`·`.claude/agents/tech-architect.md`·`.claude/agents/dev-pl.md` — "이 프로젝트는 FastAPI+DB 과제" 류의 스택 예시 언급. 전부 "지금 이 프로젝트는 X지만 다음 프로젝트는 그 문서를 따라간다" 식으로 명시적으로 비하드코딩 처리돼 있어 기능적으로는 안전하지만, 새 프로젝트 복사 시 예시 문구만 참고용임을 인지할 것
    - `.claude/agents/content-designer.md` 25번째 줄 — "제품 화면(로그인, 연락처 관리 등)을 다루지 않는다"(2026-07-26, harness-auditor 53차 신규 반영)
    - `docs/harness/report-style.css` 2번째 줄(파일 최상단 주석) — "연락처 관리 웹 서비스 — 보고서 CSS 템플릿"(2026-07-26, harness-auditor 53차 신규 반영). 주석일 뿐 실제 CSS 규칙에는 영향 없음.
-4. **`~/.claude/agents/*.md` (전역)**: 디자인팀 12개 + 개발+QA팀 4개(dev-pl, backend-engineer, frontend-engineer, qa-engineer)는 이미 복사돼 있다. 기획팀 5개(planning-pl, service-planner, tech-architect, qa-planner, planning-writer)는 아직 프로젝트 로컬에만 있다 — 다른 프로젝트에서도 기획팀을 쓰려면 이때 전역으로 복사할지 결정한다(리셋과 별개로, 아직 결정 안 된 사항).
+4. **`~/.claude/agents/*.md` (전역)**: 디자인팀 12개(2026-07-17 시점 구성) + 개발+QA팀 4개(dev-pl, backend-engineer, frontend-engineer, qa-engineer)는 이미 복사돼 있다. 기획팀 6개(planning-pl, service-planner, tech-architect, qa-planner, copywriter, planning-writer)와 디자인팀 신규 1개(ai-image-prompt-writer, 2026-07-26 신설)는 아직 프로젝트 로컬에만 있다 — 다른 프로젝트에서도 이 역할들을 쓰려면 이때 전역으로 복사할지 결정한다(리셋과 별개로, 아직 결정 안 된 사항).
 
 ## 검증 방법 (리셋 실행 전 필수)
 
