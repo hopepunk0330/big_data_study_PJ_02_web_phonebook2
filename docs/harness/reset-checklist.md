@@ -45,6 +45,8 @@
    - (2026-07-26 해소) `.claude/agents/planning-writer.md`·`.claude/agents/qa-planner.md`의 "06_연락처관리..." 예시 파일명 하드코딩은 harness-auditor 52차 지적(문서가 이미 존재하는데 "신규/미작성"으로 stale하게 서술)으로 제거됨 — 이제 "테스트계획서는 06번" 정도의 포터블 서술만 남고 프로젝트명 하드코딩 없음
    - `docs/harness/design-team/figma-file-organization.md` 45번째 줄("연락처" 화면 카테고리 예시)과 176번째 줄("이 프로젝트(예: 폼이 있는 연락처 관리 서비스)" — 2-6번 선제적 기본 구성 판단 기준 예시) — 두 곳 모두 "연락처" 예시 언급(2026-07-17, 두 번째 occurrence 신규 반영)
    - `.claude/agents/service-planner.md`·`.claude/agents/tech-architect.md`·`.claude/agents/dev-pl.md` — "이 프로젝트는 FastAPI+DB 과제" 류의 스택 예시 언급. 전부 "지금 이 프로젝트는 X지만 다음 프로젝트는 그 문서를 따라간다" 식으로 명시적으로 비하드코딩 처리돼 있어 기능적으로는 안전하지만, 새 프로젝트 복사 시 예시 문구만 참고용임을 인지할 것
+   - `.claude/agents/content-designer.md` 25번째 줄 — "제품 화면(로그인, 연락처 관리 등)을 다루지 않는다"(2026-07-26, harness-auditor 53차 신규 반영)
+   - `docs/harness/report-style.css` 2번째 줄(파일 최상단 주석) — "연락처 관리 웹 서비스 — 보고서 CSS 템플릿"(2026-07-26, harness-auditor 53차 신규 반영). 주석일 뿐 실제 CSS 규칙에는 영향 없음.
 4. **`~/.claude/agents/*.md` (전역)**: 디자인팀 12개 + 개발+QA팀 4개(dev-pl, backend-engineer, frontend-engineer, qa-engineer)는 이미 복사돼 있다. 기획팀 5개(planning-pl, service-planner, tech-architect, qa-planner, planning-writer)는 아직 프로젝트 로컬에만 있다 — 다른 프로젝트에서도 기획팀을 쓰려면 이때 전역으로 복사할지 결정한다(리셋과 별개로, 아직 결정 안 된 사항).
 
 ## 검증 방법 (리셋 실행 전 필수)

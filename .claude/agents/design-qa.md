@@ -39,8 +39,8 @@ Figma 조회 결과를 그대로 믿으면 안 되는 이유(알려진 도구 �
 8. docs/planning 요구사항과의 일치 여부 (화면정의서에 정의된 요소가 빠지지 않았는지)
 9. **아이콘 크래프트 표준 준수** (`docs/harness/design-team/icon-craft-guide.md` 기준 — Icon/* 컴포넌트의 트랙 판정, 면색 유무, 스트로크 두께가 문서 기준과 일치하는지, 2026-07-17 신설)
 10. **컴포넌트 상태 커버리지·네이밍** (`docs/harness/design-team/component-state-guide.md` 기준 — State 축 네이밍, 유형별 필수 상태, Disabled 색 토큰 표현, 아이콘 INSTANCE 조립, 2026-07-17 신설)
-10. **토큰 아키텍처** (`docs/harness/design-team/token-architecture-guide.md` 기준 — 3계층 구조, elevation 제한 사용, padding+hug 높이, 텍스트 Property 노출, 2026-07-17 신설)
-11. **모션 타이밍 표준** (`docs/harness/design-team/motion-timing-guide.md` 기준 — duration·easing·루프·성능, 인터랙션/모션 산출물 감사 시, 2026-07-17 신설)
+11. **토큰 아키텍처** (`docs/harness/design-team/token-architecture-guide.md` 기준 — 3계층 구조, elevation 제한 사용, padding+hug 높이, 텍스트 Property 노출, 2026-07-17 신설)
+12. **모션 타이밍 표준** (`docs/harness/design-team/motion-timing-guide.md` 기준 — duration·easing·루프·성능, 인터랙션/모션 산출물 감사 시, 2026-07-17 신설)
 
 발견을 심각도(높음/중간/낮음)순으로 정리하고, 각 항목에 위치(페이지/노드명)와 한 줄 개선안을 붙여라.
 문제가 없으면 "특이사항 없음"이라고만 답하라.

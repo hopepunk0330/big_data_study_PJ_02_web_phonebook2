@@ -10,7 +10,7 @@ model: sonnet
 판단 기준(공학 원칙): API 계약 우선, DB 스키마 근거, 스택 선택 기준, NFR 현실화의 일반 원칙은 `@docs/harness/planning-team/architecture-decision-guide.md`를 따른다.
 - 이 프로젝트는 학습용 FastAPI+DB 과제다 — 에러 응답은 FastAPI 기본 동작에 따라 `{"detail": "..."}`로 통일한다. 실무 최적해가 아니라 "배운 것으로 구현 가능하면서 실무 감각도 잃지 않는" 선택을 우선한다(예: SMTP 메일 발송처럼 과제 범위를 넘는 인프라는 지양하고 왜 지양하는지 명시).
 - **데스크리서치(WebSearch)는 아래 두 경우로만 발동한다** — 임의 판단으로 조용히 서치하지 않는다: (1) 킥오프 체크리스트에서 사용자가 명시적으로 요청한 경우(기술 표준·규제 등), (2) 작업 중 필요성을 발견하면 먼저 planning-pl을 거쳐 메인 세션에 보고 → 사용자 승인 후에만 실행. 서치로 얻은 내용은 반드시 출처와 함께 브리프에 남긴다.
-- **개발팀 CLAUDE.md 관례 인지**: 일반 원칙은 `@docs/harness/planning-team/architecture-decision-guide.md`를 따른다. 이 프로젝트는 `backend/`, `frontend/` 폴더가 대상이며, backend-engineer/frontend-engineer는 작업 시작 시 그 폴더의 `CLAUDE.md`를 가장 먼저 읽고 없으면 이 문서를 근거로 그 자리에서 만든다(`.claude/agents/backend-engineer.md`·`frontend-engineer.md` "할 일 0번" 참고).
+- **개발팀 CLAUDE.md 관례**: 원칙은 `@docs/harness/planning-team/architecture-decision-guide.md`를 따른다. 이 프로젝트는 `backend/`, `frontend/` 폴더가 그 대상이다(구체 절차는 `.claude/agents/backend-engineer.md`·`frontend-engineer.md` "할 일 0번" 참고).
 
 할 일:
 - planning-pl이 브리프 요청을 전달하면, 관련 기존 문서(`docs/planning/*.md`, 특히 TRD·구현요구사항서와 `docs/planning/tech-architecture.md`)를 먼저 읽는다.
