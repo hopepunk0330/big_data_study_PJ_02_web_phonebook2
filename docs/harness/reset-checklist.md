@@ -11,11 +11,11 @@
 ## A. 그대로 유지 (하네스 — 포터블)
 
 - `.claude/agents/*.md` — 전체 26개(디자인팀 13[brand-designer, content-designer, design-pl, design-prompter, design-qa, design-scanner, design-systems, graphic-designer, interaction-designer, motion-designer, ui-designer, ux-designer, ai-image-prompt-writer] + 기획팀 6[service-planner, tech-architect, qa-planner, copywriter, planning-writer, planning-pl] + 개발+QA팀 4[dev-pl, backend-engineer, frontend-engineer, qa-engineer] + code-reviewer, doc-writer, harness-auditor)
-- `.claude/skills/*/SKILL.md` — design-concept-round, planning-kickoff-round, report-pdf, review, summary
+- `.claude/skills/*/SKILL.md` — design-concept-round, planning-kickoff-round, ai-image-content-round, report-pdf, review, summary
   (참고: 킥오프 스킬은 0단계 판정에 따라 2단계 데스크리서치 기본 태도가 갈린다 — 문서 없이 시작하면 적극 권장, 문서를 전달받아 갭만 채우면 기본은 안 함이되 워커가 필요하다고 판단하면 사용자 승인을 받아 예외적으로 진행 가능. 이 게이팅 규칙은 `.claude/agents/service-planner.md`·`tech-architect.md`와도 3곳 일관을 유지해야 한다, 2026-07-26 신설)
 - `.claude/commands/*.md` — summary.md
 - `.claude/hooks/stop-failure-notify.sh` — 스크립트 로직 자체는 포터블(단, 아래 C-2 웹훅 파일은 별도 취급)
-- `docs/harness/**` — claude-harness.md, git-workflow.md, design-team/figma-file-organization.md, 이 리셋 체크리스트, report-format-guide.md·report-style.css(범용 보고서 HTML/PDF 템플릿 — 프로젝트 브랜드 색이 아니라 남색/호박색 범용 톤이라 포터블. `docs/design/`에 잘못 있던 것을 이번에 이쪽으로 재분류함, 2026-07-16), 그리고 design-team 아래 다음 크래프트/감사 참조 문서들(전부 노드 ID·hex 등 프로젝트 고유 값 미포함, design-systems/graphic-designer/interaction-designer/motion-designer가 만들 때 참조하고 design-qa가 감사할 때 검증 기준으로 삼는 공용 포터블 문서):
+- `docs/harness/**` — claude-harness.md, git-workflow.md, `karpathy_skills.md`(2026-07-29 `docs/karpathy_skills.md`에서 이쪽으로 이동 — `CLAUDE.md`가 `@docs/harness/karpathy_skills.md`로 참조), design-team/figma-file-organization.md, 이 리셋 체크리스트, report-format-guide.md·report-style.css(범용 보고서 HTML/PDF 템플릿 — 프로젝트 브랜드 색이 아니라 남색/호박색 범용 톤이라 포터블. `docs/design/`에 잘못 있던 것을 이번에 이쪽으로 재분류함, 2026-07-16), 그리고 design-team 아래 다음 크래프트/감사 참조 문서들(전부 노드 ID·hex 등 프로젝트 고유 값 미포함, design-systems/graphic-designer/interaction-designer/motion-designer가 만들 때 참조하고 design-qa가 감사할 때 검증 기준으로 삼는 공용 포터블 문서):
   - `design-team/figma-page-format-guide.md`(문서화 페이지 시각 포맷 표준 — 스와치 카탈로그·컴포넌트 스펙 시트 서식 원칙과 체크리스트, 2026-07-16 신설)
   - `design-team/icon-craft-guide.md`(아이콘 Basic/Visual 트랙 구분 — 트랙 판정 기준, 면색 유무, 스트로크 두께 원칙, 2026-07-17 신설)
   - `design-team/component-state-guide.md`(컴포넌트 상태 커버리지·네이밍 — State 축 네이밍, 유형별 필수 상태, Disabled 색 토큰 표현, 아이콘 INSTANCE 조립 원칙, 2026-07-17 신설)
@@ -23,7 +23,6 @@
   - `design-team/motion-timing-guide.md`(모션 타이밍·퍼포먼스 — duration·easing·루프·성능 기준, 2026-07-17 신설)
   - `design-team/korean-ecommerce-detail-page-guide.md`(한국 이커머스 상세페이지·카드뉴스 장르 관습 — 대형 그래픽 타이포, 컬러 블록, 뱃지·콜아웃, 아이콘 그리드, 창의적 장치 다양성, 그리고 표준 스토리라인 구조(7단계 심리 흐름). `content-designer`(비주얼)와 `service-planner`(기획팀, 스토리라인) 양쪽이 함께 참고하는 문서라 design-team 폴더에 있지만 기획팀도 참조한다. 노드 ID·특정 브랜드 색상값 없이 일반화된 장르 관습만 담아 포터블, 2026-07-26 신설)
   - 그리고 `planning-team/*.md`(전부 프로젝트 고유 스택·도메인명 미포함, service-planner/tech-architect/qa-planner/planning-writer가 브리프·문서를 만들 때 참조하고 `planning-kickoff-round` 스킬이 절차 흐름에서 정본으로 삼는 공용 포터블 문서(스킬 안에서는 인터뷰 항목과 1:1 대응되는 4개만 `[[wikilink]]`로 직접 연결되고, `document-structure-guide.md`는 0단계에서 `@`참조로 별도 언급되며, 나머지 2개(functional-spec-writing-guide, document-versioning-guide)는 스킬 자체가 아니라 문서 작성 단계에서 적용됨), 2026-07-26 신설): `planning-team/prd-writing-guide.md`(서비스 트라이앵글·스코프 트레이드오프·비목표 감별), `planning-team/architecture-decision-guide.md`(API 계약 우선·DB 스키마 근거·스택 선택 기준), `planning-team/functional-spec-writing-guide.md`(기능 단위 입력/처리/출력/예외 스펙 구조), `planning-team/screen-spec-pattern-guide.md`(화면정의서 4종 세트·오버레이 포함 원칙), `planning-team/test-plan-design-guide.md`(동등분할+경계값·추적성·위험기반 우선순위), `planning-team/document-versioning-guide.md`(old/ 보존·인용 갱신·changelog 구분), `planning-team/document-structure-guide.md`(문서 구조 상속 — 기존/전달받은 문서 패턴을 새 문서에도 이어받기, 2026-07-26 신설)
-- `docs/karpathy_skills.md`
 - `pdf-maker/make-pdf.js`, `pdf-maker/package.json` — md→PDF 변환 유틸리티(절차/도구), 생성물은 B그룹
 - `.gitignore` — 항목 전부가 이 프로젝트 데이터가 아니라 Python 범용 관례(`.venv/`, `__pycache__/`, `.pytest_cache/`)나 A그룹 도구/인프라에 종속된 무시 규칙(`pdf-maker/node_modules/`, `pdf-maker/결과.pdf`, `.claude/settings.local.json`, `.claude/hooks/.slack-webhook-url`)이다. 새 프로젝트에서 일부 경로(예: pdf-maker를 안 쓰는 프로젝트)가 안 맞아도 그냥 매칭 안 될 뿐 해롭지 않으므로 그대로 유지한다
 
@@ -46,9 +45,9 @@
 3. **예시 문장에 프로젝트명·Figma 노드 ID가 하드코딩된 곳**: 프로젝트명(예: "연락처 관리 웹 서비스")보다 **Figma 노드 ID**(예: `259:609`)가 더 조심해야 할 대상이다 — 프로젝트명은 새 프로젝트에서 읽었을 때 "예시구나" 하고 넘어갈 수 있지만, 노드 ID는 새 프로젝트의 Figma 파일에서 완전히 무관한(또는 존재하지 않는) 요소를 가리키므로 그대로 읽으면 혼란을 준다. `.claude/agents/*.md`·`docs/harness/**`(포터블 문서)에 컴포넌트 예시를 들 때는 **노드 ID 없이 이름만** 적는다 — 구체적 ID가 필요하면 `docs/design/design-system.md`(프로젝트 데이터, 매번 새로 채워짐)를 참고하라고 안내한다. — 기능적 로직에는 영향 없지만 새 프로젝트에 그대로 복사하면 예시가 어색해진다. 복사 시점에 프로젝트명만 치환 권장(삭제 대상 아님). **줄 번호는 문서가 수정될 때마다 밀릴 수 있으니, 리셋 실행 시점에 매번 재확인한다(2026-07-17, stale 참조 정정 사례로 아래 항목 갱신):**
    - `.claude/agents/brand-designer.md` 21번째 줄 — "이 프로젝트(연락처 관리 웹 서비스)에 맞게"
    - (2026-07-26 해소) `.claude/agents/planning-writer.md`·`.claude/agents/qa-planner.md`의 "06_연락처관리..." 예시 파일명 하드코딩은 harness-auditor 52차 지적(문서가 이미 존재하는데 "신규/미작성"으로 stale하게 서술)으로 제거됨 — 이제 "테스트계획서는 06번" 정도의 포터블 서술만 남고 프로젝트명 하드코딩 없음
-   - `docs/harness/design-team/figma-file-organization.md` 45번째 줄("연락처" 화면 카테고리 예시)과 176번째 줄("이 프로젝트(예: 폼이 있는 연락처 관리 서비스)" — 2-6번 선제적 기본 구성 판단 기준 예시) — 두 곳 모두 "연락처" 예시 언급(2026-07-17, 두 번째 occurrence 신규 반영)
+   - `docs/harness/design-team/figma-file-organization.md`의 "연락처" 화면 카테고리 예시(현재 53번째 줄)와 "이 프로젝트(예: 폼이 있는 연락처 관리 서비스)"(2-6번 선제적 기본 구성 판단 기준 예시, 현재 186번째 줄) — 두 곳 모두 "연락처" 예시 언급(2026-07-17 신규 반영, 2026-07-28 이 파일에 0.5절이 확장되며 줄 번호 드리프트 재정정 — 이 파일도 자주 편집되니 줄 번호보다 문구로 찾는 게 안전하다)
    - `.claude/agents/service-planner.md`·`.claude/agents/tech-architect.md`·`.claude/agents/dev-pl.md` — "이 프로젝트는 FastAPI+DB 과제" 류의 스택 예시 언급. 전부 "지금 이 프로젝트는 X지만 다음 프로젝트는 그 문서를 따라간다" 식으로 명시적으로 비하드코딩 처리돼 있어 기능적으로는 안전하지만, 새 프로젝트 복사 시 예시 문구만 참고용임을 인지할 것
-   - `.claude/agents/content-designer.md` 28번째 줄 — "제품 화면(로그인, 연락처 관리 등)을 다루지 않는다"(2026-07-26, harness-auditor 53차 신규 반영, 63차·66차에서 줄 번호 정정 — 이 파일은 자주 편집되니 줄 번호보다 문구로 찾는 게 안전하다)
+   - `.claude/agents/content-designer.md`의 "제품 화면(로그인, 연락처 관리 등)을 다루지 않는다"(현재 50번째 줄, 2026-07-26 harness-auditor 53차 신규 반영, 63차·66차·68차·69차에서 줄 번호 드리프트 재확인 — 이 파일은 자주 편집되니 줄 번호보다 문구로 찾는 게 안전하다)
    - `docs/harness/report-style.css` 2번째 줄(파일 최상단 주석) — "연락처 관리 웹 서비스 — 보고서 CSS 템플릿"(2026-07-26, harness-auditor 53차 신규 반영). 주석일 뿐 실제 CSS 규칙에는 영향 없음.
 4. **`~/.claude/agents/*.md` (전역)**: 디자인팀 12개(2026-07-17 시점 구성) + 개발+QA팀 4개(dev-pl, backend-engineer, frontend-engineer, qa-engineer)는 이미 복사돼 있다. 기획팀 6개(planning-pl, service-planner, tech-architect, qa-planner, copywriter, planning-writer)와 디자인팀 신규 1개(ai-image-prompt-writer, 2026-07-26 신설)는 아직 프로젝트 로컬에만 있다 — 다른 프로젝트에서도 이 역할들을 쓰려면 이때 전역으로 복사할지 결정한다(리셋과 별개로, 아직 결정 안 된 사항).
 
@@ -57,7 +56,7 @@
 1. **커밋 먼저**: 이 문서를 작성한 시점 기준으로 `docs/planning/`, `.claude/agents/planning-*.md`를 포함한 다수 파일이 아직 **git에 커밋되지 않은 상태(untracked)**였다. B그룹을 삭제하면 git 히스토리 백업이 없어 복구 불가능하니, 리셋 실행 직전 반드시 `git status`로 미커밋 상태를 확인하고 커밋(또는 최소한 별도 백업)한 뒤 진행한다.
 2. **A그룹에 데이터 흔적이 없는지 grep으로 재확인**(리셋 때마다, 이 체크리스트가 최신인지 검증):
    ```bash
-   grep -rl "연락처\|phonebook\|<이 프로젝트의 Figma 파일키>" .claude/agents .claude/skills .claude/commands docs/harness docs/karpathy_skills.md
+   grep -rl "연락처\|phonebook\|<이 프로젝트의 Figma 파일키>" .claude/agents .claude/skills .claude/commands docs/harness
    ```
    결과가 이 문서의 C-3 목록과 다르면(새 파일이 나오면) 새로 생긴 하드코딩이니 이 체크리스트를 갱신한다.
 3. **B그룹 삭제 후 A그룹이 정상 동작하는지 확인**: 리셋 후 아무 기획/디자인 요청이나 하나 던져서 planning-pl 또는 design-pl이 정상 기동하고, `docs/planning/service-concept.md` 등 canonical 문서를 스스로 새로 만드는지 확인한다.
