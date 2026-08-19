@@ -35,7 +35,9 @@
 - `docs/pdf/**` — 생성된 PDF/HTML 산출물
 - `.claude/logs/stop-failures.log`
 - `backend/`, `static/`, `frontend/`, `tests/`, `pdf-maker/문서.html`, `pdf-maker/결과.pdf` — 실제 애플리케이션 코드/생성물. **`backend/CLAUDE.md`/`frontend/CLAUDE.md`(이 프로젝트의 확정 스택·파일구조 요약)도 포함**. **루트 `pyproject.toml`도 포함** — 이 프로젝트의 `backend/` 전용 ruff 설정(`src = ["backend"]`, Python 3.12 대상)이라 프로젝트 데이터다 — 삭제해도 문제없다, `backend-engineer.md`의 lint 기본값 규칙에 따라 새 프로젝트에서 필요할 때 다시 만들어진다 — 삭제해도 문제없다, backend-engineer/frontend-engineer가 새 프로젝트에서 작업을 시작하면 그 프로젝트의 `docs/planning`·`docs/design`을 읽어 그 자리에서 다시 만들어내도록 하네스 규칙(`.claude/agents/backend-engineer.md`·`frontend-engineer.md` "할 일 0번")에 이미 명문화돼 있다 — 수동으로 남겨둘 필요 없음. **`static/`은 실제로 서빙되는 화면 코드(`index.html`/`app.js`)가 들어가는 폴더로, `backend/`·`frontend/`와 형제 폴더다(05 TRD §3) — 가이드 문서가 아니라 이 프로젝트 고유의 구현 산출물이므로 B그룹이 맞다.**
-- 루트 `CLAUDE.md` — 이 프로젝트 고유 규칙(들여쓰기, 검증 명령 등). 새 프로젝트는 새로 작성하되, 이 파일의 "행동 지침"·"기본 도구" 절만 템플릿으로 참고 가능
+- 루트 `CLAUDE.md` — 파일 자체는 새 프로젝트마다 새로 작성하지만, 안의 섹션은 절반가량이 실제로는 템플릿으로 재사용 가능하다(2026-08-19 재확인, 기존엔 "행동 지침"·"기본 도구"만 언급돼 있었으나 과소평가였음):
+  - **템플릿으로 그대로 재사용(하네스성)**: `Git 리모트/브랜치 관례`(assignment/origin(JY_Harness) 이중 리모트 패턴 — `git-workflow.md` 요약), `행동 지침`(`@docs/harness/karpathy_skills.md` 참조 패턴), `기본 도구`(playwright·context7·스크린샷 캡처 관례 — 전역 `~/.claude/CLAUDE.md`와도 중복), `금지`(원격 push는 명시적 승인 후에만, secrets/.env 폴더 수정 금지 — 프로젝트 고유 규칙이 아니라 항상 지키고 싶은 개인 작업 원칙)
+  - **이 프로젝트 고유(새로 작성)**: `개요`(프로젝트 성격), `코딩 규칙`(들여쓰기·네이밍 컨벤션 — 프로젝트마다 다를 수 있음), `검증 명령`(이 프로젝트의 테스트/린트 경로), `테스트 보고서 Notion 동기화`의 구체 URL
 - `.claude/agent-memory/*.md`의 "작업 로그" 섹션 내용 — 파일 자체는 남겨도 되지만 내용은 비우거나 "신설" 상태로 리셋(에이전트가 다음 실행 시 알아서 새로 채움)
 
 ## C. 케이스별 검토 필요 (자동 처리 금지 — 리셋 시점에 사람이 직접 확인)
