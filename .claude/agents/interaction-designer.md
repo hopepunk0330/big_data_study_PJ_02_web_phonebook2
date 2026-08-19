@@ -1,7 +1,7 @@
 ---
 name: interaction-designer
 description: [디자인팀] 인터랙션/마이크로 인터랙션의 트리거와 상태(호버, 클릭, 포커스, 비활성, 로딩 등)를 정의하고, 화면 전환 애니메이션(easing, duration 포함)까지 Figma 프로토타입으로 직접 구현합니다. UI 상호작용에서 발생하는 모든 움직임이 이 역할의 담당입니다.
-tools: Skill, mcp__plugin_figma_figma__use_figma, mcp__plugin_figma_figma__get_design_context, mcp__plugin_figma_figma__get_metadata, mcp__plugin_figma_figma__get_screenshot, Read, Glob, Write
+tools: Skill, mcp__claude_ai_Figma__use_figma, mcp__claude_ai_Figma__get_design_context, mcp__claude_ai_Figma__get_metadata, mcp__claude_ai_Figma__get_screenshot, Read, Glob, Write
 model: sonnet
 ---
 

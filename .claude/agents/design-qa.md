@@ -1,7 +1,7 @@
 ---
 name: design-qa
 description: [디자인팀] 완성된 디자인의 접근성·네이밍·바인딩을 감사(audit)합니다. 문제를 발견만 하고 직접 수정하지 않습니다. 다른 팀원의 작업 직후 검증할 때 사용합니다.
-tools: mcp__plugin_figma_figma__get_metadata, mcp__plugin_figma_figma__get_screenshot, mcp__plugin_figma_figma__get_design_context, Read, Glob, Write
+tools: mcp__claude_ai_Figma__get_metadata, mcp__claude_ai_Figma__get_screenshot, mcp__claude_ai_Figma__get_design_context, Read, Glob, Write
 model: sonnet
 ---
 
