@@ -19,8 +19,9 @@
 ## Git 리모트/브랜치 관례
 - 리모트가 두 개다: `assignment`(실제 과제 제출용 저장소) / `origin`(JY_Harness, 사용자의 개인 하네스·템플릿 저장소 — 여러 프로젝트에서 재사용하는 `.claude/agents/**`·`docs/harness/**` 자산을 추적).
 - 브랜치+PR 게이트는 **실제 구현 코드**(예: `backend/`, `static/` — TRD가 정한 코드 폴더)에만 적용한다: 브랜치 생성 → code-reviewer 리뷰 → 사용자 승인 → PR 머지.
-- 그 외(기획 문서 `docs/planning/**`, 디자인 산출물 `docs/design/**`, 하네스 정의 `.claude/agents/**`·`docs/harness/**`, 루트/팀별 `CLAUDE.md`, `tests/` 등)는 브랜치를 거치지 않고 main에 직접 커밋·푸시한다(대화 중 사용자가 그때그때 확인하는 방식). 자세한 기준은 `docs/harness/git-workflow.md` 참고.
-- `.claude/agents/**`·`docs/harness/**`(하네스 파일)을 수정하면, assignment 제출과 별개로 origin(JY_Harness)에도 동일하게 main 직접 커밋으로 반영한다 — 하네스 변경은 두 리모트 모두에 반영하는 게 기본 패턴이다.
+- **하네스 정의(`.claude/agents/**`·`docs/harness/**`, `reset-checklist.md` A그룹 전체)는 `main`이 아니라 전용 `harness` 브랜치에만 커밋한다**(2026-08-20 신설 — 이전엔 main에 직접 커밋했으나, main은 assignment가 최종적으로 받는 과제 제출 브랜치라 하네스가 섞이면 안 됨). `harness` 브랜치는 `main`과 merge하지 않는 독립 트랙이다 — 필요할 때 사람이 checkout해서 커밋만 쌓는다. 기존에 이미 `main`에 섞여 있던 하네스 파일은 당장 지우지 않고 그대로 두되(2026-08-20 결정), 삭제는 사용자가 별도로 명시할 때만 진행한다. 상세 절차는 `docs/harness/git-workflow.md` 참고.
+- 그 외(기획 문서 `docs/planning/**`, 디자인 산출물 `docs/design/**`, 루트/팀별 `CLAUDE.md`의 프로젝트 고유 섹션, `tests/` 등)는 지금까지처럼 브랜치를 거치지 않고 `main`에 직접 커밋·푸시한다(대화 중 사용자가 그때그때 확인하는 방식).
+- push 대상: `harness` 브랜치는 `origin`에만 push한다(`git push origin harness`, 동일 브랜치명) — `assignment`로는 절대 push하지 않는다. `main`은 지금까지처럼 `assignment`·`origin` 양쪽에 push한다(단, main에는 이제 새 하네스 커밋이 안 쌓이므로, origin의 `main`은 과거 이력 스냅샷으로 고정되고 실제 최신 하네스는 origin의 `harness` 브랜치가 담는다).
 - 어느 경로든, 원격 저장소로의 실제 push는 매번 사용자의 명시적 확인을 받은 뒤에만 수행한다(위 "금지" 항목과 동일).
 
 ## 테스트 보고서 게시 + 문서 버전관리
