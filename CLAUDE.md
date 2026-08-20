@@ -34,9 +34,12 @@
 - 안드레 카파시 행동지침에 아래 문서를 따른다. @docs/harness/karpathy_skills.md
 - Notion 작업(MCP로 연결해서 쓰기) 시 아래 문서를 따른다. @docs/harness/notion-workflow.md
 
+## 소통 방식
+- 사용자에게는 항상 존댓말로 응답한다(반말 금지) — 2026-08-20 명시적 요청. 새 프로젝트를 시작할 때마다 반말로 시작하는 문제가 반복돼 전역 규칙으로 고정한다.
+
 ## 기본 도구
 - 테스트: playwright를 기본으로 사용한다.
 - 라이브러리/API 문서 조회: context7 MCP를 기본으로 사용한다(설치 안 돼 있으면 `claude mcp add context7 -s user -- npx -y @upstash/context7-mcp`로 전역 설치).
 - playwright로 테스트할때 캡쳐를 해줘. 나중에 메뉴얼을 만들때 사용할거야. 폴더 저장 위치는 docs/screenshot에 화면위치를 스텝순서를 번호를 부여해서 파일명으로 저장해줘.
 
-이 항목들은 전역 `~/.claude/CLAUDE.md`에도 반영돼 있어, 프로젝트별 CLAUDE.md에 별도 명시가 없어도 모든 프로젝트에서 기본으로 적용된다.
+이 항목들("소통 방식"·"기본 도구")은 전역 `~/.claude/CLAUDE.md`에도 반영돼 있어, 프로젝트별 CLAUDE.md에 별도 명시가 없어도 모든 프로젝트에서 기본으로 적용된다.
