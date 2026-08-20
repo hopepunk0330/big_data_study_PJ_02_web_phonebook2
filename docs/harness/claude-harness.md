@@ -8,6 +8,7 @@
 |---|---|---|
 | `CLAUDE.md` | 프로젝트 루트 (git 추적) | 이 프로젝트 전용 지침 — 코딩 규칙, 검증 명령, 금지사항(원격 push 승인 필요 등), 행동 지침 참조. 프로젝트를 열 때마다 자동으로 읽힌다. |
 | `docs/harness/karpathy_skills.md` | 프로젝트 (git 추적) | `CLAUDE.md`가 `@`로 참조하는 행동 원칙 문서(Think Before Coding, Simplicity First 등). |
+| `docs/harness/notion-workflow.md` | 프로젝트 (git 추적) | `CLAUDE.md`가 `@`로 참조하는 Notion 작업 원칙 문서(기존 콘텐츠 절대 편집 금지, 표준 문서 규격 등, 2026-08-20 신설). |
 | `~/.claude/projects/{프로젝트경로 슬러그}/memory/*.md` + `MEMORY.md` | 사용자 홈 디렉토리 (git 밖, 이 프로젝트 경로에만 묶임) | 세션이 바뀌어도 남는 지속 메모리 — 사용자 피드백, 프로젝트 배경, 참고 위치 등. `MEMORY.md`가 인덱스 역할. **다른 프로젝트로 자동으로 안 옮겨진다** — 프로젝트 절대경로가 키다. |
 
 ## 2. 서브에이전트(팀원)를 통제하는 파일 — 각자 호출될 때 자기 파일을 읽는다
