@@ -23,8 +23,8 @@
 - `.claude/agents/**`·`docs/harness/**`(하네스 파일)을 수정하면, assignment 제출과 별개로 origin(JY_Harness)에도 동일하게 main 직접 커밋으로 반영한다 — 하네스 변경은 두 리모트 모두에 반영하는 게 기본 패턴이다.
 - 어느 경로든, 원격 저장소로의 실제 push는 매번 사용자의 명시적 확인을 받은 뒤에만 수행한다(위 "금지" 항목과 동일).
 
-## 테스트 보고서 Notion 동기화 + 문서 버전관리
-- `docs/test-reports/`의 단위/통합 테스트 보고서를 갱신할 때마다, 아래 두 Notion 페이지에도 최신 내용을 반영한다:
+## 테스트 보고서 게시 + 문서 버전관리
+- `docs/test-reports/`의 단위/통합 테스트 보고서를 갱신할 때마다, 아래 두 Notion 페이지에도 최신 내용을 반영한다(본문을 매번 최신 내용으로 덮어쓴다 — `docs/harness/notion-workflow.md`의 "기존 콘텐츠 절대 편집 금지" 원칙과는 무관한 이 프로젝트만의 별도 관례다, 2026-08-20 명시):
   - https://app.notion.com/p/3a0ebec5c35780209583f1ab3a044142?source=copy_link
   - https://app.notion.com/p/3a0ebec5c35780f4a977c2bcef334956?source=copy_link
 - 버전관리: 새 보고서로 덮어쓰기 전에 이전 버전을 `docs/test-reports/old/`(없으면 생성) 폴더로 옮기고 원본 파일명 그대로 보존한다. `docs/test-reports/`에는 항상 각 종류(단위/통합)의 최신본만 남긴다.
@@ -32,6 +32,7 @@
 
 ## 행동 지침
 - 안드레 카파시 행동지침에 아래 문서를 따른다. @docs/harness/karpathy_skills.md
+- Notion 작업(MCP로 연결해서 쓰기) 시 아래 문서를 따른다. @docs/harness/notion-workflow.md
 
 ## 기본 도구
 - 테스트: playwright를 기본으로 사용한다.
