@@ -13,7 +13,7 @@
 -- 형식 검사 : python -m ruff check backend/ (설정: pyproject.toml)
 
 ## 금지
-- 내 명시적 허락 없이 원격 저장소로 push 하지 않습니다
+- 내 명시적 허락 없이 원격 저장소로 push 하지 않습니다 — **예외(2026-08-22 명시)**: `harness` 브랜치 → `origin` push는 이번 세션에서 이미 반복적으로 확립된 고정 채널이라, 매번 다시 확인받지 않고 진행한다. `assignment`로의 push와 `main` → `assignment`/`origin` push는 이 예외에 포함되지 않으며 여전히 매번 명시적 확인이 필요하다.
 - secrets 폴더와 .env 파일은 절대 수정하지 않는다.
 
 ## Git 리모트/브랜치 관례
@@ -22,7 +22,7 @@
 - **하네스 정의(`.claude/agents/**`·`docs/harness/**`, `reset-checklist.md` A그룹 전체)는 `main`이 아니라 전용 `harness` 브랜치에만 커밋한다**(2026-08-20 신설 — 이전엔 main에 직접 커밋했으나, main은 assignment가 최종적으로 받는 과제 제출 브랜치라 하네스가 섞이면 안 됨). `harness` 브랜치는 별도 worktree 폴더에서만 편집·커밋하는 독립 트랙이다(`main` 폴더 자체에서 checkout으로 오가지 않는다 — 자세한 건 `git-workflow.md` 1-1번). **2026-08-22부터 `main`은 이 경로들을 `.gitignore`로 아예 추적하지 않는다** — 기존에 커밋돼 있던 것도 `git rm --cached`로 인덱스에서 뺐다(파일 자체는 harness 브랜치 동기화로 디스크에 최신 상태로 남아 Claude Code가 계속 읽는다). 과거 커밋 이력 자체(assignment/origin의 main에 이미 들어간 하네스 커밋)를 소급 제거하는 건 별도 작업(`git filter-repo`)이라 사용자가 명시적으로 요청할 때만 진행한다. 상세 절차는 `docs/harness/git-workflow.md` 참고.
 - 그 외(기획 문서 `docs/planning/**`, 디자인 산출물 `docs/design/**`, 루트/팀별 `CLAUDE.md`의 프로젝트 고유 섹션, `tests/` 등)는 지금까지처럼 브랜치를 거치지 않고 `main`에 직접 커밋·푸시한다(대화 중 사용자가 그때그때 확인하는 방식).
 - push 대상: `harness` 브랜치는 `origin`에만 push한다(`git push origin harness`, 동일 브랜치명) — `assignment`로는 절대 push하지 않는다. `main`은 지금까지처럼 `assignment`·`origin` 양쪽에 push한다(단, main에는 이제 새 하네스 커밋이 안 쌓이므로, origin의 `main`은 과거 이력 스냅샷으로 고정되고 실제 최신 하네스는 origin의 `harness` 브랜치가 담는다).
-- 어느 경로든, 원격 저장소로의 실제 push는 매번 사용자의 명시적 확인을 받은 뒤에만 수행한다(위 "금지" 항목과 동일).
+- 원격 저장소로의 실제 push는 매번 사용자의 명시적 확인을 받은 뒤에만 수행한다(위 "금지" 항목과 동일) — 단, `harness` 브랜치 → `origin` push는 위 "금지" 항목의 예외에 해당해 매번 재확인하지 않는다.
 
 ## 테스트 보고서 게시 + 문서 버전관리
 - `docs/test-reports/`의 단위/통합 테스트 보고서를 갱신할 때마다, 아래 두 Notion 페이지에도 최신 내용을 반영한다(본문을 매번 최신 내용으로 덮어쓴다 — `docs/harness/notion-workflow.md`의 "기존 콘텐츠 절대 편집 금지" 원칙과는 무관한 이 프로젝트만의 별도 관례다, 2026-08-20 명시):
