@@ -4,61 +4,6 @@
 
 ---
 
-## 2026-08-22 (72차) — 사용자 명시 요청: `harness-auditor.md`(기계적 버전 치환 예외 신설) + `git-workflow.md`(1-1 worktree 운용, 1-2 agent-memory 제외, 6번 자동 감사 신설) + `document-versioning-guide.md`(양방향 인용 갱신 + 예외 언급) + planning-team 4종 가이드(UC-xx, 문서 구성 순서, 메타표+스코프콜아웃 기본뼈대) + `notion-workflow.md`(3-1~3-4, 7번 신설) + `report-format-guide.md`("AI 티 제거" 9번 신설, 절 번호 밀림) + `reset-checklist.md`/`harness-versioning.md`(worktree 전환, 동시 세션 충돌, cp -r/.gitignore 문제) + 루트 `CLAUDE.md`/`.gitignore`(A그룹 untrack, 자동 감사 규칙) 대규모 동시 개정 라운드 정합성 감사 (A 범위 집중, B 범위는 미변경이라 가볍게만 훑음)
-
-**결과: 신규 발견 8건(HIGH 0, MEDIUM 5, LOW 3). 이전 라운드 발견 중 71차 HIGH 1건·LOW 1건·MEDIUM 1건(claude-harness.md notion-workflow.md 누락) 해소 확인. report-format-guide.md 절 번호 밀림으로 인한 깨진 참조는 grep 결과 0건(다른 문서가 그 문서의 구체적 절 번호를 인용하는 사례 자체가 없었음).**
-
-### 신규 발견
-
-1. **[MEDIUM, 신규]** `docs/harness/git-workflow.md` 6절이 "기계적 버전 번호 동기화" 예외의 반복 빈도를 "PRD 개정 이력에서만 10회 넘게 반복된 패턴"이라고 서술하는데, 같은 예외를 설명하는 `docs/harness/planning-team/document-versioning-guide.md`(신규 서술, "이 패턴이 5회 넘게 반복돼")와 `.claude/agents/harness-auditor.md`(기존 서술, "이 프로젝트에서 가장 자주 재발한 패턴이다(5회 이상)")는 "5회"로 적고 있다. "PRD 개정 이력에서만"이라는 더 좁은 범위의 횟수(10회)가 프로젝트 전체 총 횟수로 서술된 다른 두 곳의 수치(5회)보다 크다는 것 자체가 앞뒤가 안 맞는다. 세 곳 모두 이번 라운드에 새로 쓰였거나 인접 라운드에 쓰인 문구라 동시 편집 중 수치가 갈린 것으로 보인다. 확인 필요.
-2. **[MEDIUM, 신규]** `docs/harness/notion-workflow.md` 3-1절이 "추후 `report-format-guide.md`에 이 체크리스트가 별도 절로 추가되면 그쪽을 정본으로 참조한다"고 미래형으로 서술하는데, 바로 이번 같은 라운드에 `report-format-guide.md` 9번 절("AI 티 제거")이 실제로 신설되어 이미 존재한다 — 두 파일이 같은 라운드에 동시 편집되면서 한쪽(notion-workflow.md)의 조건부 미래 서술이 다른 쪽(report-format-guide.md)의 실제 완료 사실을 못 따라간 것으로 보인다. 내용 자체(클리셰 어구·문장 길이·과잉 불릿화·헤징·스마트따옴표 등)는 두 문서가 일치한다. 확인 필요.
-3. **[MEDIUM, 신규]** `.claude/agents/harness-auditor.md`의 "감사 범위 A" 표제 서술이 `(.claude/agents/**, docs/harness/**)`만 명시하고 `.claude/skills/**`·`.claude/commands/**`를 포함하지 않는데, 바로 같은 라운드에 신설된 자동 실행 트리거(`git-workflow.md` 6절, 루트 `CLAUDE.md` "행동 지침")는 `.claude/agents/**`·`.claude/skills/**`·`docs/harness/**` 세 경로 중 하나라도 바뀌면 harness-auditor를 자동 실행하라고 명시한다. 자동으로 호출되는 상황(스킬만 바뀐 라운드)과 이 에이전트 스스로 규정한 감사 대상 범위가 어긋난다. `reset-checklist.md`의 A그룹 정의(에이전트+스킬+커맨드+docs/harness)는 스킬·커맨드를 포함하므로, harness-auditor 자신의 범위 서술만 더 좁다. 확인 필요.
-4. **[MEDIUM, 재발/이월]** `docs/harness/claude-harness.md` 1번 섹션 표에 `docs/harness/harness-versioning.md`가 여전히 없다(70차 5번에서 최초 지적, 71차에도 미해소로 이월). 이번 라운드에 `harness-versioning.md`(worktree 방식 전환 등) 자체와 그걸 참조하는 `git-workflow.md`가 대폭 개정됐는데도 `claude-harness.md`는 이번 라운드에 아예 손대지 않아 격차가 더 벌어졌다. 3개 라운드 연속(70→71→72차) 이월. 확인 필요.
-5. **[MEDIUM/가능성 있음, 신규]** `docs/harness/notion-workflow.md` 3-3절이 `docs/harness/planning-team/document-structure-guide.md`의 "메타 표 + 스코프 콜아웃" 패턴을 일반 원칙처럼 인용하는데, 원본(`document-structure-guide.md`)은 이 패턴을 "선례가 전혀 없을 때만 쓰는 기본값"이라고 명시적으로 조건을 좁혀뒀다(기존 문서·전달받은 세트가 있으면 그쪽이 항상 우선). notion-workflow.md 3-3은 이 조건을 언급하지 않아, Notion에 쓰는 모든 문서에 무조건 적용되는 규칙처럼 읽힐 여지가 있다. 확인 필요(가능성 있음 — 실제 운영에서 로컬 선례가 있을 때 이 콜아웃을 생략해도 되는지 불분명).
-
-### LOW
-
-6. **[LOW, 신규]** `docs/harness/planning-team/test-plan-design-guide.md`의 "추적성" 본문은 "PRD에 유스케이스 상세가 있으면 UC-xx도" 매핑 대상에 새로 추가했지만, 바로 아래 체크리스트 항목("모든 케이스가 AC/FR/SCR 중 하나에 매핑되는가?")은 갱신되지 않아 UC-xx가 빠져 있다.
-7. **[LOW, 신규]** `docs/harness/reset-checklist.md` A그룹 목록의 `prd-writing-guide.md`(서비스 트라이앵글·스코프 트레이드오프·비목표 감별)·`screen-spec-pattern-guide.md`(화면정의서 4종 세트·오버레이 포함 원칙)·`document-structure-guide.md`(문서 구조 상속) 괄호 설명이 이번 라운드에 각 파일에 추가된 신규 절(유스케이스 UC-xx, 문서 전체 구성 순서, 선례 없을 때 기본 뼈대)을 반영하지 않아 요약이 낡았다. 파일 존재 여부나 분류 자체는 틀리지 않음 — 순수 설명 텍스트 완결성 문제.
-8. **[LOW, 재확인/이월]** C-3 줄 번호 드리프트 계속 재발 확인 — `content-designer.md`의 "제품 화면(로그인, 연락처 관리 등)..." 문구가 실제로는 57번째 줄인데 reset-checklist.md는 "현재 50번째 줄"로, `figma-file-organization.md`의 "연락처" 예시 두 곳이 실제로는 55·193번째 줄인데 "53·186번째 줄"로 각각 표기돼 있다. "문구로 찾는 게 안전"이라는 기존 캐비엇 덕에 기능적 위험은 낮음 — 6개 라운드 연속(66→72차) 재발.
-
-### 확인됨(문제 없음)
-- `git-workflow.md`·`reset-checklist.md`·`harness-versioning.md` 세 곳의 `.gitignore` 두 버전(main용 A그룹 경로 무시, harness worktree용 agent-memory 무시) 설명이 서로 모순 없이 일치.
-- `git-workflow.md` 내부 절 번호 상호 참조("아래 1-1번 참고" 등)가 실제 절 번호와 정확히 일치, 1-1·1-2·6번 신설 후에도 참조 깨짐 없음.
-- `.claude/agents/harness-auditor.md`의 새 예외 문구와 `document-versioning-guide.md`의 예외 언급이 (반복 횟수 수치를 제외하면) 조건·범위 면에서 서로 일치.
-- `report-format-guide.md` 절 번호가 밀렸음에도(9번 신설로 구 9번→10번), 실제로 이 문서의 구체적 절 번호를 인용하는 다른 파일(`.claude/agents/doc-writer.md` 등)이 없어 깨진 참조 없음(전부 grep 확인).
-- `reset-checklist.md`가 이번에 여러 세션에서 동시 수정됐음에도 내부 중복·충돌 서술은 발견되지 않음(다른 세션들이 다룬 절이 서로 겹치지 않게 분리돼 있었던 것으로 보임).
-
-### 패턴 메모(누적, 갱신)
-- "역할 A에 새 책임/도구를 추가하면 (a) 오케스트레이터 라우팅절, (b) 상대 워커 역할 경계 서술, (c) PL 로스터 요약"을 함께 갱신해야 한다.
-- "개념적 원칙(왜/누가)"과 "실행 절차(어떻게)"는 다른 층위다.
-- 줄 번호 드리프트 패턴이 6개 라운드 연속(66→72차) 재발 — 근본 해법(줄 번호 대신 앵커/헤딩 참조)을 고려할 시점.
-- **신규 패턴(72차): 같은 사건(신설 규칙)의 반복 횟수·통계 수치를 여러 문서에 나눠 적을 때, 동시 편집 중 수치 자체가 갈리는 경우가 있다 — 버전 문자열뿐 아니라 "N회" 같은 서술적 수치도 인용 정합성 점검 대상에 넣어야 한다.**
-- **신규 패턴(72차): 한 문서가 "다른 문서에 이 내용이 추후 추가되면 그쪽을 참조한다"는 조건부 미래 서술을 남겼는데, 바로 그 라운드에 그 다른 문서가 실제로 갱신되며 조건이 이미 충족돼버리는 경우가 있다 — 두 파일이 병렬로 편집될 때 서로의 완료 여부를 확인하지 않으면 미래형 서술이 즉시 stale해진다.**
-- **신규 패턴(72차): 에이전트 자신의 "역할/범위" 서술과, 그 에이전트를 호출하는 다른 문서의 "트리거 조건" 서술이 별도로 진화하면서 범위가 어긋나는 경우가 있다(harness-auditor의 감사범위 vs git-workflow.md의 자동실행 스코프) — 자동화 트리거를 새로 추가할 때는 호출되는 쪽의 자기 범위 서술도 같이 넓혀야 한다.**
-- claude-harness.md 인덱스 표 누락 패턴이 이제 3라운드 연속(harness-versioning.md, 70→71→72차) 미해소로 이월 중 — 다음 라운드에서 우선 해소 권장.
-
----
-
-## 2026-08-22 (73차) — 사용자 명시 요청: `.claude/skills/planning-kickoff-round/SKILL.md` 1단계 디스커버리 체크리스트에 "백오피스 필요 여부" 불릿 1개 추가 정합성 감사 — 가벼운 감사 (A 범위)
-
-**결과: 신규 발견 1건(MEDIUM/가능성 있음). 참조 무결성·포터블성·용어 정합성은 전부 문제 없음.**
-
-1. **[MEDIUM, 가능성 있음, 신규]** 새 불릿이 "매번 명시적으로 묻는다"는 문구를 쓰는데, 같은 SKILL.md 1단계 절 서두는 "0단계에서 걸러진 항목만 질문 목록으로 만든다"고 규정하고, 0단계 자체도 "문서에 명확한 답이 이미 있다 → 그 항목은 건너뛴다(새로 묻지 않는다)"는 일반 필터링 규칙을 두고 있다. 새 불릿이 이 일반 스킵 로직의 암묵적 예외(이 항목만은 기존 문서에 답이 있어 보여도 항상 다시 확인)를 의도한 것인지, 아니면 단순히 "체크리스트에 빠뜨리지 말고 포함시켜라"는 뜻으로 다른 항목과 동일하게 0단계 필터링을 받는 것인지 문구만으로는 불명확하다. 실제 사고 사례(다른 프로젝트에서 안 물어봤다가 재작업 발생)를 볼 때 전자(예외)를 의도했을 가능성이 있으나, 텍스트가 그렇게 명시하지 않는다. 확인 필요.
-
-### 확인됨(문제 없음)
-- `[[architecture-decision-guide]]` 참조가 실제 `docs/harness/planning-team/architecture-decision-guide.md`와 정확히 일치(파일 존재, 내용도 API 계약/스택 선택 기준 문서 맞음).
-- "비목표(N-항목)" 표기가 `prd-writing-guide.md`의 PRD 구조 절("비목표(N-항목)")과 정확히 일치.
-- 백오피스/관리자 관련 기존 규칙이 `service-planner.md`·`tech-architect.md`·`planning-pl.md`·`reset-checklist.md` 등 어디에도 없어 신규 충돌 없음(기존 "관리자" 매치는 전부 "중간관리자" 오탐).
-- 이 불릿은 노드 ID·프로젝트 고유 컴포넌트명·특정 사고 서사 없이 일반 원칙만 기술 — 포터블성 문제 없음.
-- `reset-checklist.md` A그룹 목록의 킥오프 스킬 요약(16~17번째 줄)은 2단계 데스크리서치 게이팅만 다뤄 1단계 체크리스트 개별 항목을 요약하지 않으므로, 이번 불릿 추가로 인한 드리프트 없음.
-
-### 패턴 메모(누적, 갱신)
-- 줄 번호 드리프트 패턴은 이번 라운드 범위 밖이라 재확인 안 함(72차까지 6개 라운드 연속 재발 기록 유지).
-- **신규 패턴 후보(73차): "매번"·"항상" 같은 강조 부사가 상위 절의 일반 필터링/스킵 규칙과 나란히 있을 때, 그 부사가 "일반 규칙의 예외"를 의도한 것인지 "그냥 강조"인지 문구만으로 구분 안 되는 경우가 있다 — 새 체크리스트/규칙 항목에 강조 부사를 쓸 때는 상위 절 규칙과의 관계(예외인지 아닌지)를 명시하는 게 안전하다.**
-
----
-
 ## 2026-08-22 (74차) — 사용자 명시 요청: `docs/harness/notion-workflow.md` 3-2절 예시 문장 1줄 추가 + 5절 "회색 글자" 불릿 신설 정합성 감사 — 가벼운 감사 (A 범위)
 
 **결과: 신규 발견 1건(HIGH). 예시 문장 중복/어색함은 경미(LOW 수준 언급), 7절 카탈로그·3-3절 근거 절과의 모순은 없음.**
@@ -122,5 +67,23 @@
 
 ### 패턴 메모(누적, 갱신)
 - 72차 LOW-7 패턴(reset-checklist.md A그룹 요약이 개별 가이드의 신규 절 추가를 못 따라감)이 이번 라운드에 `architecture-decision-guide.md`에서도 재발 — 이 요약 갱신 누락이 이제 4개 파일(prd-writing-guide, screen-spec-pattern-guide, document-structure-guide, architecture-decision-guide)에 걸쳐 반복됨. planning-team 가이드에 새 절을 추가하는 워크플로우 자체에 "reset-checklist.md 요약도 같이 갱신" 단계를 넣는 게 근본 대응으로 보인다.
+
+---
+
+## 2026-08-22 (78차) — 사용자 명시 요청: `.claude/skills/planning-kickoff-round/SKILL.md` 백오피스 불릿을 "무조건 별도 문서 세트"→"규모 기반 판단"으로 보정 + `docs/harness/reset-checklist.md` architecture-decision-guide.md 요약에 백오피스 항목 추가(77차 LOW-1 해소) 정합성 감사 — 가벼운 감사 (A 범위)
+
+**결과: 신규 발견 1건(MEDIUM, 가능성 있음). 77차 LOW-1(reset-checklist.md 백오피스 요약 누락)은 이번 수정으로 해소 확인.**
+
+### 신규 발견
+1. **[MEDIUM, 가능성 있음, 신규]** `.claude/skills/planning-kickoff-round/SKILL.md`의 새 백오피스 불릿은 "**분리 여부는 규모에 달려 있다 — 무조건 별도 문서로 떼지 않는다**"며 화면 1~2개 수준의 작은 백오피스는 프론트 화면정의서에 같이 둬도 된다고 규모 기반으로 완화했다. 반면 `docs/harness/planning-team/architecture-decision-guide.md`의 "백오피스가 스코프에 있으면 API·권한 체계를 프론트와 분리한다" 절(제목·본문 모두)은 "백오피스가 스코프에 포함됐다면(킥오프 체크리스트에서 확정)"이라고만 조건을 걸 뿐 규모 조건이 전혀 없다 — 화면 1개짜리 백오피스든 여러 개짜리든 무조건 API·권한 체계를 분리해 엔드포인트 네임스페이스(`/admin/*`)·별도 인증 스킴을 기본값으로 삼으라고 읽힌다. 두 문서가 다루는 층위 자체는 다르다(SKILL.md는 "문서를 몇 개로 쪼갤지", guide는 "실제 API/권한 설계를 어떻게 할지")라 텍스트가 글자 그대로 정반대를 말하는 정면충돌은 아니다. 다만 SKILL.md 새 불릿이 큰 규모 분기에서만 `[[architecture-decision-guide]]`를 인용하고("인증·권한 체계 자체가 다르기 때문이다 → architecture-decision-guide") 작은 규모 분기에는 이 인용이 없는 구조라, "규모가 작으면 인증·권한 체계도 프론트와 공유해도 된다"는 암묵적 함의를 준다 — 이게 맞다면 architecture-decision-guide.md의 무조건적 서술과 어긋난다. 화면 1~2개짜리 백오피스를 만드는 tech-architect가 이 가이드만 보면 카파시 원칙(단순함 우선, 불필요한 확장·설정화 금지)에 반하는 과잉 설계(작은 관리자 대시보드에도 별도 인증 스킴·엔드포인트 네임스페이스 강제)를 하게 될 소지가 있다. 확인 필요 — architecture-decision-guide.md의 백오피스 절에 SKILL.md와 동일한 규모 기반 예외(화면 1~2개 수준이면 API/권한 분리도 선택적)를 명시할지, 아니면 의도적으로 "문서는 합쳐도 API/권한은 항상 분리"를 원칙으로 유지할지는 판단이 필요한 부분이라 감사관이 결정하지 않음.
+
+### 확인됨(문제 없음)
+- 77차 LOW-1(`reset-checklist.md` A그룹 목록의 `architecture-decision-guide.md` 요약이 백오피스 절 신설을 반영 못함) 해소 확인 — 현재 "API 계약 우선·DB 스키마 근거·스택 선택 기준·백오피스 스코프 시 API·권한체계 분리, 2026-08-22 백오피스 절 추가"로 갱신돼 있음.
+- SKILL.md 새 불릿의 번호 표기 기본 제안(`06b_백오피스_기능정의서_화면정의서`)이 `document-versioning-guide.md`가 번호 체계를 프로젝트 재량으로 남겨둔다는 서술과 충돌하지 않음(SKILL.md도 "정확한 번호 표기는 document-versioning-guide.md가 프로젝트 재량으로 남겨둔 부분이니 이 킥오프 시점에 확인해 정한다"고 명시 — 77차에 이미 확인된 정합 유지).
+- 새 불릿에 노드 ID·프로젝트 고유 컴포넌트명·특정 사고 서사 없음 — 포터블성 문제 없음.
+- `[[architecture-decision-guide]]` 참조 자체는 파일 존재·주제 일치(73·77차에 이미 확인) 계속 유지, 참조 무결성 문제 없음.
+
+### 패턴 메모(누적, 갱신)
+- **신규 패턴(78차): 같은 결정(백오피스 규모)에 대해 "문서를 어떻게 쪼갤지"(기획 절차 문서)와 "실제 시스템을 어떻게 설계할지"(아키텍처 가이드)가 서로 다른 문서에 나뉘어 있을 때, 한쪽만 규모 기반 완화 조건을 추가하면 다른 쪽의 무조건적 서술과 암묵적으로 어긋날 수 있다 — 같은 트리거 조건(예: "백오피스가 스코프에 있으면")에 규모 기반 예외를 도입할 때는, 그 조건을 인용하는 모든 문서(문서 조직 규칙뿐 아니라 기술 설계 규칙까지)에 동일한 완화 조건을 적용할지 확인해야 한다.**
 
 ---
