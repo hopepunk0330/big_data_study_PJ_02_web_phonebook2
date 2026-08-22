@@ -74,6 +74,31 @@
 
 ---
 
+## 2026-08-22 (83차) — 사용자 명시 요청: 백오피스/통계 대시보드 완성도 예외 신설 3건 정합성 감사 — `figma-file-organization.md` 3-D 신설 + `screen-spec-pattern-guide.md` 신규절 + `stats-dashboard-design-reference.md` 신규 파일(+ `reset-checklist.md` A그룹 등록) — 보통 강도 (A 범위)
+
+**결과: 신규 발견 6건(HIGH 2, MEDIUM 1, LOW 3). 세 문서 간 상호 참조 자체(파일 경로·절 제목)는 전부 정확 — 참조 무결성 위반은 "존재 확인이 안 되는 제3자"(`dataviz` 스킬)에서 발생.**
+
+### 신규 발견
+1. **[HIGH]** `figma-file-organization.md` 3-D번과 `stats-dashboard-design-reference.md` 둘 다 "차트 자체의 색상·마크·범례·인터랙션"·"시각화 자체의 완성도"를 `dataviz` **스킬**에 위임하는데, 이 하네스 어디에도(`​.claude/skills/*/SKILL.md` 6개 — design-concept-round, planning-kickoff-round, ai-image-content-round, report-pdf, review, summary — 전역 `~/.claude`까지 확인) `dataviz`라는 스킬·문서가 존재하지 않는다. `reset-checklist.md` A그룹 스킬 목록에도 없다. 두 문서가 "정본"이라고 지목한 대상이 실제로는 존재하지 않아, 지금 이 상태로는 차트 시각화 디테일을 다루는 근거 문서가 아예 없다. 확인 필요 — `dataviz` 스킬을 실제로 새로 만들 계획인지, 아니면 다른 기존 문서(예: 없음)로 참조를 정정해야 하는지.
+2. **[HIGH]** `stats-dashboard-design-reference.md` 1번째 줄이 스스로를 "design-qa가 감사할 때 쓰는 검증 기준"이라 선언한다 — `docs/harness/design-team/figma-page-format-guide.md`·`icon-craft-guide.md`·`component-state-guide.md`·`token-architecture-guide.md`·`motion-timing-guide.md`도 전부 같은 방식으로 자신을 design-qa 검증 기준이라 밝히고 있고, 실제로 `.claude/agents/design-qa.md`의 "판단 기준"·"검토 우선순위" 목록에 이 5개가 전부 이름과 번호(6~12번)로 명시적으로 인용돼 있다. 그런데 새로 만든 `stats-dashboard-design-reference.md`는 이 목록 어디에도 인용되지 않았다 — 이 파일 하나만 "이미 존재하는 5형제와 같은 지위를 스스로 주장하지만 실제로 그 지위를 부여하는 문서(design-qa.md)에는 등록이 안 된" 상태. design-qa가 실제로 통계 대시보드 화면을 감사할 때 이 문서를 적용할지 불확실하다. 확인 필요.
+3. **[MEDIUM]** `figma-file-organization.md`의 같은 섹션(3번) 안에서, 3-B번 5단계("전체 확장")가 "4-1번 승인을 받은 뒤에만, 추출된 시스템을 기준 삼아 docs/planning에 정의된 **나머지 화면 전체를 같은 완성도로 제작한다**"라고 규정하는데, 바로 다음에 신설된 3-D번은 "백오피스는 [프론트와] 그보다 낮은 완성도... 의도적으로 허용한다"고 말한다. docs/planning 전체 화면 목록에 백오피스가 포함돼 있다면, 3-B 5단계의 "나머지 화면 전체를 같은 완성도로"라는 무조건적 서술이 3-D가 만든 예외를 반영하지 못한 채 그대로 남아있는 것으로 읽힐 수 있다(3-B 5단계 문구 자체엔 "단, 백오피스 제외" 같은 단서가 없음). 확인 필요 — 3-B 5단계의 "나머지 화면 전체"가 애초에 프론트 화면만 가리키는 문맥(파일럿 선정이 3-B 1단계에서 "서비스 핵심 플로우 대표 화면"으로 이미 프론트 위주였음)이라 암묵적으로 안전한 것인지, 아니면 3-B 5단계에도 3-D 예외를 명시적으로 교차 인용해야 하는지는 판단 필요.
+4. **[LOW, 가능성 있음]** `screen-spec-pattern-guide.md` 신규절과 `stats-dashboard-design-reference.md` 둘 다 예시 문구로 "SCR-007의 스타일은 **참여자용** 화면(§1)과 무관한..."/"이 화면의 스타일은 **참여자용** 화면과 무관한..."을 똑같이 쓴다. 그런데 이 하네스가 이미 정착시켜 쓰는 용어는 "프론트(고객용) 화면"(`figma-file-organization.md` 3-D, 방금 이 라운드에 같이 신설)이지 "참여자용"이 아니고, 이 프로젝트(연락처 관리 웹 앱) 자체에도 "참여자"라는 개념은 없다(`docs/planning`에 "참여자"·"SCR-007" 문자열 없음 확인). 다른 프로젝트(설문/이벤트 등 참가자가 있는 서비스)의 예시가 정정 없이 그대로 두 포터블 문서에 박제된 것일 가능성이 있다 — 이 하네스 자체의 "연락처" 프로젝트 고유 예시(이미 `reset-checklist.md` C-3에 등록된 것)와는 다른 종류의, 제3의 프로젝트발 도메인 특유 용어가 새로 유입된 사례일 수 있다. 확정 근거는 없어 가능성 있음으로만 보고 — 사용자가 원래 의도한 예시(실제로 참여자 개념이 있는 다른 프로젝트를 염두에 두고 일부러 쓴 것)일 수도 있다.
+5. **[LOW]** `figma-file-organization.md` 3-D번은 `stats-dashboard-design-reference.md`나 `screen-spec-pattern-guide.md` 신규절을 전혀 역참조하지 않는다(단방향 참조 — 두 신규 문서는 3-D번을 인용하지만 3-D번은 이들을 모른다). 모순은 아니지만, 3-D번의 "시각화 자체의 완성도는 `dataviz` 스킬 참고"라는 괄호 안에 "화면 배치 원칙은 `stats-dashboard-design-reference.md` 참고"를 같이 남기지 않아 상호 참조가 한쪽만 완결돼 있다.
+6. **[LOW]** `design-pl.md`·`ui-designer.md`는 `figma-file-organization.md`를 통째로 "따른다"는 포괄 참조만 갖고 있어 3-D번도 기술적으로는 상속되지만, `design-pl.md`가 3-B/2-4/3번처럼 다른 하위 절은 개별적으로 콕 집어 인용하는 기존 패턴과 비교하면 3-D번(그리고 `stats-dashboard-design-reference.md`)만 orchestration 문서에서 별도로 스포트라이트되지 않았다 — 실무 영향은 낮지만(포괄 참조로 이미 커버됨) 패턴 일관성 관점에서 참고.
+
+### 확인됨(문제 없음)
+- 세 문서의 명시적 상호 참조(파일 경로·절 번호·절 제목) 자체는 전부 실제 위치와 정확히 일치: `screen-spec-pattern-guide.md` 신규절 → `figma-file-organization.md` 3-D번(존재·내용 일치), `stats-dashboard-design-reference.md` → 같은 3-D번(존재·내용 일치) 및 `screen-spec-pattern-guide.md`의 "구성요소-동작 표"(4종 세트 3번 항목과 일치)·"디자인 언어가 의도적으로 분리된 화면" 절(제목 일치).
+- `reset-checklist.md` A그룹의 `stats-dashboard-design-reference.md` 등록 문구("백오피스 안에서도 완성도 예외, 정보 위계·그리드 배치, 프론트로 스타일 역류 금지")가 실제 파일 내용(1~5번 절)과 대체로 일치 — "표 정렬·필터"(4번 절) 요약 누락은 있으나 모순은 아니고 사소함.
+- 백오피스 용어("관리자용 별도 화면, 킥오프 체크리스트에서 스코프 확정")는 3-D번과 `planning-team/architecture-decision-guide.md`(78차에서 이미 확인된 문서) 사이에 일관되게 유지됨 — 신규 충돌 없음.
+- 새 세 문서 모두 노드 ID·이 프로젝트 실제 컴포넌트명/색상 hex 하드코딩 없음(4번 항목의 "참여자용" 용어 건은 다른 종류의 leak 가능성으로 별도 표기).
+- `component-state-guide.md`·`icon-craft-guide.md`·`token-architecture-guide.md` 등 기존 design-team 가이드와 `stats-dashboard-design-reference.md`는 다루는 층위(컴포넌트/토큰 vs 화면 레이아웃 배치)가 겹치지 않아 내용 충돌 없음.
+
+### 패턴 메모(누적, 갱신)
+- **신규 패턴(83차): 새 포터블 가이드 문서를 만들 때, 그 문서가 스스로 "이 문서는 OO 에이전트의 검증 기준/실행 근거다"라고 선언해도, 그 OO 에이전트 정의 파일(`design-qa.md` 등) 쪽에 실제 인용이 추가되지 않으면 선언은 있지만 집행력이 없는 상태로 남는다 — 기존 형제 문서들이 전부 양방향 등록(문서 자기소개 + 에이전트 쪽 명시적 인용)돼 있는 패턴이면, 새 문서도 같은 두 곳을 다 채웠는지 확인해야 한다.**
+- **신규 패턴(83차): 하네스 문서가 아직 존재하지 않는 스킬/문서를 "정본"으로 지목하며 역할을 위임하는 문장은, 그 지목된 대상이 실제로 있는지 grep 한 번으로 확인해야 한다 — 없으면 위임이 아니라 책임 공백이 된다.**
+
+---
+
 ## 2026-08-22 (81차) — 사용자 명시 요청: 80차 HIGH #1(push 승인 경계 충돌) 해소 확인 — `CLAUDE.md` "금지"·"Git 리모트/브랜치 관례" 두 절에 harness→origin 예외 문구 추가 — 가벼운 확인 (A 범위)
 
 **결과: 80차 HIGH #1 해소 확인(세 곳 — CLAUDE.md 금지 절, Git 리모트 관례 절, karpathy_skills.md fork 불릿 — 이제 실질적으로 일치). 다만 이번 수정이 건드리지 않은 제3의 문서(`git-workflow.md` 0절)가 여전히 구 버전 절대 표현을 유지하고 있어 새로운 불일치 1건(MEDIUM) 발견. 경미한 표현상 확대 소지 1건(LOW)도 함께 발견.**
