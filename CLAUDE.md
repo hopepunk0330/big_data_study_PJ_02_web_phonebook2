@@ -19,7 +19,7 @@
 ## Git 리모트/브랜치 관례
 - 리모트가 두 개다: `assignment`(실제 과제 제출용 저장소) / `origin`(JY_Harness, 사용자의 개인 하네스·템플릿 저장소 — 여러 프로젝트에서 재사용하는 `.claude/agents/**`·`docs/harness/**` 자산을 추적).
 - 브랜치+PR 게이트는 **실제 구현 코드**(예: `backend/`, `static/` — TRD가 정한 코드 폴더)에만 적용한다: 브랜치 생성 → code-reviewer 리뷰 → 사용자 승인 → PR 머지.
-- **하네스 정의(`.claude/agents/**`·`docs/harness/**`, `reset-checklist.md` A그룹 전체)는 `main`이 아니라 전용 `harness` 브랜치에만 커밋한다**(2026-08-20 신설 — 이전엔 main에 직접 커밋했으나, main은 assignment가 최종적으로 받는 과제 제출 브랜치라 하네스가 섞이면 안 됨). `harness` 브랜치는 `main`과 merge하지 않는 독립 트랙이다 — 필요할 때 사람이 checkout해서 커밋만 쌓는다. 기존에 이미 `main`에 섞여 있던 하네스 파일은 당장 지우지 않고 그대로 두되(2026-08-20 결정), 삭제는 사용자가 별도로 명시할 때만 진행한다. 상세 절차는 `docs/harness/git-workflow.md` 참고.
+- **하네스 정의(`.claude/agents/**`·`docs/harness/**`, `reset-checklist.md` A그룹 전체)는 `main`이 아니라 전용 `harness` 브랜치에만 커밋한다**(2026-08-20 신설 — 이전엔 main에 직접 커밋했으나, main은 assignment가 최종적으로 받는 과제 제출 브랜치라 하네스가 섞이면 안 됨). `harness` 브랜치는 별도 worktree 폴더에서만 편집·커밋하는 독립 트랙이다(`main` 폴더 자체에서 checkout으로 오가지 않는다 — 자세한 건 `git-workflow.md` 1-1번). **2026-08-22부터 `main`은 이 경로들을 `.gitignore`로 아예 추적하지 않는다** — 기존에 커밋돼 있던 것도 `git rm --cached`로 인덱스에서 뺐다(파일 자체는 harness 브랜치 동기화로 디스크에 최신 상태로 남아 Claude Code가 계속 읽는다). 과거 커밋 이력 자체(assignment/origin의 main에 이미 들어간 하네스 커밋)를 소급 제거하는 건 별도 작업(`git filter-repo`)이라 사용자가 명시적으로 요청할 때만 진행한다. 상세 절차는 `docs/harness/git-workflow.md` 참고.
 - 그 외(기획 문서 `docs/planning/**`, 디자인 산출물 `docs/design/**`, 루트/팀별 `CLAUDE.md`의 프로젝트 고유 섹션, `tests/` 등)는 지금까지처럼 브랜치를 거치지 않고 `main`에 직접 커밋·푸시한다(대화 중 사용자가 그때그때 확인하는 방식).
 - push 대상: `harness` 브랜치는 `origin`에만 push한다(`git push origin harness`, 동일 브랜치명) — `assignment`로는 절대 push하지 않는다. `main`은 지금까지처럼 `assignment`·`origin` 양쪽에 push한다(단, main에는 이제 새 하네스 커밋이 안 쌓이므로, origin의 `main`은 과거 이력 스냅샷으로 고정되고 실제 최신 하네스는 origin의 `harness` 브랜치가 담는다).
 - 어느 경로든, 원격 저장소로의 실제 push는 매번 사용자의 명시적 확인을 받은 뒤에만 수행한다(위 "금지" 항목과 동일).
@@ -34,6 +34,7 @@
 ## 행동 지침
 - 안드레 카파시 행동지침에 아래 문서를 따른다. @docs/harness/karpathy_skills.md
 - Notion 작업(MCP로 연결해서 쓰기) 시 아래 문서를 따른다. @docs/harness/notion-workflow.md
+- 하네스(`.claude/agents/**`, `.claude/skills/**`, `docs/harness/**`)를 추가·수정하는 작업 라운드가 끝나면, 물어보지 않고 바로 `harness-auditor`를 실행한다(2026-08-22 신설 — 자세한 절차는 `docs/harness/git-workflow.md` 6절). 발견된 문제를 실제로 고칠지는 그 결과를 보고한 뒤 사용자 확인을 받는다 — 자동 실행은 감사 실행 자체에만 적용되고, 수정까지 자동으로 하지는 않는다.
 
 ## 소통 방식
 - 사용자에게는 항상 존댓말로 응답한다(반말 금지) — 2026-08-20 명시적 요청. 새 프로젝트를 시작할 때마다 반말로 시작하는 문제가 반복돼 전역 규칙으로 고정한다.
