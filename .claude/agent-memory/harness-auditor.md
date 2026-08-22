@@ -107,3 +107,20 @@
 - **신규 패턴(76차): "왜 이 규칙을 지켜야 하는가"를 설명하는 근거 문단을 추가할 때, 그 근거가 문서가 다른 곳에서 신중하게 구분해둔 두 개념(예: "관리 문서" vs "완성 보고서")을 다시 뒤섞는 표현을 쓸 수 있다 — 규칙 자체를 바꾸지 않아도 독자의 개념 구분을 흐리는 근거 서술은 감사 대상이다.**
 
 ---
+
+## 2026-08-22 (77차) — 사용자 명시 요청: 76차 발견분 후속 수정 확인 — `architecture-decision-guide.md` "백오피스 API·권한 분리" 절 신설 + `planning-kickoff-round/SKILL.md` `[[document-versioning-guide]]` 번호체계 공백 해소 문구 추가 검증 — 가벼운 확인 (A 범위)
+
+**결과: 두 수정 모두 의도대로 문제를 해소했음을 확인. 신규 발견 1건(LOW, 기존에 이미 기록된 재발 패턴의 새 사례).**
+
+### 확인됨(문제 없음)
+- `.claude/skills/planning-kickoff-round/SKILL.md`의 `[[architecture-decision-guide]]` 참조가 이제 실제로 관련 내용(백오피스 스코프 시 API·권한 체계 분리, 엔드포인트 네임스페이스/별도 인증 스킴 기본값)을 담고 있음 — 73차에서 이미 "파일 존재·주제 일치"는 확인됐었고, 이번엔 그 참조가 가리키는 구체적 내용까지 실제로 채워졌음을 재확인.
+- 신설된 "백오피스가 스코프에 있으면 API·권한 체계를 프론트와 분리한다" 절이 같은 문서의 "API 계약 우선" 절(엔드포인트/스키마가 화면정의서·기능정의서와 항상 일치, 에러 응답은 단일 형식으로 통일)과 모순되지 않음 — "단일 형식 통일"은 에러 응답의 스타일 규약이지 프론트/백오피스 API 계약 자체를 하나로 합치라는 뜻이 아니어서, "계약을 분리하되 각자 화면정의서/기능정의서와 일치시키고 에러 형식 관례는 공유"로 해석에 충돌 없음.
+- `.claude/skills/planning-kickoff-round/SKILL.md`의 `[[document-versioning-guide]]` 참조("이 별도 세트의 번호를 어떻게 매길지는 document-versioning-guide.md가 의도적으로 프로젝트마다 정하는 관례로 남겨둔 부분")가 `docs/harness/planning-team/document-versioning-guide.md` 문서 도입부 서술("어떤 문서 번호 체계를 쓸지(00~06 등 넘버링)는 다루지 않는다 — 그건 프로젝트마다 정하는 관례다")과 정확히 일치.
+
+### 신규 발견
+1. **[LOW, 신규 사례 — 기존 재발 패턴]** `docs/harness/reset-checklist.md` A그룹 목록의 `planning-team/architecture-decision-guide.md` 요약이 여전히 "API 계약 우선·DB 스키마 근거·스택 선택 기준"으로만 돼 있어, 이번에 신설된 "백오피스가 스코프에 있으면 API·권한 체계를 프론트와 분리한다" 절을 반영하지 않았다. 72차 LOW-7("A그룹 목록 괄호 설명이 신규 절을 반영 못 함 — prd-writing-guide.md/screen-spec-pattern-guide.md/document-structure-guide.md")과 동일한 패턴의 새 사례. 확인 필요(기능적 위험은 낮음 — 파일 존재·분류 자체는 정확).
+
+### 패턴 메모(누적, 갱신)
+- 72차 LOW-7 패턴(reset-checklist.md A그룹 요약이 개별 가이드의 신규 절 추가를 못 따라감)이 이번 라운드에 `architecture-decision-guide.md`에서도 재발 — 이 요약 갱신 누락이 이제 4개 파일(prd-writing-guide, screen-spec-pattern-guide, document-structure-guide, architecture-decision-guide)에 걸쳐 반복됨. planning-team 가이드에 새 절을 추가하는 워크플로우 자체에 "reset-checklist.md 요약도 같이 갱신" 단계를 넣는 게 근본 대응으로 보인다.
+
+---
