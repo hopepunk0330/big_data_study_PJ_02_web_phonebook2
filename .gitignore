@@ -9,3 +9,12 @@ pdf-maker/결과.pdf
 .claude/hooks/.slack-webhook-url
 .claude/scheduled_tasks.lock
 docs/design/ai-image-content/
+
+# 하네스(A그룹, harness 브랜치에서만 커밋) — main은 앞으로 이 경로들을 추적하지 않는다
+# 파일은 harness 브랜치에서 받아온 최신본이 디스크에 그대로 남아 Claude Code가 계속 읽지만,
+# git은 여기서부터 새 변경을 추적하지 않는다(2026-08-22 신설, git-workflow.md 1-1번 참고)
+.claude/agents/
+.claude/skills/
+.claude/commands/
+.claude/hooks/stop-failure-notify.sh
+docs/harness/
