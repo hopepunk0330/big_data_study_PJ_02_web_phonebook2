@@ -4,6 +4,22 @@
 
 ## 작업 로그
 
+### 2026-08-24 — mercari 가격 UX 실험 "가격제안 화면 Concepts" 페이지에 SCR-002/003 대표화면 톤 비교 시안 3종 추가(Type A 브랜드 컨셉 라운드)
+
+- **배경**: brand-designer가 만든 컬러 스와치 3종(`8:3`/`8:4`/`8:5` — 미니멀 신뢰형/네오팝 브루탈형/벤토 다크 글로우형)만으로는 실제 화면 맥락에서 톤을 판단하기 어렵다는 design-pl 지시. 3개 컨셉 프레임을 `get_screenshot`(base64)으로 직접 열람 후 시작(요약 표만 보고 진행 안 함).
+- **요구사항 출처**: `/Users/aydana/dev/portfolio/bigdata/01-ML_mercari price_2608/docs/planning/06_기능정의서_화면정의서_v1.23.md`(다른 프로젝트, 읽기만 함) 220~250줄(UX 패턴 방향)·384~444줄(SCR-002/003 상세)을 실측 인용 — 문구·구조 절대 재해석 없이 그대로 반영(스텝A 읽기전용→스텝B 자동전환→2지선다→조건부 입력란→"다음 보기" 순서, 문구 원문 그대로).
+- **테스트 품목**: 헤드폰(Beats by Dre Studio Headphones, 4,683건, 중앙값 $24)으로 3개 시안 통일, KRW 근사값 ₩33,000 동일 적용. 상품 사진은 플레이스홀더 블록으로 대체(실촬영본 없음).
+- **컨셉별 구조 차별화(게슈탈트 기준, brief 4번 지침 그대로)**:
+  - A(미니멀): 단일 컬럼 세로 스택, 카드 1px 보더(`#EAECEF`)만·그림자 없음·여백으로만 구획.
+  - B(네오팝 브루탈): 동일 세로 스택이지만 카드 처리가 3px 잉크 보더(`#16171A`)+하드 오프셋 그림자, 가격 뒤 옐로우(`#FFD400`) 하이라이터 칩, 시트 모서리에 걸치는 별/다이아몬드 컨페티(`figma.createStar()`/`createPolygon()`).
+  - C(벤토 다크 글로우): Step A 영역을 실제 4셀 벤토 그리드(이미지 셀+가격 셀(큰 span)+신뢰근거 셀+진행단계 셀)로 구조 자체를 재편, 보더 대신 네온 stroke+glow(`DROP_SHADOW` blur 12~20, 컬러 민트`#4DFFC4`/바이올렛`#A78BFA`)로 셀 구분.
+- **컨테이너**: 3개 모두 모바일(375×가변) 바텀시트 — 드래그 핸들바 + 상단 dim 배경(A/B) 또는 다크 페이지 배경(C) 위에 하단 고정 시트. 새 페이지 생성 없이 기존 "가격제안 화면 Concepts"(`8:2`) 페이지 안, 각 브랜드 컨셉 프레임 바로 아래에 배치.
+- **하드코딩 예외 적용**: 이 라운드는 design-systems 투입 전이므로 brand-designer가 정의한 원본 hex/폰트(Inter Black 히어로 숫자 + Noto Sans KR 한글, 각 컨셉 팔레트 원본값)를 컴포넌트 바인딩 없이 직접 사용(브리프가 명시한 예외 규칙).
+- **결과 노드**: Concept A 화면 `20:3`(타이틀 `20:2`), Concept B 화면 `21:3`(타이틀 `21:2`), Concept C 화면 `23:3`(타이틀 `23:2`) — 전부 `get_screenshot`으로 개별+전체 페이지 대조 검증 완료.
+- **비교표(레이아웃 구조/카드 처리/장식 — 항목별로 3개 모두 다름 확인)**: 레이아웃 구조(A·B=단일컬럼 vs C=4셀 벤토), 카드 처리(A=보더만 vs B=보더+오프셋그림자 vs C=네온stroke+glow), 장식 요소(A=없음 vs B=하이라이터+컨페티 vs C=텍스트/스트로크 자체발광, 별도 오브제 없음).
+- **완료 후 상태**: design-pl에게 "확정 대기"로 보고, 사용자 확정 전까지 2차 라운드·design-systems 등 후속 작업 보류.
+- 하지 않은 것: SCR-002/003 외 다른 화면 제작 없음, SCR-007 무손, 이 프로젝트 자체 디자인팀 기존 화면 미열람, `01-ML_mercari price_2608` 폴더에 쓰기 없음(읽기만), design-systems 토큰·새 아이콘 생성 없음.
+
 ### 2026-07-18 — main-데이터없음(가입직후, `1060:2014`) CTA raw 버튼 → 실제 Button 인스턴스 교체
 
 - 배경: interaction-designer가 `1060:2096`("연락처 추가" CTA)이 실제 `Button` 컴포넌트(`259:609`)의 INSTANCE가 아니라 텍스트+FRAME으로 흉내낸 raw 목업(mainComponent 없음, State 상속 불가)임을 지적.
@@ -27,11 +43,3 @@
 - **정정**: `941:3015` fills[0].opacity `1`→`0.08`(같은 `VariableID:95:7` 코랄/500 토큰 유지, boundVariable 안 끊음). `941:3028` `layoutSizingHorizontal` `FILL`→`FIXED`+`resize(330, h)`, `setRangeLineHeight(0, len, {unit:'PIXELS', value:20})`. 컨테이너는 HUG라 텍스트 수정만으로 자동 재계산되어 최종 392×74px — 원본(`501:4182`, 392×74)과 정확히 일치.
 - **검증**: `941:3015`/`501:4182` 두 노드를 동일 배율로 개별 `get_screenshot`(392×66→최종 392×74) 비교 + 속성 단위 재조회(fills opacity/boundVariable, stroke, cornerRadius 6, padding 17, gap 12, 텍스트 width 330/height 40/lineHeight 20/fontSize 13/fontName 전부 원본과 일치) 완료.
 - 하지 않은 것: 아이콘 컴포넌트 자체 무수정(이미 등록된 `Pixel/Warning` `255:120` 인스턴스 그대로, 벡터 fill도 원본과 일치해 손대지 않음), WarningBox의 padding(17)/gap(12)/cornerRadius(6)는 애초에 원본과 일치해 무수정, ModalHeader/SummaryBox/ButtonRow 등 배너 밖 다른 섹션 무수정, 마스터 컴포넌트 변경 없음(화면 인스턴스 로컬 속성만 수정).
-
-### 2026-07-17 — 마감 직전 3건 최종 정정 라운드(삭제 모달 치수 / Join 배지 복구 / login-알림창 버튼 정합)
-
-- **1) 삭제 모달(`941:1508`) SummaryBox/카드/버튼 치수 정정**: 확정 원본 `501:4172` 기준 실측 대조. 카드 전체(`941:1588`)와 버튼 높이(`941:3043`/`941:3045`)는 재확인 결과 이미 392px/44px로 일치(이전 라운드에서 이미 반영됨, 재확인만). SummaryBox(`941:3029`)만 실제로 어긋나 있었음 — label 텍스트 lineHeight `AUTO`→`PIXELS 15`, value 텍스트 lineHeight `AUTO`→`PIXELS 20`(원본과 동일), padding `13/15`→`12/14`, itemSpacing `8`→`4`로 정정해 행 높이를 16→20px로 복원. 이후 원본 자체에 존재하는 2px hug 라운딩 편차(원본 SummaryBox가 자체 padding/itemSpacing/행높이 산술로는 116인데 실측 118로 나옴 — 원본 고유의 auto-layout 반올림 편차로 추정)를 그대로 재현하기 위해 SummaryBox paddingBottom을 12→14로 미세 보정, Content(`941:1590`) paddingBottom을 28→24로 되돌려 최종 SummaryBox 118px/Content 380px/카드 392px를 원본과 정확히 일치시킴. WarningBox는 지시대로 무수정.
-- **2) Join/재설정/회원가입 "로그인으로 돌아가기" 버튼 배지 복구**: 확정 원본 `501:4888`을 `get_design_context`로 실측(20×20 원형 배지, `color/coral/500` 배경 + `color/ink/900` 2px 보더, 내부 화살표 아이콘은 기존 Leading Icon(Pixel/ArrowRight) 인스턴스를 그대로 담되 rotation 180으로 좌향 반전). Button 컴포넌트엔 배지 슬롯이 없어 대상 5개 인스턴스(`936:948`, `995:2485`, `996:409`, `996:2614`, `996:2753` — 프레임 ID 기준 각각 936:948/995:303/996:376/996:2575/996:2713 소속)를 로컬로만 `detachInstance()` 후 배지 프레임(코랄 fill+ink 보더, 둘 다 기존 토큰 `VariableID:95:7`/`VariableID:95:9` 바인딩)을 생성해 기존 Leading Icon을 그 안으로 옮기고 rotation 180 적용. 부수 발견: 5개 중 2개(995:2485/996:2614 유래 인스턴스)의 Leading Icon 자체가 원래 `visible:false`였음 — 배지 추가와 별개로 이것도 `true`로 정정해야 아이콘이 실제로 보임(안 그러면 빈 코랄 원만 남음). 버튼 높이도 배지(20px)가 커지며 42→44px로 자동 재계산되어 원본(44)과 일치. 마스터 컴포넌트/다른 인스턴스/935:33·936:1042·936:1191 원본 색상은 무수정.
-- **3) login-알림창(`936:1191`) 카드 내부 버튼 정합**: `login`(`936:1042`)과 실측 대조해 두 군데 차이 발견 — ① "회원가입" 버튼: login은 Button 컴포넌트 슬롯 밖에서 조립한 raw 프레임(`959:307`, 코랄 Plus 배지+"회원가입" 텍스트, 원본 `501:5137` 재현)인데 login-알림창은 배지 없는 평범한 Button 인스턴스(`936:1235`)였음 → `959:307`을 clone해 같은 위치(x32,y412)에 넣고 기존 인스턴스는 제거. ② "로그인" 제출 버튼: login(`936:1095`)은 `Show Leading Icon=true`+`Leading Icon=951:3`(Pixel/ArrowEnter)인데 login-알림창(`936:1230`)은 `Show Leading Icon=false`+`Leading Icon=951:2`(Pixel/ArrowRight, 안 보임) — componentProperties를 login과 동일하게 `setProperties`로 정정. 두 수정 모두 스크린샷 대조로 login과 픽셀 단위 구조 일치 확인.
-- 검증: 세 항목 모두 수정 직후 `get_screenshot`으로 개별/전체 재검증 완료(스크린샷 5장+ 이상 비교).
-- 하지 않은 것: WarningBox 무수정(지시 사항), Button/컴포넌트 자체(마스터) 무수정, 935:33/936:1042/936:1191 원본 프레임의 색상 무수정(사용자가 이미 확정한 값), 지시된 3건 외 다른 노드 무수정.
