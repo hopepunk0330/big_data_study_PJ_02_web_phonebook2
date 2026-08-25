@@ -64,8 +64,30 @@ design-qa가 지난 컴포넌트 추출 라운드에서 HIGH로 지적: 확정 �
 
 **확정 화면 7개(`187:2674`/`187:2872`/`187:2919`/`187:2966`/`187:2720`/`187:2766`/`187:2817`) 자체는 이번 라운드에서 열람만 하고 일절 수정하지 않았다.**
 
+## 이어지는 라운드 — design-systems의 컴포넌트 승격·occurrence 교체 마무리
+
+design-systems가 위 인수인계를 이어받아 처리한 결과를 기록한다(위 섹션은 graphic-designer 원본, 이 섹션부터 design-systems 작업).
+
+### 노드 ID 재검증 결과 (이번이 세 번째 확인)
+
+브리프에 적힌 `195:14`/`195:15`/`195:16`(raw FRAME)은 **이미 이전의 별도 라운드에서 정식 COMPONENT로 승격 완료된 상태**였다(이번 라운드 시작 시점에 `get_metadata`로 확인) — 실제 컴포넌트 노드는 `206:32`(chevron-right) / `206:33`(star-01) / `206:34`(shield-check)이며, 내부 벡터/도형은 원래 ID(`195:17`/`195:18`+`195:19`/`195:20`)를 그대로 유지한 채 부모만 COMPONENT로 바뀌어 있었다. 이 승격 작업이 언제·누구에 의해 이뤄졌는지는 기록이 없으나(같은 `206:` ID 대역에 CTA 인스턴스 교체, Icons 페이지, 변수 컬렉션까지 함께 생성된 흔적으로 보아 한 세션에서 일괄 처리된 것으로 추정), **문서화가 누락된 채 방치**돼 있었다 — 이번 라운드에서 뒤늦게 확인·기록한다.
+
+같은 이유로 브리프가 지목한 chevron-right occurrence 2개(`187:2870`, `187:3015`, "손으로 만든 CTA Button 프레임")도 **더 이상 존재하지 않았다** — B_SCR-002_03·A_SCR-002_04 두 화면 모두 이미 정식 `CTA` 컴포넌트 인스턴스(`206:869`, `206:874`)로 교체돼 있었다(위 "구조적 특이사항"이 이 사이 라운드에서 이미 해소됨). 반면 **shield-check는 이미 `Choice Card` 컴포넌트 마스터 내부에서 `206:34` 컴포넌트의 INSTANCE로 존재**했고(`206:815`/`206:817`/`206:819`/`206:821`/`206:823`/`206:825`), star-01 occurrence 7개(`187:2698` 등)만 브리프 기록 그대로 raw FRAME으로 남아 있었다.
+
+### 실제로 수행한 교체·수정
+
+- **chevron-right**: 화면에 남은 raw occurrence가 없어, 대신 `CTA` 컴포넌트 마스터 두 variant(`124:1135` Disabled, `124:1136` Active) 내부에 raw FRAME+VECTOR로 박혀 있던 chevron을 찾아 `206:32` 컴포넌트의 INSTANCE로 교체했다(위치/크기 24×24 무변화 확인). 마스터 단위 교체라 7개 화면 전체에 자동 전파된다.
+- **⚠ 회귀 발견·즉시 수정**: `206:32`(chevron-right) 컴포넌트 자체에 리뷰용으로 얹은 것으로 추정되는 진한 남색(#1A1D29) 배경 fill이 **컴포넌트 자신의 fill로 박혀 있어**, 위 교체 직후 CTA 버튼에 검은 사각형이 나타나는 회귀가 발생했다. 즉시 `206:32.fills = []`로 제거해 star-01(`206:33`)·shield-check(`206:34`)와 동일하게 투명 배경으로 맞췄다(스크린샷으로 CTA 재검증 완료). 이 배경이 빠지면서 "Graphic Assets" 페이지의 chevron-right 스와치 자체는 흰 배경 위 흰 stroke라 육안 확인이 어려워졌다 — 별도 배경 사각형을 컴포넌트 바깥에 추가하려 시도했으나 auto-layout 흐름에 끼어들어 레이아웃이 틀어지는 문제가 반복돼(2회) 정리 차원에서 되돌렸다. **다음 라운드 참고**: chevron-right 스와치 가독성 개선은 `layoutPositioning='ABSOLUTE'`로 도큐먼트 전용 배경을 붙이는 방식으로 별도 처리 필요(이번엔 보류).
+- **star-01**: 7개 occurrence(`187:2698`/`187:2744`/`187:2790`/`187:2841`/`187:2897`/`187:2944`/`187:2991`) 전부 `206:33` 컴포넌트의 INSTANCE로 교체(12×12 위치/크기 무변화 확인).
+- **shield-check**: 이미 인스턴스였으므로 구조 변경 없음.
+
+### 아이콘 마스터 색상 바인딩
+
+세 아이콘 마스터의 내부 벡터/도형 색을 (이번 라운드에서 신설한) Semantic Colors 변수에 바인딩했다: chevron-right stroke → `color/bg-surface`(흰색, STROKE_COLOR 스코프 확장), star-01 Ellipse fill → `color/primary`, Star fill → `color/bg-surface`, shield-check stroke → `color/secondary`. 상세는 `docs/design/mercari/brand-guide.md`의 신규 절 참고.
+
 ## 근거
 
 - Figma `SIBLz4S4IZbjabzhMSAgdo`, `use_figma`/`get_metadata`/`get_screenshot`(inline `node.screenshot()` 포함)로 이번 라운드에 직접 관찰·재구성.
 - `docs/design/mercari/brand-guide.md` 1절(색상)·6절(아이콘 스펙) — 정본이나, `shield-check` 항목은 위에서 기록한 대로 실물과 서술이 어긋남을 확인.
 - `docs/harness/design-team/icon-craft-guide.md` — 트랙 판정 기준·체크리스트.
+- (design-systems 이어지는 라운드) 위 "이어지는 라운드" 섹션은 노드 재조회·`node.screenshot()` 스크린샷 재검증으로 직접 확인한 결과다.

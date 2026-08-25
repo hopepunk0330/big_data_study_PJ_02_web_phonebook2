@@ -134,9 +134,50 @@ Concept A와 B는 서로 다른 브랜드 톤이 아니라, **완전히 동일�
 
 **일러스트레이션 방향 요약**: 이 컨셉은 마스코트나 별도 빈 상태(empty state) 그래픽을 쓰지 않는 실용적·정보 중심 톤이다. 장식이 필요한 지점(선택 카드)에만 컬러 원형+라인 합성 아이콘을 최소한으로 배치하고, 나머지는 전부 단색 라인 아이콘 또는 실사진으로 처리한다. 향후 이 화면군에 빈 상태·에러 상태 그래픽이 필요해지면, 화려한 일러스트보다 이 절제된 톤(라인 아이콘 + 옅은 Accent Tint 배경)을 우선 시도할 것을 권장한다.
 
+## 9. design-systems 라운드 — 변수(토큰) 신설·컴포넌트 바인딩·스펙 시트 (컴포넌트 추출 잔여 결함 수정)
+
+이 절은 design-systems가 `docs/design/mercari/graphic-assets.md`의 아이콘 3종 정리 인수인계를 이어받아 진행한 잔여 결함 수정 라운드의 결과다. 확정 화면(`187:2674` 등 7개)은 열람만 하고 수정하지 않았다 — 아래는 전부 컴포넌트 마스터·변수·문서화 페이지에 대한 작업이다.
+
+### 9-1. 노드 재검증
+
+`docs/design/mercari/graphic-assets.md`의 "이어지는 라운드" 절 참고 — 아이콘 3종은 이미 COMPONENT로 승격돼 있었고(`206:32`/`206:33`/`206:34`), shield-check는 이미 Choice Card 마스터 내부에서 INSTANCE로 존재했다. chevron-right·star-01만 실제 교체 작업이 필요했다.
+
+### 9-2. 변수(Variable) 체계 — 기존 컬렉션 재사용, 신규 팔레트 확장 없음
+
+파일에 이미 두 세트의 컬러 변수 컬렉션이 존재했다(문서화가 안 된 채 방치):
+1. **"Primitives"(`VariableCollectionId:205:2`, 16개) + "Semantic Colors"(`VariableCollectionId:205:19`, 19개)** — 이 프로젝트의 색상 표(1절)를 거의 그대로 반영한 완성도 높은 세트(옵션시티별 `-on-white`/`-on-tint`/`-on-cta-disabled` 합성 hex까지 토큰 아키텍처 가이드 6번 규칙대로 이미 계산돼 있었음).
+2. **"Primitives"(`VariableCollectionId:206:13`, 8개) + "Semantic"(`VariableCollectionId:206:22`, 9개)** — 더 단순하고 불완전한 중복 세트. 파일 전체(UI 디자인/컴포넌트/Graphic Assets/Icons/Colors 페이지) 스캔 결과 **fill/stroke 직접 참조 0건** 확인(alias 체인·effect는 이 프로젝트에 그림자가 전혀 없어 해당 없음). **삭제하지 않았다** — 하우스룰대로 삭제는 사용자 승인 후 진행, 이번 라운드는 존재를 기록·보고만 한다.
+
+**이번 라운드는 1번(205:x, 더 완성도 높은 세트)을 캐논으로 채택**해 그 어떤 값도 새로 만들지 않고 그대로 7종 컴포넌트에 바인딩했다. 값 목록은 새로 신설한 "Colors" FOUNDATIONS 페이지(아래 9-4번) 참고.
+
+**스코프 확장(값 변경 아님, 기존 토큰 2개의 허용 스코프만 확장)**:
+- `color/bg-surface`(`VariableID:205:21`): `FRAME_FILL,SHAPE_FILL` → `+STROKE_COLOR` (chevron-right 아이콘의 흰색 stroke에 필요)
+- `color/text-muted-35-on-surface-muted`(`VariableID:205:38`): `TEXT_FILL` → `+STROKE_COLOR` (CTA Disabled 아이콘 stroke에 필요)
+
+### 9-3. 컴포넌트 바인딩 + CTA Disabled 색상 정정
+
+7종 컴포넌트(Choice Card/Hero Price Card/CTA/Progress Row/Product Row/Price Input/Badge) 전체의 fill/stroke/text 색상을 위 Semantic Colors 토큰에 바인딩했다. 아이콘이 포함된 자리(star-01 Ellipse/Star, shield-check stroke, chevron-right stroke)는 **아이콘 컴포넌트 마스터 자체**에 바인딩해 모든 인스턴스에 자동 전파되게 했다(인스턴스 단위 오버라이드가 아니라 마스터 값 자체가 이미 정확한 케이스).
+
+**CTA Disabled 아이콘 색상 정정 (결함 수정)**: 기존 CTA 마스터 내부 chevron-right는 raw VECTOR로 stroke 색이 `#000000`(순수 검정) opacity 0.3이었다(graphic-assets.md 기록의 opacity 1.0과도 다른, 그 사이 누군가 opacity만 손댄 흔적) — 브랜드 가이드 1절 스펙(Ink 35%, `#1A1D29` × 0.35)과 불일치했다. 이번에 chevron을 `206:32` 아이콘 INSTANCE로 교체하면서 그 내부 벡터를 `color/text-muted-35-on-surface-muted`(opacity 1로 설정 — 이 토큰 자체가 Ink 35%를 CTA 비활성 배경(`#F7F8FA`) 위에 합성한 정확한 hex `#AAABB1`already 계산돼 있음)로 바인딩해 시각적으로 정확한 값이 되도록 정정했다. 합성 계산 검증: `0.65×(247,248,250) + 0.35×(26,29,41) = (170,171,177) = #AAABB1` ✓ 토큰 값과 일치.
+
+### 9-4. FOUNDATIONS — "Colors" 페이지 신설
+
+`--- FOUNDATIONS ---` 구분 페이지 바로 다음(Icons 페이지 앞)에 **"Colors"** 페이지를 신설하고, "Colors — Design Tokens" 스와치 카탈로그 프레임(Primitives 16개 + Semantic Colors 19개, `figma-page-format-guide.md` 규격 — 동일 cornerRadius 6px·1px gray-200 보더·112×56 칩·이름/hex 라벨 순서·16px gap, `clipsContent=false`)을 추가했다. Typography/Spacing/Elevation FOUNDATIONS 페이지는 이번 라운드 범위 밖(색상 변수만 신설했고, elevation은 4절에 기록된 대로 이 프로젝트에 존재하지 않음 — 만들 필요 없음)이라 만들지 않았다.
+
+### 9-5. 컴포넌트 스펙 시트 3종 추가
+
+"컴포넌트" 페이지(`126:2599`)의 기존 Progress Row/Product Row/Price Input/Badge 스펙 시트와 동일 포맷으로 Choice Card(3 variant)·Hero Price Card(2 variant)·CTA(2 variant) 스펙 시트를 세로로 이어 배치했다(기존 시트 간 80px 간격 패턴 유지, 전부 `clipsContent=false`).
+
+### 9-6. 5번 항목(확인만) 재확인 결과
+
+- White Sheet 텍스트 대비 미달(3.1~3.8:1) — 값 변경 없이 그대로 토큰화만 했으므로 여전히 동일하게 존재. 수정하지 않음.
+- shield-check 이름과 달리 방패 배경 없음 — 여전히 그대로. 수정하지 않음.
+- **B_SCR-002_03·A_SCR-002_04의 "손으로 만든 CTA Button 프레임" 문제는 이번 라운드 시작 시점에 이미 해소돼 있었다** — 두 화면 모두 정식 `CTA` 컴포넌트 인스턴스를 쓰고 있음을 확인(9-1번). 브리프 작성 시점 이후 어느 라운드에서 이미 정리된 것으로 보인다.
+
 ## 근거
 
 - Figma `SIBLz4S4IZbjabzhMSAgdo`, 확정 섹션 `126:2601`, 화면 7개: Concept A_01(`110:103`)·A_02(`124:890`)·A_03(`124:1149`)·A_04(`124:991`)·B_01(`124:1455`)·B_02(`126:1771`)·B_03(`126:1951`) — 전부 `get_design_context`+`get_screenshot`으로 이번 라운드에 재확인.
 - 색상/타이포/보더·radius/그림자/간격 기본 수치는 `.claude/agent-memory/brand-designer.md` 2026-08-25(7차) 로그에 기록된 이전 실측값을 그대로 채택(이번 라운드에서 재검증 목적 재관찰 없이 신뢰).
 - 아이콘 스펙(chevron-right/star-01/shield-check/아이콘1·2/드래그 핸들/이모지)과 카드별 padding 구체값은 이번 라운드에서 신규로 재확인.
 - 불일치 발견: B_03(`126:1951`)의 "상태: S급" 배지에 `border-[#dedede]` 클래스 누락(A_01~04·B_01·B_02는 존재) — 7차 로그에서 이미 design-systems에 보고된 건과 동일, 이번에도 재확인됨. 확정 화면 자체는 수정하지 않았다.
+- 9절(design-systems 변수·바인딩·스펙 시트 라운드)은 `use_figma`(변수 조회/바인딩/컴포넌트 생성)·`get_screenshot`(inline `node.screenshot()` 포함)으로 직접 실행·재검증한 결과다.
