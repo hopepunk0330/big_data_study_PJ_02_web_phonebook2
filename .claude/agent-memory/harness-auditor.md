@@ -4,24 +4,6 @@
 
 ---
 
-## 2026-08-22 (84차) — 사용자 명시 요청: 83차 발견 4건(HIGH 2, MEDIUM 1, LOW 1) 후속 수정 확인 — `design-qa.md` 등록, `dataviz` 설명 보강, 3-B/3-D 교차 인용, "SCR-007"/"참여자용" 예시 정정 — 짧은 확인 (A 범위)
-
-**결과: 4건 모두 해소 확인. 신규 발견 없음(83차 LOW #5·#6은 이번 확인 대상에서 제외 — 미해결로 남아있으나 사용자가 지정한 4건 범위 밖).**
-
-### 확인됨(해소)
-- **83차 HIGH #2(stats-dashboard-design-reference.md가 design-qa.md에 미등록)**: `.claude/agents/design-qa.md`의 판단기준 목록(line 26)과 검토우선순위 목록(line 45, 13번)에 각각 "통계/데이터 대시보드 준수 여부"가 추가돼 형제 문서(figma-page-format-guide 등)와 동일한 양방향 등록 패턴을 갖추게 됨 — 해소.
-- **83차 HIGH #1(`dataviz` 스킬 미존재)**: `figma-file-organization.md` 3-D번과 `stats-dashboard-design-reference.md` 5번째 줄 모두 `dataviz`를 "Claude Code 내장 번들 스킬(프로젝트 파일 아님)"로 명시해 두 문서 표현이 서로 일치함 — 원래 지적("프로젝트 안에 해당 스킬 파일이 없다")은 해소. 단, "dataviz"가 실제 Claude Code 내장 스킬로 존재하는지 자체는 텍스트 정합성 감사 범위 밖(외부 사실 검증)이라 별도 확인은 하지 않았음 — 두 문서가 서로 모순 없이 같은 주장을 하고 있다는 점만 확인.
-- **83차 MEDIUM(3-B 5단계 vs 3-D 무조건 충돌)**: `figma-file-organization.md` 3-B 5단계에 "단, 백오피스 화면이 있다면 3-D번의 완성도 예외(대시보드 제외 낮은 완성도 허용)를 적용한다" 문장이 추가돼 3-D 예외를 명시적으로 교차 인용함 — 해소.
-- **83차 LOW #4("SCR-007"/"참여자용" 예시)**: `screen-spec-pattern-guide.md`(line 30)·`stats-dashboard-design-reference.md`(line 25) 예시 문구가 모두 "SCR-xxx"·"프론트(고객용) 화면"으로 정정됨. 하네스 전체에서 "SCR-007"·"참여자용" 문자열 재검색 결과 잔존 없음 — 해소.
-
-### 확인 안 함(범위 밖, 여전히 미해결 가능성)
-- 83차 LOW #5(3-D번의 단방향 참조 — 신규 두 문서를 역참조하지 않음)·LOW #6(design-pl.md/ui-designer.md가 3-D를 개별 스포트라이트하지 않음)은 이번 라운드 수정 대상에 포함되지 않아 확인하지 않았음 — 여전히 그대로일 가능성 있음(심각도 LOW, 급하지 않음).
-
-### 패턴 메모(누적, 갱신)
-- 이번 라운드는 지적된 4건 모두를 빠짐없이 반영한 사례 — 82차 패턴 메모("한 번에 관련 파일을 다 나열해 대조하면 재발을 막는다")와 일관된 결과.
-
----
-
 ## 2026-08-22 (85차) — 사용자 명시 요청: `stats-dashboard-design-reference.md` 6~16절 대거 신설 + 메타 콜아웃·근거 절 추가 + `reset-checklist.md` 등록 갱신 정합성 감사 — 신규 내용 많아 꼼꼼히 (A 범위)
 
 **결과: 신규 발견 4건(HIGH 2, MEDIUM 2), 참고성 LOW 2건. 가장 중요한 발견은 13절(접근 제어)이 `architecture-decision-guide.md`의 "예외 없음" 절대 규칙을 규모 기준으로 몰래 좁히는 패턴 — 과거 실제 사고(design-systems.md FRAME 삭제 건)와 동일한 구조.**
@@ -109,5 +91,31 @@
 
 ### 패턴 메모(누적, 갱신)
 - 이번 라운드는 "같은 표면 증상, 다른 원인"을 다루는 두 절을 인접 배치할 때, 신설 절이 스스로 "증상은 같아 보이지만 원인이 다르다"고 먼저 밝혀 혼동을 예방한 사례 — 앞으로도 유사한 "겉보기엔 같은 문제" 절을 추가할 때 이 자기 구분 문장 패턴이 유용한 선례가 됨.
+
+---
+
+## 2026-08-25 (89차) — 사용자 명시 요청: 신규 `docs/design/mercari/brand-guide.md`(brand-designer 작성, mercari 프로젝트 최초 전용 docs/design 문서) 정합성 감사 — B 범위 (A는 관련 변경 없음)
+
+**결과: HIGH 없음. MEDIUM 3건(문서유형 혼재·경로 관례 미등록·내부 열거 목록 누락 2종), LOW 1건(근거 절이 캡 대상 memory 로그를 인용). 다른 프로젝트(fileKey `zgGlMBwFglaDlaeyP4CkgR`) 문서와의 내용 혼입은 없음.**
+
+### 신규 발견
+1. **[MEDIUM]** `docs/design/mercari/brand-guide.md`의 실제 내용(카드 유형별 padding 구체값, radius, 그림자 유무, 아이콘 회전각 등 재현 가능한 수준의 디테일)이 `figma-file-organization.md` 2-3번이 정의하는 "확정 스펙 문서"(design-prompter 작성, `docs/design/confirmed/{슬러그}.md`)의 내용 범위와 사실상 동일한데, brand-designer가 작성해 `docs/design/mercari/brand-guide.md`(Brand Guide 명목)에 담았다. `docs/design/confirmed/`에는 mercari용 대응 파일이 없음(Glob 확인). `figma-file-organization.md` 4번은 design-prompter가 "후속 적용" 브리프 작성 시 `docs/design/confirmed/`를 먼저 확인하도록 명시하는데, 지금 구조로는 그 폴더에서 mercari 상세 스펙을 찾을 수 없다. 확인 필요 — Brand Guide가 확정 스펙 문서 역할까지 겸하기로 한 의도적 결정인지, 아니면 `docs/design/confirmed/mercari-*.md`가 별도로 더 필요한지.
+2. **[MEDIUM]** `.claude/agents/brand-designer.md` line 40은 "브랜드 결정사항의 소스 오브 트루스는 `docs/design/brand-guide.md`다"(단수 고정 경로)라고 명시하는데, 이번 라운드는 이와 다른 `docs/design/mercari/brand-guide.md` 경로를 신설했다. 이 다중 프로젝트 서브폴더 결정은 새 문서 자체 서두와 `.claude/agent-memory/brand-designer.md`의 상단 preamble(캡 대상 아닌 영역)에만 적혀 있고, 정작 하네스 정의 파일(`brand-designer.md`, `figma-file-organization.md`)에는 반영되지 않았다 — 다음에 design-system.md/confirmed도 프로젝트별 서브폴더로 만들 계획이면 그 규칙이 아직 포터블 하네스 문서에 등록되지 않은 상태다.
+3. **[MEDIUM]** 문서 내부 자체 열거 목록 누락 2건: (a) 5절이 "실제 등장" spacing 값으로 "6/8/10/12/14/16/18/20/24/28/36px"를 열거하지만, 같은 절의 pill 배지 padding 표에 등장하는 `pl-2`(Eyebrow)·`py-2`(AI추천 팁)의 2px와 `py-4`(빅데이터 배지)의 4px가 이 목록에서 빠졌다. (b) 1절 색상표의 "Ink 뮤트(투명도별)" 행이 "rgba(...,0.55/0.5/0.4/0.35)"로 4개 값만 열거하며 각 용도를 매핑하지만, 2절 타이포그래피 표의 "Price Input 통화기호·단위" 행은 "원" 텍스트에 "Ink opacity 60%"를 쓴다고 명시해 5번째 값(0.6)이 열거에서 누락됐다.
+
+### 확인됨(문제 없음)
+- 구조 순서: 문서가 0(A/B 관계)→1 색상→2 타이포→3 보더/Radius→4 그림자→5 간격→6 아이콘/장식 모티프 순으로 정확히 `figma-file-organization.md` 2-3번이 요구하는 순서를 따름.
+- "Concept A/B는 하나의 통합 시스템" 선언과 본문 서술이 끝까지 일관됨 — 3가지 차이점(Hero Price Card variant/Price Input 존재/전환 연출)만 각 섹션에서 "B 전용" 태그로 정확히 표기되고, 나머지 색상·보더·그림자 값은 A/B 구분 없이 서술돼 자기모순 없음.
+- 다른 프로젝트(fileKey `zgGlMBwFglaDlaeyP4CkgR`, 연락처 관리 앱) 소유 문서(`docs/design/brand-guide.md`, `docs/design/confirmed/*.md`)를 대조 확인 — 내용 혼입·잘못된 상호 참조 없음. 새 문서 자체가 서두에서 이 구분을 명시적으로 선언하고 있고 실제로도 지켜짐.
+- `docs/planning/**`에서 "mercari" 검색 결과는 `report_notes.md`의 무관한 외부 참고 프로젝트("01-ML_mercari_price_2608", running note 습관의 벤치마크 대상) 언급 하나뿐 — 이번 Figma 프로젝트(가격 UX 실험)와 내용상 무관, 충돌 아님.
+- 색상 hex(Primary/Secondary/Accent Tint 등)가 색상표·타이포그래피표·보더표·아이콘표 전체에 걸쳐 일관되게 인용됨(예: Primary `#3182F6`이 CTA/선택 보더/Price Input 포커스보더/검색 배지/star-01/shield-check에서 동일하게 사용). Eyebrow 배지 비가시 배경 서술도 1절과 6-C절에서 상호 참조하며 일치.
+- 노드 ID·`SIBLz4S4IZbjabzhMSAgdo` fileKey 노출은 있으나, 이 문서는 `docs/design/**`(프로젝트 고유 source of truth)이지 포터블 하네스 문서(`.claude/agents/**`/`docs/harness/**`)가 아니므로 reset-checklist C-3 위반 아님.
+
+### 낮은 확인 필요(참고성)
+1. **[LOW]** 문서 맨 끝 "근거" 절이 기본 수치(색/타이포/보더/그림자/간격)의 출처를 `.claude/agent-memory/brand-designer.md` 2026-08-25(7차) 로그로 명시한다. 그 로그는 "작업 로그" 섹션(5개 캡 대상)에 있어 향후 라운드가 쌓이면 삭제될 수 있다 — 다만 값 자체는 이미 본문에 전부 인라인으로 기록돼 있어 재구성에는 지장이 없고, 캡 삭제 시에도 git 히스토리로 추적 가능(하네스 자체가 이를 정상 설계로 규정). 감사 대상이라기보다 참고 메모.
+
+### 패턴 메모(누적, 갱신)
+- **신규 패턴(89차): "확정 스펙 문서"(2-3번, design-prompter/confirmed 폴더 담당)와 "Brand Guide"(brand-designer/brand-guide.md 담당)의 내용 범위가 실제로는 크게 겹칠 수 있다 — 특히 사용자 직접 확정 디자인(2-4번 경로)처럼 파일럿 단계 없이 바로 정식화가 이뤄지는 프로젝트에서는, 두 문서 유형을 누가 언제 만드는지 브리프 단계에서 명시적으로 정하지 않으면 한 문서가 다른 문서의 역할까지 흡수하고 표준 경로(`docs/design/confirmed/`)가 비어버릴 수 있다.
+- **신규 패턴(89차): 다중 프로젝트(서로 다른 fileKey)를 한 하네스가 같이 다룰 때, "이번 프로젝트만의 예외 경로"가 agent-memory 상단 preamble에는 기록되지만 정작 그 규칙의 근거가 되는 에이전트 정의 파일(`.claude/agents/*.md`)이나 포터블 가이드에는 반영되지 않는 경우가 생기기 쉽다 — memory는 세션이 바뀌면 다시 안 읽힐 수도 있는 보조 자료라, 구조적 규칙(다중 프로젝트 서브폴더 등)은 하네스 문서 쪽에도 최소 한 줄은 등록해야 다음 세션에서도 안정적으로 상속된다.**
 
 ---
