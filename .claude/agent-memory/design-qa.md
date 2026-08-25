@@ -4,12 +4,6 @@
 
 ## 작업 로그
 
-### 2026-07-17 (39차, 마감 임박 최종 라운드) — 38차 HIGH 3건 중 4건 재확인 지시(삭제모달 치수/코랄배지 5곳/login-알림창 버튼/NeoBtn Neutral 그림자) 독립 재검증 — HIGH 1건 잔존(삭제모달 버튼 높이) + PASS 3건 + LOW 2건(신규, 문서/네이밍 stale)
-
-**부분 PASS/HIGH 잔존 — 연락처 삭제 모달(`941:1508`) vs 확정 원본(`501:4172`) 치수 재실측**: SummaryBox 행간격 24px, 카드 전체 높이 392px 정정 확인 — PASS. **그러나 ButtonRow 내 두 버튼(`941:3043`/`941:3045`) 실제 인스턴스 높이는 여전히 42px(원본 44px) — HIGH로 재상향**(명시적 정정 지시 후에도 미해결 + WCAG 44×44 최소 터치 타겟 미달). **(주의: 2026-07-17 design-systems 41-2절 재실측에서 44px 확정·design-qa 42px 보고 기각으로 상충 기록 남음 — 다음에 이 노드를 다시 볼 일이 있으면 최신 값으로 재검증할 것.)**
-
-**종합**: HIGH 1건(연락처 삭제 모달 버튼 높이, 상충 기록 있음) + PASS 3건 + LOW 2건 신규.
-
 ### 2026-07-18 (40차) — 마감 임박 최종 조립분 감사: 카테고리삭제거부배너(409, `1057:1626`) + 가입직후 빈 상태(`1060:2014`) + 인터랙션 리액션 실재 여부 — MEDIUM 1건 신규(Toast 진입 리액션 미확인) + PASS 다수, HIGH 0건
 
 **PASS — `1057:1626`/`1060:2014` 문구·색상·아이콘·카운트·CTA 인스턴스 전수 확인**. **MEDIUM(신규) — Toast 등장 트랜지션 증거 미확인**(`get_motion_context` 툴 부재로 확정 불가, interaction-designer/design-pl 재확인 권고).
@@ -47,3 +41,27 @@
 **PASS — 네이밍**: "check box" → "Choice Card" 마스터 컴포넌트명 및 description 개명 완료 확인. (단 확정 화면 내 인스턴스 레이어명은 옛 이름 "check box" 잔존 — 읽기 전용 원본이라 수정 대상 아님, 정보성 기록만.)
 
 **종합**: HIGH 5건(대비 미달 3계열, 아이콘 raw frame, 토큰 미바인딩+스펙시트 3종 누락은 완성도 HIGH로 별도 집계) + MEDIUM 2건(variant 축 네이밍, 신규 컴포넌트 미인스턴스화) + PASS 다수(B_03 예외 재검증 2건, 원본 값 대조, 네이밍 리네임). 전부 신규, design-systems/brand-designer 재작업 필요.
+
+### 2026-08-25 (44차) — mercari "Brand Guide" 문서화 페이지(`165:10`, brand-guide.md 시각화) 감사 — MEDIUM 2건 + LOW 3건(전부 신규, 서식/데모 정확도) + 주요 항목 다수 PASS, HIGH 0건
+
+배경: brand-designer가 확정 마크다운(`docs/design/mercari/brand-guide.md`)을 Figma 프레임으로 시각화. 컴포넌트/토큰 라이브러리가 아니라 순수 문서화 페이지라 값 정확성+`figma-page-format-guide.md` 서식 일관성만 감사.
+
+**전제 정정(HIGH 아님, 정보성) — "Ink 뮤트 4단계 vs 5단계" 불일치 지시는 현재 상태와 다름**: 브리프는 "문서 1절엔 0.55/0.5/0.4/0.35 4단계만 명시"라고 전제했으나, `brand-guide.md` 1절 표를 직접 재확인한 결과 이미 `rgba(26,29,41,0.6/0.55/0.5/0.4/0.35)` 5단계로 기재돼 있고 "0.6=Price Input 원 단위" 매핑까지 2절 타이포그래피 표와 정확히 일치. Figma 스와치도 5개(174:57/64/70/76/82) 전부 존재해 문서와 완전히 일치 — **불일치 없음**. design-pl은 이 항목의 지시 전제(문서가 이미 갱신됐을 가능성)를 최신화할 것.
+
+**MEDIUM(신규) — Colors 카탈로그(174:2) 16개 스와치의 보더 유무·굵기가 3가지 방식으로 혼재**: `figma-page-format-guide.md` §1 "동일 카탈로그는 동일 보더 유무·색·굵기" 위반. White Sheet(174:11)·CTA 비활성 배경(174:41)만 `border border-[#e2e6ec]`(1px)이 있고, Dark Hero(174:7)·Neutral Border(174:15)·Primary(174:19)·Secondary(174:24)·Accent Tint(174:28)·Ink(174:32) 등 나머지 순색 스와치는 보더가 전혀 없음. 상태배지 보더 스와치(174:36, `#DEDEDE`)는 `border-4`(4px)로 렌더링돼 White Sheet의 1px 보더와도 굵기가 다름 — 무보더/1px/4px 세 방식 혼재. cornerRadius(전부 `rounded-[10px]`)는 통일돼 있어 그 부분만 PASS.
+
+**MEDIUM(신규) — Ink 뮤트/흰 텍스트 opacity 스와치(174:57~82, 7개) 데모 배경이 실제 사용 맥락과 반대**: 흰 텍스트 2종(#FFFFFF/#F5F5F5)은 다크 히어로 위에서 쓰이므로 다크 배경(`#2D3241`, 문서에 없는 임의색) 데모가 맞지만, 같은 다크칩 포맷을 Ink 뮤트 5단계(0.6/0.55/0.5/0.4/0.35)에도 그대로 복제 — 이 값들은 문서상 전부 White Sheet·CTA 비활성 배경 같은 **밝은** 배경 위 텍스트인데 데모는 어두운 배경 위에 렌더링돼 실제 시각 효과(연한 회색 텍스트)와 반대로 보임. 라벨 설명 텍스트 자체는 정확해 완전한 오정보는 아니지만, 데모 이미지만 보면 오해 소지.
+
+**LOW(신규) — 섹션 간 세로 여백 불일치**: 0번(Concept A/B, `165:13`, bottom y=513)과 1번(Colors, `174:2`, y=573) 사이 간격 60px, 반면 1↔2/2↔3/3↔4/4↔5/5↔6 나머지 전 구간은 40px로 통일 — `figma-page-format-guide.md` §3 "프레임 사이 여백 통일" 경미한 위반(8pt 그리드 자체는 준수).
+
+**LOW(신규) — 타이포그래피 2절 위계 개수 및 라벨 완전성**: 문서는 "Price Input 값/placeholder"(16px)와 "Price Input 통화기호·단위"(₩16px/원14px)를 별도 2개 행으로 구분하는데, Figma는 이를 하나의 예시(175:98)로 합침. 실제 렌더링 값(₩·60,000=16px Bold Ink, 원=14px Regular Ink 60%, placeholder=16px Ink 35%)은 정확하지만, 하단 라벨 텍스트가 "Noto Sans KR Bold 16px"로만 뭉뚱그려 원의 14px 차이를 명시하지 않음.
+
+**LOW(신규) — 타이포그래피 CTA 예시 소품 padding 불일치**: 175:89 "다음 보기" 버튼 예시가 `px-20 py-14`로 렌더링돼 있으나, 문서 5절 spacing 표는 CTA 버튼 padding을 `px-20 py-16`으로 명시 — 텍스트 색상 데모용 소품이라 핵심 스펙은 아니지만 문서 값과 다른 padding이 그대로 노출됨.
+
+**PASS — 색상 스와치 16개 hex 전수 대조**: Dark Hero #1A1D29, White Sheet #FFFFFF, Neutral Border #E2E6EC, Primary #3182F6, Secondary #3789FF, Accent Tint #E8F3FF, Ink #1A1D29, 상태배지 보더 #DEDEDE, CTA 비활성 배경 #F7F8FA, 흰 텍스트 #FFFFFF/#F5F5F5, Ink 뮤트 5단계 — 전부 `docs/design/mercari/brand-guide.md` 1절 표와 hex/역할 설명 정확히 일치.
+
+**PASS — 보더/Radius 12개, Spacing 대표 padding 3개, 주석 2개(Eyebrow 비가시·B_03 보더 누락) 위치·내용**: `176:2`(보더/Radius) 12개 값 전부 문서 3절과 일치(White Sheet 상단 24px 비대칭 `rounded-tl/tr`만 적용도 정확). `178:2`(Spacing) 2px 그리드 눈금 13개(2~36px)와 HeroPriceCard(px18/py24)·Dark Hero(px20/py28)·Choice Card(pl14/pr36/py14) 3개 padding 다이어그램 전부 정확. 주석 2개 모두 Colors 섹션 하단(174:88/174:91)에 문서 내용 그대로 배치.
+
+**참고**: "기존 브랜드컨셉 페이지"와의 서식 비교는 해당 페이지를 파일 내에서 찾지 못해(get_metadata 최상위 조회엔 "레퍼런스" 페이지만 노출 — 알려진 조회 한계) 수행하지 못함, `figma-page-format-guide.md` 표준만으로 내부 일관성 검증.
+
+**종합**: HIGH 0건, MEDIUM 2건(보더 혼재, opacity 데모 배경 오맥락), LOW 3건(섹션 간격, 타이포 라벨 완전성, CTA 소품 padding) — 전부 신규. 값 정확성(색상 16/보더·radius 12/spacing/주석)은 전수 PASS. brand-designer 후속 정리 권고, 재작업 급박성은 낮음.
