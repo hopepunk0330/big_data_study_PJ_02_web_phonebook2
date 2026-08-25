@@ -4,29 +4,32 @@
 
 ---
 
-## 2026-08-25 (89차) — 사용자 명시 요청: 신규 `docs/design/mercari/brand-guide.md`(brand-designer 작성, mercari 프로젝트 최초 전용 docs/design 문서) 정합성 감사 — B 범위 (A는 관련 변경 없음)
+## 2026-08-26 (94차) — 사용자 명시 요청: mercari design-systems 결함 수정 라운드(아이콘 컴포넌트 승격, CTA Disabled 색상 정정, 변수 바인딩 신설, 스펙 시트 3종 추가)로 `docs/design/mercari/graphic-assets.md`·`docs/design/mercari/brand-guide.md`에 신규 섹션 append — B 범위
 
-**결과: HIGH 없음. MEDIUM 3건(문서유형 혼재·경로 관례 미등록·내부 열거 목록 누락 2종), LOW 1건(근거 절이 캡 대상 memory 로그를 인용). 다른 프로젝트(fileKey `zgGlMBwFglaDlaeyP4CkgR`) 문서와의 내용 혼입은 없음.**
+**결과: HIGH 없음. MEDIUM 3건(CTA Disabled 아이콘 opacity 기록 불일치 미반영, 토큰 명명 불일치 `-on-cta-disabled` vs `-on-surface-muted`, 신설 "Colors" 페이지 노드ID 누락+스코프 근거 약함), LOW 3건. 노드 ID 승격(206:32/33/34) 서사·CTA Disabled 합성색 계산(#AAABB1)·중복 변수 컬렉션의 "사용자 승인 대기" 기록은 모두 문제 없음 확인.**
 
 ### 신규 발견
-1. **[MEDIUM]** `docs/design/mercari/brand-guide.md`의 실제 내용(카드 유형별 padding 구체값, radius, 그림자 유무, 아이콘 회전각 등 재현 가능한 수준의 디테일)이 `figma-file-organization.md` 2-3번이 정의하는 "확정 스펙 문서"(design-prompter 작성, `docs/design/confirmed/{슬러그}.md`)의 내용 범위와 사실상 동일한데, brand-designer가 작성해 `docs/design/mercari/brand-guide.md`(Brand Guide 명목)에 담았다. `docs/design/confirmed/`에는 mercari용 대응 파일이 없음(Glob 확인). `figma-file-organization.md` 4번은 design-prompter가 "후속 적용" 브리프 작성 시 `docs/design/confirmed/`를 먼저 확인하도록 명시하는데, 지금 구조로는 그 폴더에서 mercari 상세 스펙을 찾을 수 없다. 확인 필요 — Brand Guide가 확정 스펙 문서 역할까지 겸하기로 한 의도적 결정인지, 아니면 `docs/design/confirmed/mercari-*.md`가 별도로 더 필요한지.
-2. **[MEDIUM]** `.claude/agents/brand-designer.md` line 40은 "브랜드 결정사항의 소스 오브 트루스는 `docs/design/brand-guide.md`다"(단수 고정 경로)라고 명시하는데, 이번 라운드는 이와 다른 `docs/design/mercari/brand-guide.md` 경로를 신설했다. 이 다중 프로젝트 서브폴더 결정은 새 문서 자체 서두와 `.claude/agent-memory/brand-designer.md`의 상단 preamble(캡 대상 아닌 영역)에만 적혀 있고, 정작 하네스 정의 파일(`brand-designer.md`, `figma-file-organization.md`)에는 반영되지 않았다 — 다음에 design-system.md/confirmed도 프로젝트별 서브폴더로 만들 계획이면 그 규칙이 아직 포터블 하네스 문서에 등록되지 않은 상태다.
-3. **[MEDIUM]** 문서 내부 자체 열거 목록 누락 2건: (a) 5절이 "실제 등장" spacing 값으로 "6/8/10/12/14/16/18/20/24/28/36px"를 열거하지만, 같은 절의 pill 배지 padding 표에 등장하는 `pl-2`(Eyebrow)·`py-2`(AI추천 팁)의 2px와 `py-4`(빅데이터 배지)의 4px가 이 목록에서 빠졌다. (b) 1절 색상표의 "Ink 뮤트(투명도별)" 행이 "rgba(...,0.55/0.5/0.4/0.35)"로 4개 값만 열거하며 각 용도를 매핑하지만, 2절 타이포그래피 표의 "Price Input 통화기호·단위" 행은 "원" 텍스트에 "Ink opacity 60%"를 쓴다고 명시해 5번째 값(0.6)이 열거에서 누락됐다.
+1. **[MEDIUM]** `docs/design/mercari/graphic-assets.md`(라인 36, 원 관찰 기록)는 CTA Disabled 상태 chevron-right의 실제 색상을 "순수 검정 `#000000`(불투명도 **100%**)"로 기록하는데, `docs/design/mercari/brand-guide.md` 9-3(라인 161)은 같은 지점을 "stroke 색이 `#000000` opacity **0.3**이었다(graphic-assets.md 기록의 opacity 1.0과도 다른, 그 사이 누군가 opacity만 손댄 흔적)"고 스스로 차이를 인지하며 다르게 기록한다. brand-guide.md 쪽은 이 불일치를 인지하고 추정 설명까지 달았지만, 정작 같은 라운드에 같은 작업자(design-systems)가 graphic-assets.md에 새로 추가한 "이어지는 라운드" 절(9-1 대응 절)은 이 opacity 변경 사실을 전혀 언급하지 않는다 — graphic-assets.md만 읽는 독자는 여전히 opacity 100%로 알고 있게 된다. 확인 필요.
+2. **[MEDIUM]** `docs/design/mercari/brand-guide.md` 9-2(라인 148)는 캐논 컬렉션(205:x)에 이미 계산돼 있던 합성 hex 접미사 예시로 "`-on-white`/`-on-tint`/`-on-cta-disabled`" 세 가지를 들었으나, 정작 9-3(라인 155)에서 CTA Disabled 아이콘에 실제로 바인딩한 토큰명은 `color/text-muted-35-on-surface-muted`로 접미사가 `-on-surface-muted`다. `-on-cta-disabled`라는 접미사를 가진 토큰이 실제로 별도 존재하는지, 아니면 "surface-muted"가 CTA 비활성 배경(`#F7F8FA`)을 가리키는 동일 대상의 다른 이름인지 문서 내에서 확인할 수 없다(둘 다 문서 안에서 정의되지 않음, grep 결과 "surface-muted"·"cta-disabled" 명시적 매핑 없음). 확인 필요.
+3. **[MEDIUM]** `docs/design/mercari/brand-guide.md` 9-4가 신설했다는 "Colors" 페이지·스와치 카탈로그 프레임은, 같은 문서에서 다른 모든 신규/변경 노드(예: `206:32`, `VariableCollectionId:205:2`, `VariableID:205:38` 등)에 빠짐없이 붙던 노드 ID가 유일하게 누락돼 있다(라운드 보고 시 언급된 페이지 ID `233:143`도 이 두 문서 어디에도 등장하지 않음, grep 확인). 또한 이번 라운드의 스코프로 서술된 4개 항목("아이콘 컴포넌트 승격, CTA Disabled 색상 정정, 변수 바인딩 신설, 스펙 시트 3종 추가") 중 "새 FOUNDATIONS 페이지 신설"은 명시적으로 포함돼 있지 않다 — "변수 바인딩 신설" 작업의 부산물로 슬쩍 포함된 것으로 보이나, 문서 자체는 페이지 신설이 왜 필요했는지(문서화 편의 이상의) 별도 근거를 제시하지 않는다. 확인 필요 — 범위 밖 작업이었는지, 사전 승인이 있었는지.
 
 ### 확인됨(문제 없음)
-- 구조 순서: 문서가 0(A/B 관계)→1 색상→2 타이포→3 보더/Radius→4 그림자→5 간격→6 아이콘/장식 모티프 순으로 정확히 `figma-file-organization.md` 2-3번이 요구하는 순서를 따름.
-- "Concept A/B는 하나의 통합 시스템" 선언과 본문 서술이 끝까지 일관됨 — 3가지 차이점(Hero Price Card variant/Price Input 존재/전환 연출)만 각 섹션에서 "B 전용" 태그로 정확히 표기되고, 나머지 색상·보더·그림자 값은 A/B 구분 없이 서술돼 자기모순 없음.
-- 다른 프로젝트(fileKey `zgGlMBwFglaDlaeyP4CkgR`, 연락처 관리 앱) 소유 문서(`docs/design/brand-guide.md`, `docs/design/confirmed/*.md`)를 대조 확인 — 내용 혼입·잘못된 상호 참조 없음. 새 문서 자체가 서두에서 이 구분을 명시적으로 선언하고 있고 실제로도 지켜짐.
-- `docs/planning/**`에서 "mercari" 검색 결과는 `report_notes.md`의 무관한 외부 참고 프로젝트("01-ML_mercari_price_2608", running note 습관의 벤치마크 대상) 언급 하나뿐 — 이번 Figma 프로젝트(가격 UX 실험)와 내용상 무관, 충돌 아님.
-- 색상 hex(Primary/Secondary/Accent Tint 등)가 색상표·타이포그래피표·보더표·아이콘표 전체에 걸쳐 일관되게 인용됨(예: Primary `#3182F6`이 CTA/선택 보더/Price Input 포커스보더/검색 배지/star-01/shield-check에서 동일하게 사용). Eyebrow 배지 비가시 배경 서술도 1절과 6-C절에서 상호 참조하며 일치.
-- 노드 ID·`SIBLz4S4IZbjabzhMSAgdo` fileKey 노출은 있으나, 이 문서는 `docs/design/**`(프로젝트 고유 source of truth)이지 포터블 하네스 문서(`.claude/agents/**`/`docs/harness/**`)가 아니므로 reset-checklist C-3 위반 아님.
+- **노드 ID 승격 서사(요청 1번)**: 브리프 노드(`195:14`/`195:15`/`195:16`)가 이미 `206:32`/`206:33`/`206:34` COMPONENT로 승격돼 있었다는 발견이 `graphic-assets.md`("이어지는 라운드" 절)와 `brand-guide.md`(9-1, 전자를 명시적으로 참고 인용) 양쪽에서 동일 ID·동일 서사로 정확히 일치. shield-check가 이미 INSTANCE였고 chevron-right·star-01만 실제 교체가 필요했다는 서술도 두 문서에서 일관됨.
+- **CTA Disabled 합성색 계산(요청 2번)**: `#AAABB1` = 0.65×(247,248,250)+0.35×(26,29,41) 계산을 직접 재검증 — 정확히 일치. 세 입력값(Ink `#1A1D29`, opacity 0.35, CTA 비활성 배경 `#F7F8FA`) 모두 brand-guide.md 1절 색상표의 기존 서술과 정확히 대응(Ink 정의, "0.35=CTA 비활성 텍스트" 매핑, "CTA 비활성 배경 #F7F8FA")되어 다른 컴포넌트 값을 착각해 옮겨 적은 흔적 없음. (단, 토큰 명명 자체는 위 MEDIUM #2로 별도 지적.)
+- **중복 변수 컬렉션 처리(요청 3번)**: 9-2가 중복 세트(`206:13`/`206:22`, 8+9개)를 "삭제하지 않았다 — 하우스룰대로 삭제는 사용자 승인 후 진행, 이번 라운드는 존재를 기록·보고만 한다"고 명확히 승인 대기 상태로 기록. 캐논 세트(`205:2`/`205:19`, 16+19개)도 명시적으로 채택 선언됨. 9-4의 새 Colors 페이지 스와치 수(16+19=35)도 캐논 세트 개수와 정확히 일치해 향후 오인 위험 낮음.
 
 ### 낮은 확인 필요(참고성)
-1. **[LOW]** 문서 맨 끝 "근거" 절이 기본 수치(색/타이포/보더/그림자/간격)의 출처를 `.claude/agent-memory/brand-designer.md` 2026-08-25(7차) 로그로 명시한다. 그 로그는 "작업 로그" 섹션(5개 캡 대상)에 있어 향후 라운드가 쌓이면 삭제될 수 있다 — 다만 값 자체는 이미 본문에 전부 인라인으로 기록돼 있어 재구성에는 지장이 없고, 캡 삭제 시에도 git 히스토리로 추적 가능(하네스 자체가 이를 정상 설계로 규정). 감사 대상이라기보다 참고 메모.
+1. **[LOW]** `graphic-assets.md`의 "정리 결과 요약" 표(라인 57-65, 이번 라운드 이전 원본)가 "비활성 색상(#000000) 불일치는 CTA 컴포넌트 쪽 별도 이슈"라고 여전히 미해결처럼 적혀 있다 — append-only 제약상 표 자체는 못 고치지만, 이 표만 보는 독자는 9-3에서 이미 정정됐다는 사실을 놓칠 수 있다.
+2. **[LOW]** `graphic-assets.md` 라인 71 "노드 ID 재검증 결과 (이번이 세 번째 확인)"에서 "첫 번째"·"두 번째" 확인이 각각 언제·무엇이었는지 두 문서 안에 명시되지 않아 숫자의 근거를 추적하기 어렵다.
+3. **[LOW]** `brand-guide.md` 9-6 "5번 항목(확인만) 재확인 결과"가 참조하는 "5번 항목" 목록이 이 두 문서 어디에도 정의돼 있지 않다(외부 문서/이전 라운드 산출물로 추정) — 어느 문서의 5번 항목인지 근거 절에 명시되지 않음.
+
+### 확인 안 함(범위 밖)
+- 83차 LOW #5·#6, 89차 LOW(mercari brand-guide.md 근거절이 agent-memory 캡 대상 로그 인용)는 이번 라운드 변경 범위와 무관해 재확인하지 않음 — 계속 미해결 상태로만 기록.
+- B 범위 버전 인용 정합성(`docs/planning/**`)은 이번 라운드에서 해당 문서 변경이 전혀 없어 재점검 생략.
 
 ### 패턴 메모(누적, 갱신)
-- **신규 패턴(89차): "확정 스펙 문서"(2-3번, design-prompter/confirmed 폴더 담당)와 "Brand Guide"(brand-designer/brand-guide.md 담당)의 내용 범위가 실제로는 크게 겹칠 수 있다 — 특히 사용자 직접 확정 디자인(2-4번 경로)처럼 파일럿 단계 없이 바로 정식화가 이뤄지는 프로젝트에서는, 두 문서 유형을 누가 언제 만드는지 브리프 단계에서 명시적으로 정하지 않으면 한 문서가 다른 문서의 역할까지 흡수하고 표준 경로(`docs/design/confirmed/`)가 비어버릴 수 있다.
-- **신규 패턴(89차): 다중 프로젝트(서로 다른 fileKey)를 한 하네스가 같이 다룰 때, "이번 프로젝트만의 예외 경로"가 agent-memory 상단 preamble에는 기록되지만 정작 그 규칙의 근거가 되는 에이전트 정의 파일(`.claude/agents/*.md`)이나 포터블 가이드에는 반영되지 않는 경우가 생기기 쉽다 — memory는 세션이 바뀌면 다시 안 읽힐 수도 있는 보조 자료라, 구조적 규칙(다중 프로젝트 서브폴더 등)은 하네스 문서 쪽에도 최소 한 줄은 등록해야 다음 세션에서도 안정적으로 상속된다.**
+- **신규 패턴(94차): 같은 라운드·같은 작업자가 두 문서에 걸쳐 "발견한 불일치"를 기록할 때, 그 불일치를 명시적으로 설명한 쪽(brand-guide.md)과 원 관찰값을 그대로 보존만 한 쪽(graphic-assets.md)이 서로를 갱신하지 않으면, 한쪽만 읽는 독자에게는 여전히 옛 값이 진실처럼 남는다 — append-only 제약 안에서도 "이 값은 다른 문서 X절에서 Y로 정정 기록됨"이라는 한 줄 포인터 정도는 새로 추가하는 절에 넣을 수 있었다. 91차 패턴 메모("예외를 한쪽에만 반영")와 근본적으로 같은 계열이지만, 이번엔 규칙이 아니라 실측값(관찰 데이터) 자체의 버전 드리프트라는 점이 다르다.
+- **신규 패턴(94차): 새 FOUNDATIONS 페이지처럼 "문서화용 산출물"을 만드는 작업은 다른 모든 산출물과 달리 노드 ID를 기록하지 않고 넘어가기 쉽다 — 컴포넌트·변수·스펙 시트는 늘 ID를 남기는 습관이 있는데, 페이지 자체나 그 안의 최상위 프레임은 "그냥 페이지니까"라는 이유로 빠지는 경향이 있다. 향후 라운드에서 새 페이지/프레임을 만들 때도 다른 신규 노드와 동일한 수준의 ID 기록 습관을 적용할 필요가 있다.**
 
 ---
 
