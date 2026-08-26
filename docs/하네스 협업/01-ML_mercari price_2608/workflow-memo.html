@@ -1,0 +1,310 @@
+<title>아트팩트 정본 워크플로우</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg: #F7F6F3;
+    --surface: #FFFFFF;
+    --ink: #1A1D29;
+    --ink-soft: #565A6E;
+    --line: #E4E2DC;
+    --accent: #3054D6;
+    --accent-tint: #EAEDFB;
+    --amber: #B5780C;
+    --amber-tint: #FBF1DE;
+    --green: #167A4C;
+    --green-tint: #E7F5EE;
+    --mono-bg: #F1F0EC;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #14151B;
+      --surface: #1C1E27;
+      --ink: #ECEBF0;
+      --ink-soft: #A2A5B8;
+      --line: #33354640;
+      --accent: #8CA0F5;
+      --accent-tint: #23273F;
+      --amber: #E3B15C;
+      --amber-tint: #2E2712;
+      --green: #6FCB9F;
+      --green-tint: #16281F;
+      --mono-bg: #22232D;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg: #14151B;
+    --surface: #1C1E27;
+    --ink: #ECEBF0;
+    --ink-soft: #A2A5B8;
+    --line: #33354640;
+    --accent: #8CA0F5;
+    --accent-tint: #23273F;
+    --amber: #E3B15C;
+    --amber-tint: #2E2712;
+    --green: #6FCB9F;
+    --green-tint: #16281F;
+    --mono-bg: #22232D;
+  }
+
+  *{ box-sizing: border-box; }
+  body{
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Noto Sans KR", "Pretendard", sans-serif;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 56px 28px 96px;
+  }
+  code, .mono{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.86em;
+  }
+  .path{
+    background: var(--mono-bg);
+    border-radius: 5px;
+    padding: 0.12em 0.5em;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.86em;
+    color: var(--ink);
+  }
+
+  header.top{
+    margin-bottom: 44px;
+  }
+  .eyebrow{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    background: var(--accent-tint);
+    padding: 5px 12px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+  }
+  h1{
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin: 0 0 12px;
+    text-wrap: balance;
+  }
+  .lede{
+    font-size: 16.5px;
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 62ch;
+  }
+
+  .thesis{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin: 32px 0 40px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .thesis span{
+    font-weight: 400;
+    color: var(--ink-soft);
+    display: block;
+    margin-top: 6px;
+    font-size: 14.5px;
+  }
+
+  section{ margin-bottom: 44px; }
+  h2{
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  h3{
+    font-size: 17px;
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+  p{ margin: 0 0 14px; }
+  ul, ol{ padding-left: 22px; margin: 0 0 14px; }
+  li{ margin-bottom: 8px; }
+  li::marker{ color: var(--ink-soft); }
+
+  .cards{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+  @media (max-width: 620px){ .cards{ grid-template-columns: 1fr; } }
+  .card{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .card .tag{
+    display: inline-block;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 3px 9px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+  }
+  .card.skip .tag{ background: var(--green-tint); color: var(--green); }
+  .card.keep .tag{ background: var(--amber-tint); color: var(--amber); }
+  .card p{ font-size: 14.5px; color: var(--ink-soft); margin: 0; }
+  .card p + p{ margin-top: 8px; }
+
+  .steps{ counter-reset: step; list-style: none; padding: 0; }
+  .steps li{
+    counter-increment: step;
+    position: relative;
+    padding: 4px 0 4px 46px;
+    margin-bottom: 22px;
+  }
+  .steps li::before{
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: var(--accent-tint);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "JetBrains Mono", monospace;
+  }
+  .steps h3{ font-size: 15.5px; margin-bottom: 6px; }
+  .steps p{ font-size: 14.5px; color: var(--ink-soft); margin-bottom: 0; }
+
+  .flow{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 8px;
+  }
+  pre.mermaid{ margin: 0; }
+
+  .callout{
+    background: var(--amber-tint);
+    border: 1px solid color-mix(in srgb, var(--amber) 30%, transparent);
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 14.5px;
+  }
+  .callout strong{ color: var(--amber); }
+
+  .footer-note{
+    margin-top: 56px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+</style>
+
+<div class="page">
+
+  <header class="top">
+    <span class="eyebrow">디자인 하네스 · 워크플로우 메모</span>
+    <h1>확정 아트팩트를 정본으로 — Figma를 거치지 않는 경로</h1>
+    <p class="lede">아이콘·오브제를 아트팩트(HTML/SVG)로 브레인스토밍해 확정한 뒤, 그 결과물이 결국 코드에 SVG로 직접 박힐 예정이라면 디자인 툴(Figma 등)로 옮기는 단계를 생략하고 그 파일 자체를 정본으로 삼는다.</p>
+  </header>
+
+  <div class="thesis">
+    핵심: "확정 = 디자인 툴에 반영"이 항상 같은 말은 아니다.
+    <span>디자인 툴은 화면을 만들 때 쓰는 도구일 뿐, 최종 산출물이 코드에 임베드되는 SVG라면 디자인 툴 벡터는 아무도 안 쓰는 사본이 된다 — 그 경우 아트팩트 파일 자체를 정본으로 확정하는 게 더 정직하다.</span>
+  </div>
+
+  <section>
+    <h2>언제 적용하는가</h2>
+    <div class="cards">
+      <div class="card skip">
+        <span class="tag">생략 가능</span>
+        <p>확정된 아이콘/오브제가 실제 제품 코드에 SVG 마크업으로 직접 삽입될 예정이다.</p>
+        <p>디자인 툴 쪽 네이티브 벡터가 있어봤자 "보기용 사본"일 뿐, 실제로 갱신·참조되지 않는다.</p>
+      </div>
+      <div class="card keep">
+        <span class="tag">그대로 진행</span>
+        <p>그 화면/컴포넌트 자체가 디자인 툴 안에서 계속 관리·수정된다(다른 화면과 함께 조립되거나, 디자인 시스템 컴포넌트로 재사용된다).</p>
+        <p>디자인 툴이 진짜 "살아있는" 소스라면 원래 절차(확정본을 그대로 옮겨 담기)를 따른다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>절차</h2>
+    <ol class="steps">
+      <li>
+        <h3>후보를 아트팩트로 나란히 그려 비교한다</h3>
+        <p>형태가 아직 안 정해진 단계라면, 디자인 툴에서 하나씩 만들며 고르지 않는다 — HTML/SVG 아트팩트 한 화면에 후보 여러 개를 띄워 실시간으로 비교·수정한다. 왕복 속도가 훨씬 빠르다.</p>
+      </li>
+      <li>
+        <h3>사람이 하나를 확정한다</h3>
+        <p>확정은 반드시 사람의 명시적 승인으로 이뤄진다 — 에이전트가 스스로 "이 정도면 됐다"고 판단해 다음 단계로 넘어가지 않는다.</p>
+      </li>
+      <li>
+        <h3>이 결과물이 어디서 소비되는지 사람이 판단한다</h3>
+        <p>디자인 툴 네이티브 컴포넌트가 필요한가, 아니면 코드에 SVG로 바로 박히는가 — 이 판단은 매번 사람이 명시적으로 확인한다. 에이전트가 "이번엔 생략해도 되겠지"로 자체 판단하지 않는다.</p>
+      </li>
+      <li>
+        <h3>코드용이면 파일을 프로젝트 안으로 옮겨 커밋한다</h3>
+        <p>임시 작업 위치(스크래치패드, 미리보기 링크)에 두지 않는다 — <span class="path">docs/design/{프로젝트}/artifacts/{이름}.html</span> 같은 git 추적 경로로 옮긴다. 링크만으로는 다른 에이전트나 다음 세션이 열어볼 방법이 없다.</p>
+      </li>
+      <li>
+        <h3>결정을 문서에 명시적으로 남긴다</h3>
+        <p>그 프로젝트의 자산 기록 문서(디자인 시스템/그래픽 에셋 문서 등)에 세 가지를 남긴다 — ① 정본 파일 경로, ② 디자인 툴 이관을 생략했다는 사실과 이유, ③ 디자인 툴 쪽에 예전 버전이 남아있다면 그건 결함이 아니라 의도된 상태라는 것.</p>
+      </li>
+      <li>
+        <h3>예전 산출물은 지우지 않고 "대체됨"으로만 표시한다</h3>
+        <p>디자인 툴에 이미 반영돼 있던 이전 버전이 있으면 삭제하지 않는다 — 이름/제목에 대체 표시만 남겨 계보를 보존한다. 나중에 왜 바뀌었는지 추적할 수 있어야 한다.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>흐름 요약</h2>
+    <div class="flow">
+<pre class="mermaid">
+flowchart TD
+    A["아트팩트로 후보 여러 개 스케치"] --> B["사람이 하나 확정"]
+    B --> C{"디자인 툴에서 계속<br/>관리되는 화면/컴포넌트인가?"}
+    C -- 예 --> D["기존 절차: 확정본을<br/>디자인 툴 네이티브로 이관"]
+    C -- 아니오(코드에 SVG 직삽입) --> E["파일을 프로젝트 저장소로 이동 + 커밋"]
+    E --> F["자산 문서에 정본 경로·생략 사유 명시"]
+    F --> G["디자인 툴에 남은 구버전은<br/>삭제 대신 '대체됨' 라벨만"]
+</pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="callout">
+      <strong>주의</strong> — 이 경로를 타도 "정본을 프로젝트 저장소에 커밋한다"는 원칙 자체는 그대로다. 달라지는 건 오직 "그다음 디자인 툴로 옮기는 단계가 없다"는 것뿐이다. 이 예외는 매번 사람의 명시적 확인을 받고 적용하며, 에이전트가 스스로 판단해 생략하지 않는다.
+    </div>
+  </section>
+
+  <div class="footer-note">
+    다른 프로젝트/팀의 자체 워크플로우에 참고용으로 전달하기 위해 정리한 메모입니다 — 특정 프로젝트 고유의 파일명·색상·컴포넌트 이름은 담지 않았습니다.
+  </div>
+
+</div>
