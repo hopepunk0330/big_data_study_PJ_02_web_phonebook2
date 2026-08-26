@@ -4,33 +4,32 @@
 
 ---
 
-## 2026-08-26 (98차) — 사용자 명시 요청: mercari B범위 최종 확인 라운드 — brand-guide.md 신규 "10. 인터랙션 정의"(interaction-designer) + graphic-assets.md 신규 "SCR-004/005/006 오브제 보강" 절(graphic-designer) append 검증 — B 범위
+## 2026-08-26 (103차) — 사용자 명시 요청: 102차 재오픈 MEDIUM 1건(`ui-designer.md` 38번째 줄 "정식 SCREENS 단계" 범위 모호성) 수정 결과 재검증 + 90~102차 누적 3-E/3-F/icon-craft-guide.md 관련 원칙 전체 통합 재점검 — `design-pl.md`·`ui-designer.md`·`design-prompter.md`·`design-qa.md`·`icon-craft-guide.md`·`figma-file-organization.md` 6개 파일 — A 범위
 
-**결과: HIGH 1건 신규 발견(icon-craft-guide.md의 "면색 없음 — 예외 없음" Basic 트랙 규칙을 graphic-assets.md 신규 Selection Indicator Selected 상태가 정면 위반, 같은 절의 Unselected 상태는 같은 규칙을 명시적으로 인용해 준수하고 있어 자기모순). MEDIUM 1건(Choice Card / Choice Card - Comparison Pair 네이밍 혼동 위험, ID 미기재로 동일 컴포넌트 여부 확인 불가). LOW 2건. "정정 포인터가 스스로 잘못된 이력을 주장하는" 기존 반복 패턴은 이번 신규 두 절(10절, SCR-004/005/006절)엔 없음 — 둘 다 순수 신규 관찰 기록이라 재정정 이력 자체가 없음.**
+**결과: 102차 재오픈 MEDIUM의 핵심(용어 "정식 SCREENS 단계"의 모호한 경계)은 해소 확인 — `ui-designer.md` 38번째 줄이 이제 그 모호한 용어에 기대지 않고 "3-B 4단계 이후"라는 구체적 절 번호로 경계를 그어, `figma-file-organization.md` 3-B 4번(파일럿 승인 후 design-systems 추출) 실제 위치와 정확히 일치한다. 다만 같은 102차 항목 안에 함께 지적됐던 "42번째 줄(하지 말 것 — 없으면 보고하고 기다린다) vs 32번째 줄(아이콘 두 갈래 — 이미 형태 정해지면 즉시 요청)" 폴백 불일치는 이번 수정 범위에 포함되지 않아 그대로 남아있다(신규 MEDIUM으로 별도 기록). 6개 파일 통합 재점검 결과 다른 신규 불일치는 발견되지 않음, reset-checklist.md 참조 무결성 재확인 중 별개의 LOW 1건(브랜드 디자이너 줄 번호 1줄 드리프트) 발견.**
+
+### 확인됨(해소)
+- **102차 재오픈 MEDIUM 핵심**: `ui-designer.md` "아이콘/일러스트레이션 조립" 절(현재 38번째 줄)에 "이 규칙은 design-systems가 파일럿에서 이미 Icons를 정식 추출·등록한 뒤(3-B 4단계 이후)의 전체 확장 단계에 적용된다"는 범위 한정과 "아직 등록된 Icons 세트 자체가 없는 파일럿 단계는 이 규칙 대상이 아니다 — 위 '파일럿=확정된 2차 시안의 발전' 항목의 '아이콘 두 갈래' 규칙을 대신 따른다"는 명시적 분기가 추가됨. `figma-file-organization.md` 3-B번 4번 항목("파일럿 승인 후 — design-systems가 시스템을 추출(extract)한다")과 실측 대조한 결과 절 번호·내용이 정확히 일치 — 이제 이 규칙의 적용 시점이 모호한 공용 용어("정식 SCREENS 단계", 문서마다 파일럿 포함 여부가 갈리던 용어)가 아니라 구체적 절 번호에 고정되어, 같은 문서 36번째 줄·`figma-file-organization.md` 3-B 헤더·`design-pl.md` 9번 헤더가 그 용어를 다른 폭으로 쓰는 것과 더 이상 충돌하지 않는다.
 
 ### 신규 발견
-1. **[HIGH]** `docs/design/mercari/graphic-assets.md` "SCR-004/005/006 오브제 보강" > "1. Selection Indicator — 16×16 (Basic/Utility 트랙)"의 **Selected 상태**는 "Ellipse 16×16, fill `#3182F6`(`color/primary`), stroke 없음"으로 브랜드색 솔리드 원 채움을 쓴다. 그런데 `docs/harness/design-team/icon-craft-guide.md` 37번째 줄은 Basic/Utility 트랙 규칙으로 "면색(fill)을 넣지 않는다 — 순수 스트로크(outline)만 사용한다. **브랜드색이든 다른 색이든 면을 채우지 않는다**"를 예외 없이 못박고 있다. 같은 Selection Indicator의 **Unselected 상태**(바로 다음 줄)는 "fill 없음(`fills: []`, 완전 투명 — Basic 트랙 '면색 없음' 원칙 그대로)"라고 이 규칙을 명시적으로 인용해 스스로 판단 기준을 밝혔음에도, 정작 Selected 상태는 같은 트랙 라벨을 단 채 그 원칙을 어겼다 — 이미 확립된 아이콘(`chevron-right`, Basic 트랙, `fills: []`로 명시 확인됨)과도 대비된다. 예외를 만들려는 의도적 서술(왜 Selected만 예외인지 설명)도 전혀 없다. 확인 필요 — Selection Indicator를 Visual/Feature 트랙으로 재분류하거나, Selected 상태의 craft를 stroke 기반으로 다시 그려야 하는지 판단 필요.
-2. **[MEDIUM]** `docs/design/mercari/brand-guide.md` 10-3이 다루는 `Choice Card - Comparison Pair`(SCR-004, "설문UI" 페이지)는 노드 ID가 전혀 제시되지 않아, 9절(design-systems 라운드)이 이미 "Choice Card 마스터 내부에서 INSTANCE로 존재"한다고 서술한 `Choice Card`(SCR-002, "UI 디자인" 페이지, `187:x` 대역)와 동일 컴포넌트인지 이름만 비슷한 별개 컴포넌트인지 문서만으로 판별 불가능하다. 동일 컴포넌트라면 "이미 컴포넌트 마스터+INSTANCE로 존재" vs "raw FRAME, variant INSTANCE 아님"이 정면 충돌한다. 각기 다른 페이지·화면 계열(SCR-002 vs SCR-004)에 속해 별개 컴포넌트일 가능성이 높지만, 이름의 높은 유사성과 ID 부재로 확신할 수 없음 — 확인 필요.
+1. **[MEDIUM]** `ui-designer.md`의 "하지 말 것(역할 경계)" 절(42번째 줄) — "새 컴포넌트나 토큰, 새 아이콘/일러스트를 즉석에서 만들지 않는다 — 아이콘/오브제는 graphic-designer가 그리고 design-systems가 등록하는 것이니, 없으면 design-pl에게 필요하다고 보고하고 기다린다 (단, 위 '컨셉 단계 적용 화면' 예외는 제외)" — 가 여전히 파일럿 단계의 "아이콘 두 갈래" 규칙(30~32번째 줄)을 예외로 명시하지 않는다. 32번째 줄은 "이미 확정된 형태의 아이콘이 필요하면 graphic-designer에게 그 자리에서 요청해 받아 쓴다"(대기 없이 즉시 진행, 요청 대상도 design-pl이 아니라 graphic-designer)고 규정하는데, 42번째 줄의 일반 폴백을 문면 그대로 적용하면 파일럿 중 이미 형태가 정해진 아이콘이 아직 Figma 컴포넌트로 존재하지 않을 때 "즉시 요청"해야 하는지 "design-pl에게 보고하고 기다려야" 하는지 방향이 갈린다. 이 불일치는 102차가 같은 항목 안에서 이미 지적한 내용인데, 이번 라운드 수정은 38번째 줄(SCREENS 단계 범위 한정)만 겨냥해 42번째 줄은 그대로 남았다 — 101차 패턴(같은 파일 안 자매 절 확인 누락)이 형태를 바꿔 재발한 것일 수 있다. 확인 필요.
 
-### 확인됨(문제 없음)
-- **참조 무결성**: 10-1이 인용한 `component-state-guide.md` 2번("버튼류: Default/Hover/Press/Focus/Disabled")과 10-1·10-2·10-3이 인용한 `motion-timing-guide.md` 1번("화면 전환 200~400ms")·3번("설명하지 못하는 움직임은 뺀다")을 원문 대조 — 절 번호·문구 모두 정확히 일치.
-- **노드 ID 상호 참조**: `258:169`("기타" Reason List Item)가 graphic-assets.md(Selection Indicator 대상 목록)와 brand-guide.md 10-2(모달 트리거) 양쪽에서 동일 용도로 정확히 일치. `258:152`(shield-check 인스턴스)·`258:160/165`·`258:161/166/170` 등 신규 노드 ID가 두 문서·기존 섹션 어디와도 충돌하지 않음(grep 재확인).
-- **색상/토큰 일치**: Selection Indicator·Celebration Badge·Confirmation Badge가 쓰는 `color/primary`(`#3182F6`)·`color/bg-surface`(백색)·`color/border-neutral`(`#E2E6EC`)·`color/bg-accent-tint`(`#E8F3FF`) 전부 brand-guide.md 1절 색상표 hex와 정확히 일치, 새 hex 발명 없음.
-- **트랙 판정 근거 인용**: `docs/harness/design-team/icon-craft-guide.md`의 트랙 판정 기준·이모지 정책 원문과 graphic-assets.md의 인용이 일치(문구 자체 왜곡 없음 — 단, 적용 결과는 위 HIGH #1 참고).
-- **append-only**: 두 파일 모두 신규 절이 문서 맨 끝(9절 뒤 10절, 기존 "이어지는 라운드" 절 뒤 신규 절)에 추가됐고 "근거" 절도 기존 항목을 편집하지 않고 새 불릿만 추가하는 형태 — 96·97차가 지적했던 "고쳐서 되돌리는" 유형의 재편집 흔적 없음.
-- **정정 포인터 자기서술 문제 재발 여부**: 10절·SCR-004/005/006 절 둘 다 순수 신규 관찰·설계 기록이라 "정정"·"재정정" 표현 자체가 등장하지 않음 — 94~97차에 반복됐던 "편집 안 했다고 말했지만 실제로는 편집함" 유형 문제 이번 라운드엔 해당 없음.
+### 확인됨(문제 없음) — 6개 파일 통합 재점검
+- **상호 참조 무결성**: `design-pl.md`(21·46·59번째 줄), `ui-designer.md`(32번째 줄), `graphic-designer.md`(12번째 줄), `design-qa.md`(23·42번째 줄) 전부 `icon-craft-guide.md`를 가리키는 인용이 실제 파일 존재·내용과 일치. "아이콘 두 갈래" 문구는 `figma-file-organization.md` 3-B(2), `design-pl.md` 46·59번째 줄, `ui-designer.md` 30~32번째 줄 네 곳에서 실질적으로 동일한 내용(이미 확정된 형태=즉시 요청, 미확정 형태=메인 세션 아트팩트 브레인스토밍 선행)으로 일치 — 101차가 지적했던 병행 서술 간극 재발 없음.
+- **icon-craft-guide.md 자체**: hex·노드 ID·프로젝트 고유 컴포넌트명 하드코딩 없음(포터블 요건 충족), "형태 미확정 시 아트팩트 우선" 절(15~19번째 줄)이 `figma-file-organization.md` 3-E·3-B(2)와 원칙적으로 일치.
+- **design-prompter.md**: 1번("메인 세션이 확정한 아트팩트... 3-E번" 입력 목록), 2번("확정 아트팩트를 전달받았으면... 재해석 금지") 모두 3-E 흐름에서 자기 역할을 명시(101차 LOW #2 해소 유지 확인).
+- **design-qa.md**: 14번 검토 우선순위·판단 기준 절에 3-E 아트팩트 동기화 감사, 9번에 icon-craft-guide.md 기준 감사가 모두 반영돼 있고 인용된 파일·절 번호 모두 실측과 일치.
+- **reset-checklist.md C-3 줄 번호(figma-file-organization.md 68/207번째 줄)**: grep 재확인 결과 정확 — 이번 라운드 편집(ui-designer.md 38번째 줄 수정)은 figma-file-organization.md 자체를 건드리지 않아 영향 없음.
 
-### 낮은 확인 필요(참고성)
-1. **[LOW]** 10-1이 CTA 컴포넌트셋을 `124:1148`(variant 값 `CTA Button`/`CTA Button Disabled`)로 서술하는 반면, graphic-assets.md "이어지는 라운드" 절은 같은 두 variant를 `124:1135`(Disabled)·`124:1136`(Active)라는 다른 ID와 "Active"/"Disabled"라는 다른 명칭으로 서술한다. 부모 컴포넌트셋 ID와 자식 variant ID가 다른 것 자체는 Figma 구조상 자연스러울 수 있고 명칭도 비형식적 서술일 가능성이 높아 확정 모순으로 보진 않으나, 두 문서만 보고는 같은 컴포넌트를 가리키는지 교차 검증할 수 없다.
-2. **[LOW]** 10-1은 CTA 컴포넌트셋에 Hover·Focus 상태도 없다는 것을 스스로 확인해놓고("State 축이 전혀 없다"), `component-state-guide.md` 2번의 "버튼류는 예외 없이 5개 상태(Default/Hover/Press/Focus/Disabled)를 항상 갖춘다"는 규칙에 비춰 Press만 design-systems에 요청하고 Hover/Focus는 왜 이번 요청 범위에서 빠졌는지 문서에 설명이 없다. 인터랙션 정의 브리프 스코프상 의도된 축소일 가능성이 높으나(디자인 QA 영역과 겹침), 명시적 사유는 없음.
+### 낮은 확인 필요(참고성, 이번 라운드 범위 밖에서 우연히 발견)
+1. **[LOW]** `docs/harness/reset-checklist.md`(56번째 줄)는 `.claude/agents/brand-designer.md`의 "이 프로젝트(연락처 관리 웹 서비스)에 맞게" 문구가 "21번째 줄"에 있다고 적었으나, 실제로는 22번째 줄이다(1줄 드리프트). reset-checklist.md 자신이 "줄 번호는 문서가 수정될 때마다 밀릴 수 있으니 리셋 실행 시점에 매번 재확인한다"고 명시해둔 유형의 사소한 드리프트라 기능적 영향은 낮으나, 아직 그 재확인이 이뤄지지 않은 상태로 남아있어 기록.
 
 ### 확인 안 함(범위 밖)
-- 83차 LOW #5·#6, 89차 LOW(mercari brand-guide.md 근거절이 agent-memory 캡 대상 로그 인용)는 이번 라운드 변경 범위와 무관해 재확인하지 않음 — 계속 미해결 상태로만 기록.
-- `graphic-assets.md` "정리 결과 요약" 표(94차 LOW #1)가 여전히 CTA 불일치를 미해결처럼 적어두는 문제는 변경 없음 — 신규 이슈 아님.
-- B 범위 버전 인용 정합성(`docs/planning/**`)은 이번 라운드에서 해당 문서 변경이 전혀 없어 재점검 생략.
+- B 범위(`docs/planning`, `docs/design`)는 이번 라운드에서 변경 없어 재점검 생략.
+- 83~102차에서 미해결로 남은 B범위 항목(Choice Card 네이밍 등)은 이번 A범위 전용 요청과 무관해 재확인하지 않음.
 
 ### 패턴 메모(누적, 갱신)
-- **신규 패턴(98차): 신규 오브제를 만들 때 "이 상태는 원칙을 지켰다"고 스스로 명시적으로 인용하는 습관(Unselected 상태의 '면색 없음 원칙 그대로')이 오히려 바로 옆 형제 상태(Selected)의 위반을 더 도드라지게 만든다 — 한쪽 상태만 규칙을 인용하고 다른 쪽은 조용히 어기면, 작성자가 규칙을 몰랐던 게 아니라 알면서도 예외를 만들었다는 인상을 준다. 같은 오브제의 여러 state를 한 절에서 함께 서술할 때는 "이 절 전체가 같은 트랙 규칙을 따르는가"를 상태별로 한 번씩 점검할 필요가 있다.**
+- **신규 패턴(103차): 101·102차 패턴의 연장 — 감사가 하나의 항목 안에 "핵심 지적"과 "곁들인 보조 근거"를 함께 서술하면, 수정자는 핵심 지적(이번엔 38번째 줄의 용어 모호성)만 고치고 같은 항목에 곁들여진 보조 불일치(42번째 줄 폴백 충돌)는 별도로 인지하지 못한 채 넘어가기 쉽다. 앞으로 감사 보고에서 여러 근거를 한 항목에 묶어 쓸 때는, 그중 "수정이 필요한 지점"이 몇 군데인지(1곳인지 2곳인지) 서두에 개수를 명시하는 게 재발 방지에 도움이 될 수 있다.**
 
 ---
 
