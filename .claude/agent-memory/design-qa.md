@@ -4,16 +4,6 @@
 
 ## 작업 로그
 
-### 2026-07-18 (41차) — dev-pl 프론트엔드 재추출 후 `docs/screenshot/` 실제 구현 vs Figma 확정본 교차 검수 — HIGH 2건(신규) + MEDIUM 2건(신규)
-
-**HIGH — Join 화면이 확정 Figma(코랄 배지+반전 화살표 "로그인으로 돌아가기" 전용 카드)와 다르게 로그인 폼 재사용**. **HIGH — 로고 마스코트 간헐적 렌더링 실패(41차 지목, 42차에서 자체 오탐으로 정정됨)**. MEDIUM 2건은 42차에서 해소 확인.
-
-### 2026-07-18 (42차) — 41차 지적 4건 재확인 — HIGH2는 자체 오탐 인정·정정, HIGH1 여전히 미해결, MEDIUM1/MEDIUM2 해소 확인
-
-**정정(자기 오탐 인정) — 로고 마스코트 간헐적 렌더링 실패는 오탐**(축소 렌더링에서 디테일 뭉개짐 오인, 원본 해상도 재확인 시 17곳 전부 정상). **여전히 미해결 — Join 전용 화면이 프론트엔드에 반영되지 않음**(login-06~09, `935:33`/`1043:9`와 괴리 지속). **해소 확인 — 409 동적배너/영문 오류 노출 둘 다 PASS.**
-
-**종합**: HIGH1(Join 미구현) 미해결 유지, HIGH2 자체 오탐 정정, MEDIUM 2건 해소.
-
 ### 2026-08-25 (43차) — mercari 가격 UX 실험 대안 디자인: 확정 7화면(`126:2601`) + 신규/보강 컴포넌트(`126:2599`) + 스펙시트 완성도 감사 — HIGH 5건(신규) + MEDIUM 2건(신규) + PASS 다수
 
 배경: 사용자 확정 디자인(`126:2601`, 7화면) → design-systems 컴포넌트 추출(Choice Card/Hero Price Card/CTA/Price Input/Progress Row/Product Row/Badge) → brand-designer가 `docs/design/mercari/brand-guide.md` 작성 완료 후 감사 라운드. Figma `SIBLz4S4IZbjabzhMSAgdo`.
@@ -67,3 +57,41 @@
 **LOW(신규) — Colors 페이지 라벨 텍스트가 자기 자신의 토큰을 안 씀**: 스와치 이름/hex 라벨이 `text-[#1a1d29]`/`rgba(26,29,41,0.5)`로 하드코딩. 44차 Brand Guide 문서 페이지도 동일 패턴이라 이 프로젝트 문서 페이지 전반의 기존 관례, 신규 사고는 아님.
 
 **종합**: design-systems의 45차 보고 내용은 A/B/C/E/F 전부 실측과 정확히 일치(스펙 시트 3종·Colors 페이지는 top-level 페이지 목록엔 안 보였으나 알려진 조회 한계대로 직접 nodeId 조회 시 존재 확인됨). D도 확인 가능한 범위에서 전부 부합. 기존 MEDIUM 1건만 미해소 상태로 이월, HIGH 0건.
+
+### 2026-08-26 (46차) — mercari 신규 화면 3개(SCR-004/005/006) + 오브제 보강(선택 인디케이터, Celebration/Confirmation Badge) 감사 — HIGH 3건(2건 신규 + 1건 기존 확산) + MEDIUM 4건(신규) + LOW 2건, PASS 다수
+
+배경: SCR-004(선택+이유 설문, `258:143`, "기타" 모달 `259:183`)·SCR-005(완료, `261:157`/`276:157`)·SCR-006(중복 참여, `261:160`/`277:157`) 신규 조립 + 이모지(🎉/👋) 정식 오브제 교체 + Reason List Item 선택 인디케이터(`258:161`/`258:166`/`258:170`) 채움 라운드에 대한 감사.
+
+**HIGH(신규) — Selection Indicator(Selected)가 Basic/Utility 트랙 규칙(면색 금지) 위반**: Graphic Assets `279:147`·화면 적용 `258:161` 모두 "Basic/Utility 트랙"으로 명시하면서 Ellipse에 솔리드 Primary fill을 채움. `icon-craft-guide.md`는 Basic 트랙에 상태별 예외 없이 "면색 금지, 순수 스트로크만"을 규정 — 미선택 상태(`258:166`/`258:170`, `fills:[]`+stroke 1.5px)는 규칙 준수, 선택 상태만 위반.
+
+**HIGH(신규) — Reason List Item 터치 타겟 41px, WCAG 2.1 AA 최소 44px 미달**: `get_metadata` 실측(`258:160`, height=41, `px-14 py-12`+14px 텍스트) 확인. 원본 Choice Card(50px대)는 기준 충족했으나 신규 Reason List Item은 세로 padding 축소로 기준 미달.
+
+**HIGH(기존 이슈 확산, 미해결) — Ink 뮤트 55% 캡션 대비 미달이 SCR-004/기타 모달까지 확산**: "A안"/"B안" 라벨(`258:150`/`258:155`, 12px, 계산 대비 ~3.68:1), "기타" 모달 "최소 6자 이상"(`259:189`, ~4.13:1) 모두 4.5:1 미달. 43차 HIGH(White Sheet Ink 뮤트 계열 대비 미달)와 동일 토큰(`color/text-muted-55(-on-tint)`)이 신규 화면에 재사용되며 확산. `brand-guide.md` 9-6절은 "수정하지 않음"만 명시, 사용자 승인 기록 없음.
+
+**MEDIUM(신규) — "기타" 모달 내 Selection Indicator 레이어명이 "Frame"으로 일반화**: `259:166`/`259:170`/`259:174`가 SCR-004 base(`258:161` 등 "Selection Indicator — Selected/Unselected")와 다른 이름 — 네이밍 일관성 위반.
+
+**MEDIUM(신규) — 신규 "Comparison Card"(A안/B안)가 2개 화면에 raw FRAME으로 중복**: `258:149`/`258:154`(base)·`259:154`/`259:159`("기타" 모달) 완전 동일 구조가 INSTANCE 아닌 독립 FRAME으로 중복 — 기존 43/45차 지적(Badge 등 raw FRAME 잔존) 패턴이 신규 오브제에도 반복.
+
+**MEDIUM(신규) — 신규 "Text Input Field"에 Input 필수 상태 커버리지 없음**: `259:187`이 raw FRAME 단일 정적 상태(1.5px Primary 보더 고정)만 존재, `component-state-guide.md` §2(Default/Placeholder/Focus/Error/Disabled) 미충족.
+
+**MEDIUM(신규) — Selection Indicator가 정식 COMPONENT/variant 미등록으로 Focus/Disabled 상태가 구조적으로 부재**: 라디오/체크류 §2 요구사항 미충족. `graphic-assets.md`가 "COMPONENT 승격은 이번 라운드 범위 아님"이라 명시적으로 유보한 점은 확인 — 다음 라운드 필수 후속.
+
+**LOW — CTA press 상태 부재는 결함 아님, 정직하게 기록된 백로그로 확인**: `CTA` 컴포넌트셋(`124:1148`) 직접 재조회로 State 축 부재 재확인, `brand-guide.md` 10-1절에 design-systems 앞 명시적 스펙과 함께 요청·대기 중임을 확인 — 다음 라운드 반영 여부 재확인 필요.
+
+**LOW — "기타" 모달 트랜지션 프로토타입 값 도구 한계로 직접 재검증 불가**: `get_motion_context`가 이 에이전트에 제공되지 않아 duration/easing 재조회 불가. 문서 기록(0.25s EASE_IN_AND_OUT)은 `motion-timing-guide.md` 범위(200~400ms) 부합하나 독립 재검증은 아님.
+
+**PASS 다수**: 신규 조립 요소 전수 색상 토큰 바인딩(하드코딩 0건), 합성 hex 4종(`#777d89`/`#818389`/`#aaabb1`/`#afb0b4`) 독립 재계산 전부 일치, 그림자 신규 오브제 포함 0건, Celebration/Confirmation Badge 톤 구분 명확(stroke 10px/6px 짝수), 이모지 🤔 accent 허용 사례 확인.
+
+**종합**: HIGH 3건(신규 2 + 확산 1) + MEDIUM 4건(신규) + LOW 2건, PASS 다수 — design-systems/graphic-designer 재작업 필요, 특히 대비 미달 토큰(`text-muted-55` 계열) 근본 수정이 반복 확산을 막을 유일한 방법.
+
+### 2026-08-26 (47차) — 46차 HIGH 2건(Selection Indicator 면색 위반, Reason List Item 터치 타겟) 재검증 — 둘 다 해소 확인, HIGH 0건, LOW 1건(도구 한계로 fill=[] 바이트 단위 검증 불가)
+
+배경: ui-designer/graphic-designer가 46차 HIGH 2건에 대한 수정을 보고, Figma 직접 재조회로 독립 재검증. 46차의 나머지 MEDIUM/LOW/Ink 뮤트 HIGH는 이번 라운드 범위 아님.
+
+**해소 확인 — Selection Indicator(Selected) Basic 트랙 면색 위반**: `get_metadata`로 8개 관련 노드(Graphic Assets `279:147/148/149`, SCR-004 base `258:161/162`+`274:157`, "기타" 모달 `259:174`+`284:954`) 전수 존재 확인. `get_design_context`는 Ellipse/Vector 타입이 전부 flattened SVG 이미지로 export되어 raw fill 속성이 코드에 노출되지 않는 도구 한계(45차에서도 동일 한계 기록)로 직접 hex 대조는 불가했으나, `get_screenshot`을 상위 컨테이너(Reason List `258:159`/`259:164`, 335×159, native 1x)로 확대 캡처해 시각 재확인한 결과 Selected 인디케이터가 SCR-004 base·"기타" 모달 양쪽 모두 흰색 내부+파란 스트로크 링+파란 스트로크 체크(솔리드 면 없음)로 정확히 렌더링됨, Unselected는 얇은 회색 링만 유지 — 선택/비선택 시각 구분 명확, 레이아웃 깨짐 없음. 레이어명도 "기타" 모달 3개 전부 "Selection Indicator — Selected/Unselected"로 SCR-004 base와 동일하게 정정됨(46차 MEDIUM 네이밍 지적도 부수적으로 해소).
+
+**해소 확인 — Reason List Item 터치 타겟 44px 미달**: `get_metadata` 재실측 결과 6개 노드(SCR-004 base `258:160`/`258:165`/`258:169`, "기타" 모달 `259:165`/`259:169`/`259:173`) 전부 height=45px로 WCAG 2.1 AA 최소 44px 충족. `258:159`/`259:164`(Reason List 컨테이너) 높이도 159px로 3×45+2×12(gap) 계산과 정확히 일치해 레이아웃 사이드이펙트 없음 확인.
+
+**LOW(신규 아님, 45차 동일 패턴 재확인) — Unselected 인디케이터의 "흰색 solid fill 제거" 여부는 도구로 바이트 단위 검증 불가**: 카드 배경이 이미 흰색이라 흰색 fill 유무가 시각적으로 구분 불가능하고, get_design_context가 이 노드 타입을 SVG로 flatten해 코드상 fill 속성도 노출 안 됨(forceCode 시도해도 동일). 결함이 아니라 검증 공백 — Figma 데스크톱 Inspect 패널 수동 확인 권고.
+
+**종합**: 46차 HIGH 2건 모두 재작업 없이 재검증 통과. 신규 회귀(다른 곳 fill 잔존, 레이아웃 깨짐, 대비 약화) 없음.
