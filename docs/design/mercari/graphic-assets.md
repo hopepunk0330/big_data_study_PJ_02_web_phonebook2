@@ -115,7 +115,15 @@ design-qa 46차·harness-auditor 98차가 공통으로 HIGH 지적: 위 "선택(
 - **추가로 발견해 함께 정리(브리프에 명시되진 않았으나 같은 트랙 규칙 위반)**: `259:166`/`259:170`의 내부 Ellipse(`259:167`/`259:171`)가 base(`258:167`/`258:171`)와 달리 흰색 solid fill(`color/bg-surface`)을 갖고 있었다 — 흰색이라도 "면색을 채우지 않는다" 원칙 위반이라 fill을 제거해 base와 동일한 stroke-only 구성으로 맞췄다.
 - **검증**: `use_figma`로 위 8개 occurrence(`279:147`/`279:153`/`258:161`/`258:166`/`258:170`/`259:174`/`259:166`/`259:170`) 하위 모든 Ellipse/Vector의 `fills` 배열이 빈 배열임을 재조회로 최종 확인. `get_screenshot`으로 SCR-004 base·"기타" 모달 양쪽 모두 Selected 항목이 파란 스트로크 링+체크로, Unselected 항목은 얇은 회색 빈 링으로 뚜렷이 구분됨을 시각 확인했다. Graphic Assets 페이지의 라벨 텍스트(`279:146`)도 새 구성을 반영해 갱신했다.
 
-### 2. Celebration Badge — 72×72 (Visual/Feature 트랙, SCR-005 완료/감사)
+### [2026-08-27 대체] Celebration Badge / Confirmation Badge → 아트팩트 확정 아이콘으로 교체
+
+**아래 "2. Celebration Badge"·"3. Confirmation Badge" 절(단순 원+체크마크 구성)은 house rule에 따라 삭제하지 않고 그대로 보존하되, 실제 최종 채택안은 아니게 됐다** — 사용자가 메인 세션과의 아트팩트 브레인스토밍(8개 후보 비교)을 거쳐 다른 형태를 최종 확정했다. 아래 두 절의 제목에 `❌ 대체됨 —`을 붙여 레거시로 표시한다.
+
+- **새 확정 아이콘**: SCR-005 = "파티 팝퍼"(크래커+콘페티 폭죽), SCR-006 = "흔드는 손"(손 제스처, `docs/harness/asset-reference/visual icon/hand/` 레퍼런스 스타일 — 캡슐형 손가락 4개+엄지, 손가락은 무테두리 면채색으로 손바닥에 깊이 파묻어 이음새 제거, 엄지는 손 전체와 동일한 그라데이션 + 손바닥 접합부에만 반투명 방사형 그림자로 자연스러운 음영 구분, 회전각 -38°).
+- **정본(source of truth) 위치 — Figma 아님**: `docs/design/mercari/artifacts/scr005-006-icon-options.html`(git 추적). 이 라운드는 `docs/harness/design-team/figma-file-organization.md` 3-E번의 "확정본은 Figma로 옮긴다" 기본 절차를 **사용자 명시적 결정으로 예외 처리**했다 — 이 두 아이콘은 실제 화면 코드에 SVG로 직접 임베드될 예정이라 Figma 네이티브 벡터로 재현할 실익이 없다고 판단해, 아트팩트 HTML 파일 자체를 정본으로 확정했다(2026-08-27, 사용자 승인 — 예외 사유는 `figma-file-organization.md` 3-E번 각주 참고).
+- **⚠ Figma 화면과의 불일치(의도된 상태, 결함 아님)**: Figma의 실제 SCR-005(`276:157`)/SCR-006(`277:157`) 노드는 위 "대체됨" 처리된 옛 Celebration/Confirmation Badge를 여전히 시각적으로 보여준다 — 이 라운드는 Figma를 거치지 않기로 했으므로 그 노드들을 갱신하지 않았다. 나중에 이 화면의 Figma 목업을 실제로 최신화하고 싶어지면, graphic-designer가 위 아트팩트 파일의 SVG 마크업을 그대로 붙여넣어(재해석 없이) 반영하는 별도 라운드가 필요하다.
+
+### ❌ 대체됨 — 2. Celebration Badge — 72×72 (Visual/Feature 트랙, SCR-005 완료/감사)
 
 - **대상**: SCR-005(`261:157`)의 🎉 이모지 텍스트 노드(`261:158`, 완전 제거).
 - **구성**: Ellipse 72×72 solid fill `color/primary`(`#3182F6`) + Vector 체크(39.8×26.6, path `M 0 13.3 L 13.3 26.6 L 39.8 0`, strokeWeight 10, 흰색 `color/bg-surface`, strokeCap NONE/strokeJoin MITER) — "아이콘2"(edit-02, 파란 원형 배경+흰 라인 아이콘 합성) 패턴을 축하 톤으로 변주, shield-check와 동일한 체크 모티프를 재사용해 세트 전체의 "체크=확정/완료" 의미 일관성을 유지했다.
@@ -123,7 +131,7 @@ design-qa 46차·harness-auditor 98차가 공통으로 HIGH 지적: 위 "선택(
 - **정리된 노드(Graphic Assets 페이지 원화)**: `279:158`(Celebration Badge, `279:155` 프레임 하위).
 - **화면 적용 노드**: `276:157`(Celebration Badge, SCR-005 첫 번째 자식) — 원 `276:158`, 체크 `276:159`.
 
-### 3. Confirmation Badge — 64×64 (Visual/Feature 트랙, SCR-006 이미 참여함/재확인)
+### ❌ 대체됨 — 3. Confirmation Badge — 64×64 (Visual/Feature 트랙, SCR-006 이미 참여함/재확인)
 
 - **대상**: SCR-006(`261:160`)의 👋 이모지 텍스트 노드(`261:161`, 완전 제거).
 - **구성**: Ellipse 64×64 solid fill `color/bg-accent-tint`(`#E8F3FF`) + Vector 체크(35.4×23.6, path `M 0 11.8 L 11.8 23.6 L 35.4 0`, strokeWeight 6, `color/primary`(`#3182F6`) 라인, strokeCap NONE/strokeJoin MITER, fill 없음).
@@ -142,8 +150,10 @@ design-qa 46차·harness-auditor 98차가 공통으로 HIGH 지적: 위 "선택(
 |---|---|---|---|---|---|
 | Selection Indicator (Selected) | Basic/Utility | `258:161` | `279:147` | 16×16 | stroke만 `color/primary` 2px 링 + `color/primary` 체크(2026-08-27 수정, 과거 fill 채움 기록은 위 결함 수정 절 참고) |
 | Selection Indicator (Unselected) | Basic/Utility | `258:166`, `258:170` | `279:153` | 16×16 | stroke `color/border-neutral` 1.5px, fill 없음 |
-| Celebration Badge | Visual/Feature | `276:157` (SCR-005) | `279:158` | 72×72 | fill `color/primary`, 체크 `color/bg-surface` |
-| Confirmation Badge | Visual/Feature | `277:157` (SCR-006) | `279:164` | 64×64 | fill `color/bg-accent-tint`, 체크 `color/primary` |
+| ❌ Celebration Badge (대체됨) | Visual/Feature | `276:157` (SCR-005, 화면엔 아직 이 상태로 남아있음) | `279:158` | 72×72 | fill `color/primary`, 체크 `color/bg-surface` |
+| ❌ Confirmation Badge (대체됨) | Visual/Feature | `277:157` (SCR-006, 화면엔 아직 이 상태로 남아있음) | `279:164` | 64×64 | fill `color/bg-accent-tint`, 체크 `color/primary` |
+| **SCR-005 파티 팝퍼(신규 확정)** | Visual/Feature | Figma 미적용 — `docs/design/mercari/artifacts/scr005-006-icon-options.html`이 정본 | 없음(Figma 미거침) | 72×72(아트팩트 viewBox 기준) | 크래커 다크네이비 + 콘페티 옐로/레드/틸/오렌지, 배경 `#3182F6` 계열 라디얼그라데이션 |
+| **SCR-006 흔드는 손(신규 확정)** | Visual/Feature | Figma 미적용 — `docs/design/mercari/artifacts/scr005-006-icon-options.html`이 정본 | 없음(Figma 미거침) | 64×64(아트팩트 viewBox 기준) | 살구색 스킨 그라데이션, 배경 `#E8F3FF` |
 
 **COMPONENT 승격은 이번 라운드 범위가 아니다** — design-systems가 후속 판단.
 

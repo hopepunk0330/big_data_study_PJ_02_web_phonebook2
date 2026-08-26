@@ -1,0 +1,390 @@
+<title>완료·재방문 아이콘 옵션</title>
+<style>
+  :root {
+    --bg: #F7F8FA;
+    --surface: #FFFFFF;
+    --border: #E2E6EC;
+    --ink: #1A1D29;
+    --ink-muted: rgba(26,29,41,0.55);
+    --ink-faint: rgba(26,29,41,0.4);
+    --primary: #3182F6;
+    --accent-tint: #E8F3FF;
+    --pick-bg: #EAF3FF;
+    --pick-border: #3182F6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0F1115;
+      --surface: #1B1E24;
+      --border: #2B2F38;
+      --ink: #F2F3F5;
+      --ink-muted: rgba(242,243,245,0.65);
+      --ink-faint: rgba(242,243,245,0.4);
+      --primary: #5B9BFF;
+      --accent-tint: #1D2A3D;
+      --pick-bg: #16223A;
+      --pick-border: #5B9BFF;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0F1115;
+    --surface: #1B1E24;
+    --border: #2B2F38;
+    --ink: #F2F3F5;
+    --ink-muted: rgba(242,243,245,0.65);
+    --ink-faint: rgba(242,243,245,0.4);
+    --primary: #5B9BFF;
+    --accent-tint: #1D2A3D;
+    --pick-bg: #16223A;
+    --pick-border: #5B9BFF;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+    padding: 48px 24px 80px;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; }
+
+  .eyebrow {
+    font-family: 'Inter', 'Noto Sans KR', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 8px;
+  }
+  h1 {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin: 0 0 10px;
+    text-wrap: balance;
+  }
+  .lede {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--ink-muted);
+    max-width: 62ch;
+    margin: 0 0 44px;
+  }
+  .lede b { color: var(--ink); }
+
+  section + section { margin-top: 56px; }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+    margin-bottom: 24px;
+  }
+  .section-head h2 {
+    font-size: 17px;
+    font-weight: 800;
+    margin: 0;
+  }
+  .section-head .was {
+    font-size: 13px;
+    color: var(--ink-faint);
+    font-weight: 600;
+  }
+  .section-head .was .emoji { font-size: 16px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  @media (max-width: 720px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 22px 16px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+  }
+  .card.pick {
+    border-color: var(--pick-border);
+    background: var(--pick-bg);
+  }
+  .badge-slot {
+    width: 88px;
+    height: 88px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card svg { display: block; }
+
+  .card-label {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .card-tag {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--primary);
+    letter-spacing: 0.02em;
+  }
+  .card.pick .card-tag::before {
+    content: "★ 추천 — ";
+  }
+
+  .note {
+    margin-top: 44px;
+    padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ink-muted);
+  }
+  .note b { color: var(--ink); }
+</style>
+
+<div class="wrap">
+  <p class="eyebrow">mercari 가격 UX · 그래픽 에셋 브레인스토밍</p>
+  <h1>SCR-005 · SCR-006 완료·재방문 오브제 옵션</h1>
+  <p class="lede">
+    확정 디자인의 Choice Card 아이콘(엄지척·연필)처럼 <b>원형 배경 + 그라데이션 음영이 있는 컬러 일러스트</b> 톤으로 8개 후보를 스케치했다.
+    이전 라운드의 단색 체크마크 배지는 Visual/Feature 트랙치고 너무 납작해서 다시 그렸다 — 확정하실 방향에 <b>★ 추천</b> 표시를 해뒀지만, 마음에 드는 걸로 그대로 픽하시면 된다.
+  </p>
+
+  <section>
+    <div class="section-head">
+      <h2>SCR-005 — 완료/감사 화면</h2>
+      <span class="was"><span class="emoji">🎉</span> 대체 후보</span>
+    </div>
+    <div class="grid">
+
+      <div class="card pick">
+        <div class="badge-slot">
+          <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
+            <defs>
+              <radialGradient id="popper-bg" cx="35%" cy="30%" r="75%">
+                <stop offset="0%" stop-color="#5B9BFF"/>
+                <stop offset="100%" stop-color="#3182F6"/>
+              </radialGradient>
+            </defs>
+            <circle cx="36" cy="36" r="36" fill="url(#popper-bg)"/>
+            <g transform="translate(14,30) rotate(-18)">
+              <path d="M0 20 L22 8 L24 14 L2 26 Z" fill="#1A1D29"/>
+              <path d="M0 20 L22 8 L23 10.6 L1.5 22.4 Z" fill="#2E3A4F"/>
+            </g>
+            <g stroke-linecap="round">
+              <rect x="22.38" y="19.5" width="5" height="9" rx="2" fill="#FFD34D" transform="rotate(18 24.88 24)"/>
+              <rect x="23.76" y="5.19" width="4.5" height="4.5" rx="1" fill="#FF6B6B" transform="rotate(-12 26.01 7.44)"/>
+              <circle cx="39.6" cy="16.23" r="3" fill="#FFFFFF"/>
+              <rect x="54.3" y="7.2" width="5" height="8" rx="2" fill="#7CE0C6" transform="rotate(30 56.8 11.2)"/>
+              <circle cx="54.73" cy="27.88" r="2.2" fill="#FF9F5B"/>
+              <path d="M57.25 41.14 l3 -1 l1 3 l-3 1 Z" fill="#FFD34D"/>
+              <line x1="30" y1="16" x2="34" y2="12" stroke="#FFFFFF" stroke-width="2"/>
+              <line x1="34" y1="8" x2="34" y2="4" stroke="#FFFFFF" stroke-width="2"/>
+              <line x1="41" y1="8" x2="44" y2="5" stroke="#FFFFFF" stroke-width="2"/>
+            </g>
+          </svg>
+        </div>
+        <div class="card-tag">파티 팝퍼</div>
+        <div class="card-label">터지는 색종이 콘페티<br>+ 크래커 본체</div>
+      </div>
+
+      <div class="card">
+        <div class="badge-slot">
+          <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
+            <defs>
+              <radialGradient id="trophy-bg" cx="35%" cy="30%" r="75%">
+                <stop offset="0%" stop-color="#5B9BFF"/>
+                <stop offset="100%" stop-color="#3182F6"/>
+              </radialGradient>
+              <linearGradient id="trophy-gold" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#FFE8A3"/>
+                <stop offset="100%" stop-color="#F4B93E"/>
+              </linearGradient>
+            </defs>
+            <circle cx="36" cy="36" r="36" fill="url(#trophy-bg)"/>
+            <g transform="translate(0,-2)">
+              <rect x="28" y="50" width="16" height="5" rx="1.5" fill="#C98A2C"/>
+              <rect x="32" y="44" width="8" height="7" fill="#F4B93E"/>
+              <path d="M25 20h22v10c0 7-5 12-11 12s-11-5-11-12z" fill="url(#trophy-gold)"/>
+              <path d="M25 22c-5 0-8 3-8 7s3 6 7 6" stroke="#F4B93E" stroke-width="2.4" fill="none"/>
+              <path d="M47 22c5 0 8 3 8 7s-3 6-7 6" stroke="#F4B93E" stroke-width="2.4" fill="none"/>
+              <path d="M36,25 L37.5,28.9 L41.7,29.2 L38.5,31.8 L39.5,35.9 L36,33.6 L32.5,35.9 L33.5,31.8 L30.3,29.2 L34.5,28.9 Z" fill="#FFFFFF" opacity="0.9"/>
+            </g>
+          </svg>
+        </div>
+        <div class="card-tag">트로피</div>
+        <div class="card-label">성과·달성 느낌의<br>금색 트로피</div>
+      </div>
+
+      <div class="card">
+        <div class="badge-slot">
+          <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
+            <defs>
+              <radialGradient id="high5-bg" cx="35%" cy="30%" r="75%">
+                <stop offset="0%" stop-color="#5B9BFF"/>
+                <stop offset="100%" stop-color="#3182F6"/>
+              </radialGradient>
+              <linearGradient id="skin-grad-5" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#FFDCB8"/>
+                <stop offset="100%" stop-color="#FBCBA0"/>
+              </linearGradient>
+              <radialGradient id="thumb-shadow-5" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#9C6A35" stop-opacity="0.32"/>
+                <stop offset="100%" stop-color="#9C6A35" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <circle cx="36" cy="36" r="36" fill="url(#high5-bg)"/>
+            <rect x="19" y="36" width="22" height="21" rx="10.5" fill="url(#skin-grad-5)" stroke="#E8A874" stroke-width="1.1"/>
+            <g fill="url(#skin-grad-5)">
+              <rect x="18.25" y="20" width="5.5" height="28" rx="2.75" transform="rotate(-16 21 48)"/>
+              <rect x="24" y="12" width="6" height="34" rx="3" transform="rotate(-5 27 46)"/>
+              <rect x="30" y="13" width="6" height="33" rx="3" transform="rotate(6 33 46)"/>
+              <rect x="36.5" y="24" width="5" height="24" rx="2.5" transform="rotate(18 39 48)"/>
+            </g>
+            <ellipse cx="16" cy="46" rx="3.8" ry="6.8" fill="url(#skin-grad-5)" transform="rotate(-38 16 46)"/>
+            <ellipse cx="20.19" cy="51.36" rx="3" ry="3.8" fill="url(#thumb-shadow-5)" transform="rotate(-38 20.19 51.36)"/>
+            <circle cx="30" cy="53" r="2.2" fill="#FFFFFF" opacity="0.5"/>
+            <circle cx="44" cy="12" r="1.8" fill="#FFD34D"/>
+            <g stroke="#FFFFFF" stroke-width="2" stroke-linecap="round">
+              <line x1="46" y1="18" x2="50" y2="14"/>
+              <line x1="52" y1="22" x2="57" y2="20"/>
+              <line x1="50" y1="28" x2="55" y2="29"/>
+            </g>
+          </svg>
+        </div>
+        <div class="card-tag">하이파이브</div>
+        <div class="card-label">Choice Card 손 아이콘과<br>같은 계열의 손 모티프</div>
+      </div>
+
+      <div class="card">
+        <div class="badge-slot">
+          <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
+            <defs>
+              <radialGradient id="check2-bg" cx="35%" cy="30%" r="75%">
+                <stop offset="0%" stop-color="#5B9BFF"/>
+                <stop offset="100%" stop-color="#3182F6"/>
+              </radialGradient>
+            </defs>
+            <circle cx="36" cy="36" r="36" fill="url(#check2-bg)"/>
+            <path d="M22 37l9 9 19-19" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <g fill="#FFD34D">
+              <path d="M52.5,11.7 L53.4,14.2 L56.1,14.3 L54.0,16.0 L54.7,18.6 L52.5,17.1 L50.3,18.6 L51.0,16.0 L48.9,14.3 L51.6,14.2 Z"/>
+              <circle cx="16" cy="20" r="2.4"/>
+              <circle cx="60" cy="46" r="1.8" fill="#7CE0C6"/>
+            </g>
+          </svg>
+        </div>
+        <div class="card-tag">체크 + 반짝임</div>
+        <div class="card-label">기존안 유지하되<br>별빛 악센트로 보강</div>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>SCR-006 — 중복 참여 안내 화면</h2>
+      <span class="was"><span class="emoji">👋</span> 대체 후보</span>
+    </div>
+    <div class="grid">
+
+      <div class="card pick">
+        <div class="badge-slot">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <defs>
+              <linearGradient id="skin-grad-6" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#FFDCB8"/>
+                <stop offset="100%" stop-color="#FBCBA0"/>
+              </linearGradient>
+              <radialGradient id="thumb-shadow-6" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#9C6A35" stop-opacity="0.32"/>
+                <stop offset="100%" stop-color="#9C6A35" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <circle cx="32" cy="32" r="32" fill="#E8F3FF"/>
+            <g transform="rotate(-15 32 48)">
+              <rect x="27" y="52" width="10" height="10" rx="4" fill="url(#skin-grad-6)" stroke="#E8A874" stroke-width="1"/>
+              <rect x="21" y="35" width="22" height="20" rx="10" fill="url(#skin-grad-6)" stroke="#E8A874" stroke-width="1"/>
+              <g fill="url(#skin-grad-6)">
+                <rect x="20.5" y="21" width="5" height="26" rx="2.5" transform="rotate(-16 23 47)"/>
+                <rect x="26.25" y="14" width="5.5" height="31" rx="2.75" transform="rotate(-5 29 45)"/>
+                <rect x="32.25" y="15" width="5.5" height="30" rx="2.75" transform="rotate(6 35 45)"/>
+                <rect x="38.75" y="25" width="4.5" height="22" rx="2.25" transform="rotate(18 41 47)"/>
+              </g>
+              <ellipse cx="18" cy="44" rx="3.3" ry="5.6" fill="url(#skin-grad-6)" transform="rotate(-38 18 44)"/>
+              <ellipse cx="21.45" cy="48.41" rx="2.6" ry="3.2" fill="url(#thumb-shadow-6)" transform="rotate(-38 21.45 48.41)"/>
+              <circle cx="26" cy="40" r="1.7" fill="#FFFFFF" opacity="0.45"/>
+            </g>
+            <path d="M44,26 Q48,32 44,38" stroke="#3182F6" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+            <path d="M49,22 Q55,32 49,42" stroke="#3182F6" stroke-width="2.2" stroke-linecap="round" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="card-tag">흔드는 손</div>
+        <div class="card-label">👋의 의미를 그대로 계승<br>+ 확정안 손 톤과 통일</div>
+      </div>
+
+      <div class="card">
+        <div class="badge-slot">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <circle cx="32" cy="32" r="32" fill="#E8F3FF"/>
+            <g transform="translate(16,14)">
+              <path d="M0 4a4 4 0 0 1 4-4h24a4 4 0 0 1 4 4v26l-16-8-16 8Z" fill="#3182F6"/>
+              <path d="M9 14l4 4 8-8" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </g>
+          </svg>
+        </div>
+        <div class="card-tag">체크된 북마크</div>
+        <div class="card-label">"이미 저장·완료됨"을<br>은유하는 리본 형태</div>
+      </div>
+
+      <div class="card">
+        <div class="badge-slot">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <circle cx="32" cy="32" r="32" fill="#E8F3FF"/>
+            <g transform="translate(13,17)">
+              <path d="M2 6a4 4 0 0 1 4-4h24a4 4 0 0 1 4 4v18a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4Z" fill="#3182F6"/>
+              <path d="M2 12h34M2 6h34" stroke="#1A1D29" stroke-opacity="0.12" stroke-width="1" stroke-dasharray="2 3"/>
+              <path d="M12 20l4 4 8-8" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </g>
+          </svg>
+        </div>
+        <div class="card-tag">참여 완료 티켓</div>
+        <div class="card-label">참여권을 이미 썼다는<br>느낌의 티켓 스텁</div>
+      </div>
+
+      <div class="card">
+        <div class="badge-slot">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <circle cx="32" cy="32" r="32" fill="#E8F3FF"/>
+            <circle cx="30" cy="30" r="14" fill="none" stroke="#3182F6" stroke-width="3"/>
+            <path d="M30 22v9l6 4" stroke="#3182F6" stroke-width="3" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+        <div class="card-tag">다시 온 기록</div>
+        <div class="card-label">"이전에 다녀갔다"는<br>재방문 시계 모티프</div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="note">
+    <b>톤 메모</b> — 모든 옵션은 확정 디자인의 원형 배경(파란 계열) + 실물감 있는 오브제(피부톤 손, 금색 트로피 등 소재 고유색 사용) 규칙을 그대로 따랐다. SCR-005는 진한 블루 원(#3182F6 그라데이션, Choice Card "네" 카드와 같은 톤), SCR-006은 연한 Accent Tint 원(#E8F3FF, 차분한 재확인 톤이라는 기존 결정 유지)을 배경으로 썼다. 그림자는 확정 디자인 규칙대로 쓰지 않았다.
+  </div>
+</div>
