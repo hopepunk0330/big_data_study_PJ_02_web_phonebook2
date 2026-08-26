@@ -34,6 +34,7 @@ design-qa가 지난 컴포넌트 추출 라운드에서 HIGH로 지적: 확정 �
 - **정리 전/후 차이**: 형태·수치 변경 없음. raw 프레임을 표준 24×24 아이콘 프레임(`195:14`)으로 옮겨 담고 배경(투명, 정리 유지)·벡터 지오메트리(x=15,y=8,rotation=-90°,path `M 0 5 L 5 0 L 10 5`, strokeCap/Join ROUND)를 그대로 재현했을 뿐이다.
 - **색상(하드코딩 유지, 미변경)**: 정리본은 raw occurrence 그대로 흰색(`#FFFFFF`) stroke — 화면상 CTA 활성(파란 배경) 상태에서 쓰이는 색. Graphic Assets 페이지에서는 가독성을 위해 다크 배경(`#1A1D29`) 스와치를 아이콘 프레임 자체에 얹었다(아이콘 fill이 아니라 리뷰용 배경일 뿐).
 - **⚠ 특이사항(design-systems 별도 확인 필요, 이번 라운드에서 고치지 않음)**: 컴포넌트 인스턴스 안에 중첩된 `chevron-right`(비활성 CTA, `CTA Button Disabled` variant)의 실제 색상은 순수 검정 `#000000`(불투명도 100%)이다 — `brand-guide.md`가 정의한 비활성 스펙(`Ink 35%`, 즉 `#1A1D29` @ 0.35 opacity)과 다르다. 이건 raw FRAME 문제가 아니라 이미 존재하는 `CTA` 컴포넌트 마스터 내부의 색상 하드코딩 오류라서 이번 브리프 범위(raw FRAME 정리) 밖이다 — design-systems가 CTA 컴포넌트 색상 감사 때 확인할 것.
+- **[2026-08-27 정정 포인터, 2026-08-27 재정정]** 위 "불투명도 100%" 기록에 대해, `docs/design/mercari/brand-guide.md` 9-3에서 이뤄진 재관찰 시점에는 opacity 0.3으로 확인됐다 — design-systems가 그 값(`#000000` opacity 0.3)을 `color/text-muted-35-on-surface-muted` 토큰(합성 hex `#AAABB1`)에 바인딩했다. **두 기록 중 어느 쪽이 측정 오류였는지, 혹은 두 관찰 시점 사이에 실제로 값이 바뀌었는지는 확정할 근거가 없다**(brand-guide.md 9-3 원문 참고 — 그쪽도 "그 사이 누군가 opacity만 손댄 흔적"이라는 가능성을 열어둔다). 확실한 것은 design-systems가 최종적으로 바인딩한 값(opacity 0.3 → `#AAABB1`)이 브랜드 가이드 1절의 정식 스펙(Ink 35%)과 일치한다는 것뿐이다. 이 문서의 원본 관찰 기록(불투명도 100%)은 정정하지 않고 그대로 두며, 참고 포인터만 남긴다.
 - **⚠ 구조적 특이사항(design-systems 참고, 이번 라운드에서 고치지 않음)**: B_SCR-002_03·A_SCR-002_04 두 화면은 `CTA` 컴포넌트 인스턴스 대신 손으로 다시 만든 "CTA Button" 프레임을 쓰고 있다 — 확정 화면 자체이므로 이번 라운드에서 수정하지 않았지만, 이 두 화면을 나중에 `CTA` 인스턴스로 교체하면 raw chevron-right 중복 자체가 사라진다는 점을 design-systems에 참고 보고한다(화면 수정은 ui-designer/design-systems 소관, graphic-designer 권한 밖).
 
 ### 2. `star-01` — Visual/Feature 트랙
@@ -85,9 +86,73 @@ design-systems가 위 인수인계를 이어받아 처리한 결과를 기록한
 
 세 아이콘 마스터의 내부 벡터/도형 색을 (이번 라운드에서 신설한) Semantic Colors 변수에 바인딩했다: chevron-right stroke → `color/bg-surface`(흰색, STROKE_COLOR 스코프 확장), star-01 Ellipse fill → `color/primary`, Star fill → `color/bg-surface`, shield-check stroke → `color/secondary`. 상세는 `docs/design/mercari/brand-guide.md`의 신규 절 참고.
 
+## SCR-004/005/006 오브제 보강 — 이모지 교체 2건 + 빈 인디케이터 채우기 (2026-08-26)
+
+이 절은 `docs/harness/design-team/icon-craft-guide.md`의 "이모지는 포인트로만 쓴다"(2026-08-26 신설) 원칙 적용 라운드다. "설문UI" 페이지(`187:4084`) 아래 SCR-004(`258:143`)·SCR-005(`261:157`)·SCR-006(`261:160`)을 대상으로 했다.
+
+### 1. Selection Indicator — 16×16 (Basic/Utility 트랙)
+
+- **대상**: SCR-004 Reason List Item 3개(`258:160`/`258:165`/`258:169`) 좌측 16×16 자리(`258:161`/`258:166`/`258:170`).
+- **작업 전 상태(재확인 필요)**: `get_metadata`는 이 3개 프레임을 빈 것처럼(self-closing) 보고했으나, 실제로는 이미 라디오 버튼 형태(흰 원 + 얇은 보더 + 선택 시 안쪽에 작은 Primary 도트)가 그려져 있었다 — `get_metadata`의 깊이 제한(6단계 이상 하위 노드 생략 추정)으로 누락된 것으로 보인다. **브리프가 "빈 placeholder"로 서술한 것과 실제 상태가 달랐다는 점을 기록**: 이후 유사 브리프에서 `get_metadata`만으로 "비어 있다"고 단정하지 말고 `use_figma`로 자식 노드를 직접 순회해 재확인할 것.
+- **재작업 이유**: 기존 라디오 형태(흰 원+파란 링+파란 도트)는 브리프가 지정한 "Primary 솔리드 원 채움 + 흰색 체크(또는 흰 도트)" 크래프트와 반대 구성(면이 아니라 링+도트)이라, 브리프 craft 지시대로 다시 그렸다.
+- **선택(Selected) 상태**: Ellipse 16×16, fill `#3182F6`(`color/primary`), stroke 없음 + Vector 체크(8.85×5.9, path `M 0 2.95 L 2.95 5.9 L 8.85 0`, strokeWeight 1.7, 흰색 `color/bg-surface`, strokeCap NONE/strokeJoin MITER — `shield-check`(`206:34`)의 체크 path를 0.5배로 스케일한 동일 비율). SCR-004 안에서는 item1(`258:161`, "가격이 딱 떨어져서 좋았어요")에 적용 — 이 아이템만 카드 배경이 Accent Tint+Primary 2px 보더로 이미 선택 표시돼 있어 실제 선택 상태와 일치.
+- **미선택(Unselected) 상태**: Ellipse 16×16, fill 없음(`fills: []`, 완전 투명 — Basic 트랙 "면색 없음" 원칙 그대로), stroke 1.5px `color/border-neutral`(`#E2E6EC`). item2(`258:166`)·item3(`258:170`)에 적용.
+- **크래프트 확인**: 체크 두께(1.7px)는 shield-check(32px 프레임 기준 5px)를 16px 프레임 비율로 그대로 스케일한 값이 아니라(비례값은 2.5px) 가독성을 위해 낮춘 값이다 — 8.85px 폭의 체크에 2.5px 스트로크를 쓰면 형태가 뭉개지는 문제를 실측 후 확인해 1.7px로 조정했다. 미선택 stroke(1.5px)는 chevron-right(2px, Basic 트랙)보다 얇아 "세트 내에서도 더 얇고 중립적"이라는 규칙에 부합.
+- **색상**: 새 hex 발명 없음 — Primary/Accent 계열은 전부 Choice Card 선택 언어(`color/primary`, `color/border-neutral`, `color/bg-surface`)를 그대로 재사용.
+- **정리된 노드(Graphic Assets 페이지 원화)**: `279:147`(Selected, Ellipse+Check) / `279:153`(Unselected, Ring) — `279:143` 프레임 하위.
+- **화면 적용 노드**: `258:161`(Selected, 체크 `274:157`) / `258:166`·`258:170`(Unselected).
+
+### [2026-08-27 결함 수정] Selection Indicator — Selected 상태 면색 위반 재작업
+
+design-qa 46차·harness-auditor 98차가 공통으로 HIGH 지적: 위 "선택(Selected) 상태" 서술의 구성 — `Ellipse 16×16, fill #3182F6(color/primary), stroke 없음` — 이 `icon-craft-guide.md`의 Basic/Utility 트랙 규칙("면색을 넣지 않는다 — 순수 스트로크만 사용한다")을 위반한 상태였다. **미선택(Unselected) 상태는 위반이 없어 그대로 유지했다.**
+
+- **재설계 방식**: 브리프가 제시한 두 대안 중 "체크 글리프" 방식을 채택했다(이중 링보다 "선택됨" 의미가 더 명확히 읽힘). 외곽 Ellipse는 fill을 완전히 제거하고 stroke 2px `color/primary`(`#3182F6`)만 남긴 링으로 바꿨다(레이어명 "Selected Ring"). 내부 Check Vector(기존 path `M 0 2.95 L 2.95 5.9 L 8.85 0`, 8.85×5.9 그대로 유지)는 stroke 색을 흰색(`color/bg-surface`)에서 `color/primary`로 바꿨다(strokeWeight 1.7 유지, fill은 원래부터 없었음). 결과적으로 원·체크 두 도형 모두 `fills: []`이고 stroke만으로 "선택됨"을 표현한다 — Unselected(얇은 회색 빈 링)와는 색(Primary vs 뉴트럴)·두께(2px vs 1.5px)·체크 유무로 명확히 구분된다.
+- **반영 노드(같은 패턴의 모든 occurrence 스캔·교체 완료)**:
+  - Graphic Assets 원화: `279:147`(Selected 프레임) — `279:148`(Selected Ring, 이전 이름 "Selected Fill") + `279:149`(Check).
+  - SCR-004 base 배치본: `258:161`(Selected 프레임) — `258:162`(Selected Ring) + `274:157`(Check).
+  - "기타" 모달(`259:183`) 배경 복제본: `259:174` — 이 occurrence는 위 두 곳과 구조 자체가 달랐다(fill 위반이 아니라 훨씬 더 오래된 "흰 원+파란 링(`259:175`)+안쪽 파란 도트(`259:176`)" 구성이었음, 즉 Selection Indicator 재작업 라운드 이전 상태로 추정). 도트(`259:176`)를 제거하고 `259:175`를 fill 제거+stroke 2px Primary 링으로 바꾼 뒤, 기준 Check(`274:157`)를 clone해 신규 Check(`284:954`)로 삽입해 base와 동일한 구성으로 맞췄다.
+- **레이어명 정정(결함 2, MEDIUM)**: "기타" 모달의 Selection Indicator 래퍼 3개(`259:166`/`259:170`/`259:174`)가 전부 "Frame"으로 일반화돼 있던 것을 SCR-004 base와 동일하게 "Selection Indicator — Selected"(`259:174`)/"Selection Indicator — Unselected"(`259:166`, `259:170`)로 통일했다.
+- **추가로 발견해 함께 정리(브리프에 명시되진 않았으나 같은 트랙 규칙 위반)**: `259:166`/`259:170`의 내부 Ellipse(`259:167`/`259:171`)가 base(`258:167`/`258:171`)와 달리 흰색 solid fill(`color/bg-surface`)을 갖고 있었다 — 흰색이라도 "면색을 채우지 않는다" 원칙 위반이라 fill을 제거해 base와 동일한 stroke-only 구성으로 맞췄다.
+- **검증**: `use_figma`로 위 8개 occurrence(`279:147`/`279:153`/`258:161`/`258:166`/`258:170`/`259:174`/`259:166`/`259:170`) 하위 모든 Ellipse/Vector의 `fills` 배열이 빈 배열임을 재조회로 최종 확인. `get_screenshot`으로 SCR-004 base·"기타" 모달 양쪽 모두 Selected 항목이 파란 스트로크 링+체크로, Unselected 항목은 얇은 회색 빈 링으로 뚜렷이 구분됨을 시각 확인했다. Graphic Assets 페이지의 라벨 텍스트(`279:146`)도 새 구성을 반영해 갱신했다.
+
+### 2. Celebration Badge — 72×72 (Visual/Feature 트랙, SCR-005 완료/감사)
+
+- **대상**: SCR-005(`261:157`)의 🎉 이모지 텍스트 노드(`261:158`, 완전 제거).
+- **구성**: Ellipse 72×72 solid fill `color/primary`(`#3182F6`) + Vector 체크(39.8×26.6, path `M 0 13.3 L 13.3 26.6 L 39.8 0`, strokeWeight 10, 흰색 `color/bg-surface`, strokeCap NONE/strokeJoin MITER) — "아이콘2"(edit-02, 파란 원형 배경+흰 라인 아이콘 합성) 패턴을 축하 톤으로 변주, shield-check와 동일한 체크 모티프를 재사용해 세트 전체의 "체크=확정/완료" 의미 일관성을 유지했다.
+- **배치**: SCR-005는 `layoutMode: VERTICAL`, `primaryAxisAlignItems/counterAxisAlignItems: CENTER`인 auto-layout 프레임이라, 배지를 `insertChild(0, badge)`로 기존 이모지가 있던 첫 번째 자식 자리에 넣어 auto-layout이 위치·중앙 정렬을 자동 계산하도록 했다(절대 좌표 지정 시 auto-layout 흐름과 충돌해 배지가 엉뚱한 위치로 밀리는 문제를 실측 중 확인 → `layoutPositioning`을 건드리지 않고 자식 순서로 해결).
+- **정리된 노드(Graphic Assets 페이지 원화)**: `279:158`(Celebration Badge, `279:155` 프레임 하위).
+- **화면 적용 노드**: `276:157`(Celebration Badge, SCR-005 첫 번째 자식) — 원 `276:158`, 체크 `276:159`.
+
+### 3. Confirmation Badge — 64×64 (Visual/Feature 트랙, SCR-006 이미 참여함/재확인)
+
+- **대상**: SCR-006(`261:160`)의 👋 이모지 텍스트 노드(`261:161`, 완전 제거).
+- **구성**: Ellipse 64×64 solid fill `color/bg-accent-tint`(`#E8F3FF`) + Vector 체크(35.4×23.6, path `M 0 11.8 L 11.8 23.6 L 35.4 0`, strokeWeight 6, `color/primary`(`#3182F6`) 라인, strokeCap NONE/strokeJoin MITER, fill 없음).
+- **톤 구분 근거**: SCR-005(축하)와 감정이 다르다는 브리프 지시에 따라 ① 배경을 solid Primary가 아니라 옅은 Accent Tint로 낮추고, ② 체크를 면 채움이 아니라 라인(스트로크 6px, Primary)으로 그려 "정보성 재확인" 신호로 절제했다. 두 배지를 나란히 스크린샷으로 비교해 시각적으로 뚜렷이 구분됨을 확인.
+- **배치**: SCR-005와 동일하게 auto-layout 첫 번째 자식 자리에 `insertChild(0, badge)`로 배치.
+- **정리된 노드(Graphic Assets 페이지 원화)**: `279:164`(Confirmation Badge, `279:161` 프레임 하위).
+- **화면 적용 노드**: `277:157`(Confirmation Badge, SCR-006 첫 번째 자식) — 원 `277:158`, 체크 `277:159`.
+
+### 4. `258:152`(shield-check 인스턴스) — 확인 결과
+
+**확인 완료, 이상 없음.** `258:152`는 `206:34`(shield-check 마스터)를 정확히 참조하는 INSTANCE이며, 크기(32×32)·위치(카드 내 절대좌표 x=120.5, y=8)에 오버라이드가 없다. 유일한 오버라이드는 `layoutPositioning`(카드 내부에서 절대 위치로 얹히기 위한 것 — 브랜드 가이드 6절 "카드 우측 padding 영역에 절대 위치로 얹힘" 서술과 일치, 색상·형태 오버라이드 아님)뿐이다. 색상·형태 관련 오버라이드는 전혀 없음.
+
+### 정리 결과 요약
+
+| 오브제 | 트랙 | 화면 적용 노드 | Graphic Assets 원화 노드 | 크기 | 색상 |
+|---|---|---|---|---|---|
+| Selection Indicator (Selected) | Basic/Utility | `258:161` | `279:147` | 16×16 | stroke만 `color/primary` 2px 링 + `color/primary` 체크(2026-08-27 수정, 과거 fill 채움 기록은 위 결함 수정 절 참고) |
+| Selection Indicator (Unselected) | Basic/Utility | `258:166`, `258:170` | `279:153` | 16×16 | stroke `color/border-neutral` 1.5px, fill 없음 |
+| Celebration Badge | Visual/Feature | `276:157` (SCR-005) | `279:158` | 72×72 | fill `color/primary`, 체크 `color/bg-surface` |
+| Confirmation Badge | Visual/Feature | `277:157` (SCR-006) | `279:164` | 64×64 | fill `color/bg-accent-tint`, 체크 `color/primary` |
+
+**COMPONENT 승격은 이번 라운드 범위가 아니다** — design-systems가 후속 판단.
+
 ## 근거
 
 - Figma `SIBLz4S4IZbjabzhMSAgdo`, `use_figma`/`get_metadata`/`get_screenshot`(inline `node.screenshot()` 포함)로 이번 라운드에 직접 관찰·재구성.
 - `docs/design/mercari/brand-guide.md` 1절(색상)·6절(아이콘 스펙) — 정본이나, `shield-check` 항목은 위에서 기록한 대로 실물과 서술이 어긋남을 확인.
-- `docs/harness/design-team/icon-craft-guide.md` — 트랙 판정 기준·체크리스트.
+- `docs/harness/design-team/icon-craft-guide.md` — 트랙 판정 기준·체크리스트("이모지는 포인트로만 쓴다" 절 포함).
 - (design-systems 이어지는 라운드) 위 "이어지는 라운드" 섹션은 노드 재조회·`node.screenshot()` 스크린샷 재검증으로 직접 확인한 결과다.
+- harness-auditor 95차 LOW 지적(2026-08-27) 반영: 위 opacity 정정 포인터가 "측정 오류였다"고 단정하지 않도록 재정정 — brand-guide.md 9-3의 원래 서술(드리프트 가능성 언급)과 모순되지 않게 두 가설을 모두 열어둔 표현으로 바꿨다.
+- "SCR-004/005/006 오브제 보강" 절은 `get_metadata`/`use_figma`(읽기 전용 실측 + 노드 생성·수정)/`get_screenshot`(inline `node.screenshot()` 포함)로 이번 라운드에 직접 실행·검증한 결과다.
+- design-qa 46차·harness-auditor 98차 HIGH 지적(2026-08-27) 반영: "[2026-08-27 결함 수정]" 절은 `get_metadata`/`use_figma`(읽기 전용 실측 + 노드 수정·clone·삭제)/`get_screenshot`으로 이번 라운드에 직접 실행·검증한 결과다.

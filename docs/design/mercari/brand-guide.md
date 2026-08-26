@@ -146,6 +146,10 @@ Concept A와 B는 서로 다른 브랜드 톤이 아니라, **완전히 동일�
 
 파일에 이미 두 세트의 컬러 변수 컬렉션이 존재했다(문서화가 안 된 채 방치):
 1. **"Primitives"(`VariableCollectionId:205:2`, 16개) + "Semantic Colors"(`VariableCollectionId:205:19`, 19개)** — 이 프로젝트의 색상 표(1절)를 거의 그대로 반영한 완성도 높은 세트(옵션시티별 `-on-white`/`-on-tint`/`-on-cta-disabled` 합성 hex까지 토큰 아키텍처 가이드 6번 규칙대로 이미 계산돼 있었음).
+
+**[정정 이력 공개, 2026-08-27]** 이 원 문장(design-systems 작성)에 대해 design-pl이 이후 세 차례에 걸쳐 정정을 시도하는 과정에서, 원 문장 자체를 실수로 편집(세 접미사명을 뺀 축약 문장으로 대체)했다가 harness-auditor 96차 지적으로 원문 그대로 되돌린 일이 있었다 — 즉 위 문장은 지금은 design-systems의 최초 원문과 동일하지만, 그 사이 잠시 편집됐다가 복원된 이력이 있다(graphic-assets.md의 대응 문장은 이런 편집 없이 처음부터 끝까지 원문이 그대로 유지됐다는 점과 다르다). 이 이력을 숨기지 않고 남겨두는 이유는 harness-auditor 97차가 "원 문장을 전혀 편집하지 않았다"는 이전 표현이 사실과 달라 오히려 추적 가능성을 해친다고 지적했기 때문이다.
+
+**내용 정정(사실 확인)**: 위 원 문장이 예로 든 `-on-white`/`-on-tint`/`-on-cta-disabled` 세 접미사 중, `-on-cta-disabled`는 실제로 이 컬렉션에 존재하는 토큰명이 아니다(9-3절 작업 중 확인 — CTA Disabled에 실제 바인딩된 토큰은 `color/text-muted-35-on-surface-muted`, 접미사 `-on-surface-muted`). `-on-white`/`-on-tint` 두 개는 실재 여부를 별도로 재조회하지 않아 단정하지 않는다. 실제로 존재하는 토큰명·값의 전체 목록은 9-4절 "Colors" 카탈로그(`234:143`)에서 직접 확인할 것.
 2. **"Primitives"(`VariableCollectionId:206:13`, 8개) + "Semantic"(`VariableCollectionId:206:22`, 9개)** — 더 단순하고 불완전한 중복 세트. 파일 전체(UI 디자인/컴포넌트/Graphic Assets/Icons/Colors 페이지) 스캔 결과 **fill/stroke 직접 참조 0건** 확인(alias 체인·effect는 이 프로젝트에 그림자가 전혀 없어 해당 없음). **삭제하지 않았다** — 하우스룰대로 삭제는 사용자 승인 후 진행, 이번 라운드는 존재를 기록·보고만 한다.
 
 **이번 라운드는 1번(205:x, 더 완성도 높은 세트)을 캐논으로 채택**해 그 어떤 값도 새로 만들지 않고 그대로 7종 컴포넌트에 바인딩했다. 값 목록은 새로 신설한 "Colors" FOUNDATIONS 페이지(아래 9-4번) 참고.
@@ -164,6 +168,8 @@ Concept A와 B는 서로 다른 브랜드 톤이 아니라, **완전히 동일�
 
 `--- FOUNDATIONS ---` 구분 페이지 바로 다음(Icons 페이지 앞)에 **"Colors"** 페이지를 신설하고, "Colors — Design Tokens" 스와치 카탈로그 프레임(Primitives 16개 + Semantic Colors 19개, `figma-page-format-guide.md` 규격 — 동일 cornerRadius 6px·1px gray-200 보더·112×56 칩·이름/hex 라벨 순서·16px gap, `clipsContent=false`)을 추가했다. Typography/Spacing/Elevation FOUNDATIONS 페이지는 이번 라운드 범위 밖(색상 변수만 신설했고, elevation은 4절에 기록된 대로 이 프로젝트에 존재하지 않음 — 만들 필요 없음)이라 만들지 않았다.
 
+**[2026-08-27 정정 포인터]** 이 "Colors" 페이지의 노드 ID는 `233:143`(canvas 타입 페이지), 그 안의 스와치 카탈로그 프레임은 `234:143`(`get_metadata`로 재확인). 이 페이지가 harness-auditor 94차에서 "브리프 스코프 밖인데 근거 서술 없이 등장"으로 지적받은 데 대한 스코프 근거: 이 페이지는 새로운 창작·디자인 판단의 산출물이 아니라, 위 9-2절에서 신설한 변수 바인딩 작업이 실제로 정확한 값에 바인딩됐는지 눈으로 검증할 수 있는 **문서화 산출물**이다 — 9-2/9-3절의 변수 바인딩 작업 자체가 이 라운드의 정식 범위였으므로, 그 결과를 카탈로그로 남기는 것은 별도 스코프 확장이 아니라 같은 작업의 문서화 단계로 본다.
+
 ### 9-5. 컴포넌트 스펙 시트 3종 추가
 
 "컴포넌트" 페이지(`126:2599`)의 기존 Progress Row/Product Row/Price Input/Badge 스펙 시트와 동일 포맷으로 Choice Card(3 variant)·Hero Price Card(2 variant)·CTA(2 variant) 스펙 시트를 세로로 이어 배치했다(기존 시트 간 80px 간격 패턴 유지, 전부 `clipsContent=false`).
@@ -174,6 +180,37 @@ Concept A와 B는 서로 다른 브랜드 톤이 아니라, **완전히 동일�
 - shield-check 이름과 달리 방패 배경 없음 — 여전히 그대로. 수정하지 않음.
 - **B_SCR-002_03·A_SCR-002_04의 "손으로 만든 CTA Button 프레임" 문제는 이번 라운드 시작 시점에 이미 해소돼 있었다** — 두 화면 모두 정식 `CTA` 컴포넌트 인스턴스를 쓰고 있음을 확인(9-1번). 브리프 작성 시점 이후 어느 라운드에서 이미 정리된 것으로 보인다.
 
+## 10. 인터랙션 정의 (2026-08-26, interaction-designer)
+
+이 절은 interaction-designer가 SCR-004(선택+이유 설문, "설문UI" 페이지 `187:4084`)에 정의한 사용자 조작 반응(트리거/상태/전환)을 기록한다. 화면 레이아웃 자체(ui-designer 소관)는 건드리지 않았다 — 아래는 전부 기존 노드 위에 얹은 프로토타입 reaction과 애니메이션 스타일(`animationStyle`) 설정, 그리고 미구현 상태 요청이다.
+
+### 10-1. CTA press 상태 — 신규 상태 없음 확인, design-systems에 요청(이번 세션 미구현)
+
+`CTA` 컴포넌트셋(`124:1148`)을 `get_design_context`로 직접 확인한 결과, variant 축은 `Property 1`(`CTA Button` / `CTA Button Disabled`) 하나뿐이고 State(Hover/Press/Focus) 축이 전혀 없다 — 이미 있는 상태를 상속받는 케이스가 아니라 신규로 필요한 상태다. `component-state-guide.md` 2번(버튼류 필수 상태: Default/Hover/Press/Focus/Disabled)상 Press가 있어야 하지만, **컴포넌트의 실제 variant 노드를 새로 만드는 건 interaction-designer 역할 경계 밖**이라 이번 세션에서 직접 만들지 않았다. design-systems에게 아래 스펙으로 신규 `State=Press` variant 추가를 요청하고 대기한다.
+
+- 배경색: Primary(`#3182F6`)를 약 10% 어둡게 한 `#2C75DD`(제안값 — 최종 hex·정확한 대비 재계산은 design-systems가 확정).
+- 그림자: 추가하지 않는다(위 4절 "그림자 전면 금지" 원칙 그대로).
+- 텍스트/아이콘 색: Default(Active)와 동일(흰색) 유지.
+- 전환 방식: variant 자체 전환은 클릭 순간 즉시 바뀌는 스냅 전환이 press 피드백의 일반적 관례라, 별도 crossfade 애니메이션은 걸지 않는 것을 권장.
+- 적용 범위: SCR-004 base(`258:173`)·"기타" 모달(`259:178`/`259:190`) 3개 CTA 인스턴스가 전부 이 컴포넌트를 쓰므로, design-systems가 마스터에 상태를 추가하면 세 인스턴스에 자동 반영된다(예측 가능성 원칙 — 화면별 재정의 불필요).
+
+### 10-2. "기타" 모달 오픈 트랜지션 — 신규 정의·프로토타입 연결 완료
+
+이 프로젝트에 기존 전환 패턴이 전무해 처음 정하는 패턴이지만, 브리프가 이미 두 후보(슬라이드업 vs 페이드인)로 범위를 좁혀 요청했고 duration·easing 자체는 motion-timing-guide가 고정한 값이라 3시안 컨셉 라운드는 생략하고 바로 하나를 선택·연결했다.
+
+- 트리거: "기타" Reason List Item(`258:169`, SCR-004 base) ON_CLICK.
+- 전환: NAVIGATE → `259:183`(SCR-004 기타 모달 오버레이), `SMART_ANIMATE`, duration 0.25s, easing `EASE_IN_AND_OUT`(motion-timing-guide 1번의 "화면 전환 200~400ms" 범위).
+- Dim Overlay(`259:184`): `Opacity` `fadeIn`, 0.25s, `EASE_IN_AND_OUT` — 위 0절의 기존 딤 모티프(A_02~04, `bg-black opacity-50` 페이드인)와 동일한 감각을 재사용.
+- Text Input Modal(`259:185`): `Scale` `scaleIn`(96%→100%) + `Opacity` `fadeIn`, 둘 다 0.25s `EASE_IN_AND_OUT`. 슬라이드업 대신 스케일업을 택한 이유는 이 모달이 화면 하단에 붙는 바텀시트가 아니라 화면 중앙 부근(top=147px)에 뜨는 완결된 카드형 오버레이라 "아래에서 올라온다"는 방향성 정보를 줄 근거가 없기 때문 — 있던 자리에서 살짝 커지며 나타나는 편이 "지금 이 카드가 새로 떴다"는 상태 피드백(motion-timing-guide 3번)을 더 정확히 전달한다.
+- 검증: `applyAnimationStyle` 반환값으로 각 노드의 `animationStyles` 배열을 재조회해 `type`/`amount`/`duration`/`easing` 값이 의도대로 반영됐음을 확인했다(정적 스크린샷은 모션 자체를 보여주지 않으므로 반환값으로 확인).
+- 스코프: SCR-004→SCR-005/SCR-006 등 그 외 화면 전환은 브리프의 "정의할 인터랙션" 목록에 없고 로컬 화면정의서도 없어 임의로 추가하지 않았다.
+
+### 10-3. Choice Card / Reason List Item 선택 피드백 — 트랜지션 미적용(의도적 판단)
+
+`Choice Card - Comparison Pair`·`Reason List Item` 모두 `get_metadata`로 확인한 결과 컴포넌트 variant의 INSTANCE가 아니라 화면마다 다르게 그려진 raw FRAME이다 — "(Selected)"라는 이름은 상태를 나타내는 라벨일 뿐 실제 variant 속성이 아니다. 즉 지금은 상태를 토글하는 인터랙티브 컴포넌트 자체가 존재하지 않아, reaction으로 연결할 "전환"이 구조적으로 없다.
+
+이후 design-systems가 이 카드/리스트 아이템을 정식 variant 컴포넌트로 등록해 실제 토글이 가능해지더라도, **크로스페이드 등 트랜지션은 추가하지 않는 것을 권장한다** — 보더 1px→2px·배경색 전환은 사용자 자신의 탭이 즉시 반영됐음을 보여주는 직접 조작 피드백이라, 애니메이션이 오히려 "내 탭이 바로 반영됐다"는 확신을 늦춘다(motion-timing-guide 3번: 설명하지 못하는 움직임은 뺀다 — 탭 순간 이미 정보 전달이 끝나므로 크로스페이드가 추가로 설명할 정보가 없다). 그림자 없이 절제된 이 컨셉의 플랫한 톤과도 방향이 같다.
+
 ## 근거
 
 - Figma `SIBLz4S4IZbjabzhMSAgdo`, 확정 섹션 `126:2601`, 화면 7개: Concept A_01(`110:103`)·A_02(`124:890`)·A_03(`124:1149`)·A_04(`124:991`)·B_01(`124:1455`)·B_02(`126:1771`)·B_03(`126:1951`) — 전부 `get_design_context`+`get_screenshot`으로 이번 라운드에 재확인.
@@ -181,3 +218,5 @@ Concept A와 B는 서로 다른 브랜드 톤이 아니라, **완전히 동일�
 - 아이콘 스펙(chevron-right/star-01/shield-check/아이콘1·2/드래그 핸들/이모지)과 카드별 padding 구체값은 이번 라운드에서 신규로 재확인.
 - 불일치 발견: B_03(`126:1951`)의 "상태: S급" 배지에 `border-[#dedede]` 클래스 누락(A_01~04·B_01·B_02는 존재) — 7차 로그에서 이미 design-systems에 보고된 건과 동일, 이번에도 재확인됨. 확정 화면 자체는 수정하지 않았다.
 - 9절(design-systems 변수·바인딩·스펙 시트 라운드)은 `use_figma`(변수 조회/바인딩/컴포넌트 생성)·`get_screenshot`(inline `node.screenshot()` 포함)으로 직접 실행·재검증한 결과다.
+- 2026-08-27 정정 포인터(9-2 토큰명 매핑, 9-4 Colors 페이지 노드 ID·스코프 근거)는 harness-auditor 94차 MEDIUM 지적을 근거로 design-pl이 직접 기입. 9-2절은 이후 harness-auditor 95·96·97차에 걸쳐 세 차례 재작성됐다 — 그 과정에서 원 문장을 실수로 편집했다가 복원한 이력이 있으며, 이 이력 자체를 9-2절에 정직하게 공개해 "편집하지 않았다"는 부정확한 자기 서술 문제를 해소했다.
+- 10절(인터랙션 정의)은 interaction-designer가 `get_design_context`(CTA 컴포넌트셋·SCR-004 base·기타 모달)·`get_metadata`(설문UI 페이지 전체, Choice Card/Reason List Item 구조)·`use_figma`(reaction·animationStyle 설정 및 반환값 재확인)로 직접 실행·검증한 결과다.
