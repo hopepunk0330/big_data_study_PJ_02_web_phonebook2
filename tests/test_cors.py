@@ -26,6 +26,11 @@ def _set_cookie_values(resp) -> list[str]:
     return [h["value"] for h in resp.headers_array if h["name"].lower() == "set-cookie"]
 
 
+def _cookie_attrs(cookie: str) -> list[str]:
+    # "session_id=값; HttpOnly; SameSite=none; Secure" -> 속성별 소문자 목록(값 제외)
+    return [part.strip().lower() for part in cookie.split(";")[1:]]
+
+
 def test_cors_preflight_allowed_origin(api_request):
     resp = _preflight(api_request, PORTFOLIO_ORIGIN)
     assert resp.status == 200
@@ -38,6 +43,7 @@ def test_cors_preflight_allowed_origin(api_request):
 def test_cors_preflight_disallowed_origin(api_request):
     resp = _preflight(api_request, "https://evil.example.com")
     assert "access-control-allow-origin" not in resp.headers
+    assert resp.status == 400
 
 
 def test_cors_actual_response_has_origin_header(api_request):
@@ -55,7 +61,7 @@ def test_login_cookie_is_samesite_none_secure(api_request):
     resp = login(api_request, username)
     cookies = [c for c in _set_cookie_values(resp) if c.startswith("session_id=")]
     assert cookies, "로그인 응답에 session_id Set-Cookie가 없음"
-    attrs = cookies[0].lower()
+    attrs = _cookie_attrs(cookies[0])
     assert "samesite=none" in attrs
     assert "secure" in attrs
     assert "httponly" in attrs
@@ -68,6 +74,7 @@ def test_logout_cookie_deletion_matches_samesite_none_secure(api_request):
     resp = api_request.post("/auth/logout")
     cookies = [c for c in _set_cookie_values(resp) if c.startswith("session_id=")]
     assert cookies, "로그아웃 응답에 session_id Set-Cookie가 없음"
-    attrs = cookies[0].lower()
+    attrs = _cookie_attrs(cookies[0])
     assert "samesite=none" in attrs
     assert "secure" in attrs
+    assert "max-age=0" in attrs

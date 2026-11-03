@@ -26,7 +26,7 @@ backend/
 └── requirements.txt
 ```
 
-**주의 — 화면 코드(`index.html`/`app.js`)는 이 폴더 안에 없다.** 최상위 `static/` 폴더(프로젝트 루트, `backend/`·`frontend/`와 형제)에 있고, `main.py`가 `StaticFiles`로 그 경로를 마운트해서 서빙한다. 물리적으로 안 겹쳐 있어도 같은 포트(`127.0.0.1:8000`)에서 서빙되므로 오리진은 하나 그대로다 — CORS 미들웨어를 추가할 필요 없다.
+**주의 — 화면 코드(`index.html`/`app.js`)는 이 폴더 안에 없다.** 최상위 `static/` 폴더(프로젝트 루트, `backend/`·`frontend/`와 형제)에 있고, `main.py`가 `StaticFiles`로 그 경로를 마운트해서 서빙한다. 물리적으로 안 겹쳐 있어도 같은 포트(`127.0.0.1:8000`)에서 서빙되므로 화면 자체는 오리진이 하나 그대로다. 다만 별도 도메인의 포트폴리오 사이트(`https://hopepunk0330.cafe24.com`)가 이 API를 cross-origin으로 호출하므로 `main.py`에 해당 오리진 한정 CORS 미들웨어가 있고, 세션 쿠키는 `SameSite=None; Secure`다.
 
 ## 레이어 원칙 (TRD §2, 기능정의서 §1-2 계승)
 4계층: 화면(`static/`) → 표현(`routers/`, `schemas.py`) → 로직(`crud.py`, `security.py`) → 데이터(`models.py`, `database.py`). 각 계층은 자기 아래 계층만 호출한다(계층 건너뛴 호출 금지). **라우터가 상태 코드를 결정하고, `crud.py`는 DB 작업만 하며 상태 코드를 모른다.**
