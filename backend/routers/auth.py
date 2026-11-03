@@ -37,7 +37,8 @@ def login(data: schemas.LoginIn, response: Response, db: Session = Depends(get_d
         key="session_id",
         value=session_id,
         httponly=True,
-        samesite="lax",
+        samesite="none",
+        secure=True,
     )
     return {"message": "로그인 성공"}
 
@@ -50,7 +51,7 @@ def logout(
 ):
     if session_id:
         crud.delete_login_session(db, session_id)
-    response.delete_cookie("session_id")
+    response.delete_cookie("session_id", samesite="none", secure=True)
     return {"message": "로그아웃 되었습니다"}
 
 
